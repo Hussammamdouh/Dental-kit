@@ -16,7 +16,7 @@ const ForgotPasswordSentPage = () => {
   const location = useLocation();
   const passedEmail = location.state?.email;
 
-  const getLogoPath = () => (isDark ? '/Logo Darkmode.png' : '/Logo Lightmode.png');
+  const getLogoPath = () => (isDark ? '/Logo Darkmode.png' : '/LogoLightmode.png');
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900 overflow-x-hidden">

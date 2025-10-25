@@ -5,7 +5,7 @@ export function getLogoPath(isDark, { variant = 'default' } = {}) {
   if (variant === 'page') {
     return isDark ? '/Logo Page Darkmode.png' : '/Logo Page Lightmode.png';
   }
-  return isDark ? '/Logo Darkmode.png' : '/Logo Lightmode.png';
+  return isDark ? '/Logo Darkmode.png' : '/LogoLightmode.png';
 }
 
 

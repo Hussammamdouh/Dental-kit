@@ -9,7 +9,7 @@ router.get('/image', async (req, res) => {
     const {
       title = 'DentalKit',
       subtitle = '',
-      image = 'https://dental-website-frontend.vercel.app/Logo%20Lightmode.png',
+      image = 'https://dental-website-frontend.vercel.app/LogoLightmode.png',
       theme = 'light'
     } = req.query;
 

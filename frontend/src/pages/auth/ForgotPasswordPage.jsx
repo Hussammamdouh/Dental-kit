@@ -124,7 +124,7 @@ const ForgotPasswordPage = () => {
 
   // Get logo path based on theme
   const getLogoPath = useCallback(() => {
-    return isDark ? '/Logo Darkmode.png' : '/Logo Lightmode.png';
+    return isDark ? '/Logo Darkmode.png' : '/LogoLightmode.png';
   }, [isDark]);
 
   // Handle key press for form submission
