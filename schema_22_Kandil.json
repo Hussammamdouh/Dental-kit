@@ -1,0 +1,2650 @@
+[
+  {
+    "name": "Woodpecker Woodpex V Apex Locator",
+    "nameAr": "",
+    "description": "Woodpecker Woodpex V Apex Locator",
+    "shortDescription": "",
+    "price": 9950.0,
+    "originalPrice": null,
+    "currency": "EGP",
+    "sku": "1561659545023664",
+    "vendorSku": "1561659545023664",
+    "brand": "Woodpecker",
+    "model": "",
+    "categoryId": "categories/uncategorized",
+    "vendorId": "vendors/Kandil",
+    "stock": 10,
+    "minStockLevel": 5,
+    "maxStockLevel": 1000,
+    "images": [
+      {
+        "url": "https://s3.eu-west-1.amazonaws.com/drive.dentacarts.com/public/product_image/8294/829451.png",
+        "alt": "Woodpecker Woodpex V Apex Locator",
+        "isPrimary": true,
+        "order": 0
+      }
+    ],
+    "specifications": {},
+    "features": [],
+    "tags": [],
+    "weight": {
+      "value": null,
+      "unit": "g"
+    },
+    "dimensions": {
+      "length": null,
+      "width": null,
+      "height": null,
+      "unit": "cm"
+    },
+    "isActive": true,
+    "isFeatured": false,
+    "isOnSale": false,
+    "salePercentage": null,
+    "slug": "woodpecker-woodpex-v-apex-locator",
+    "metaTitle": "Woodpecker Woodpex V Apex Locator",
+    "metaDescription": "Woodpecker Woodpex V Apex Locator",
+    "averageRating": 0,
+    "totalReviews": 0,
+    "totalSold": 0,
+    "views": 0,
+    "searchKeywords": [
+      "locator",
+      "apex",
+      "woodpex",
+      "v",
+      "woodpecker"
+    ],
+    "vendorData": {
+      "sourceUrl": "https://dentacarts.com/products/endo-gold-plus-v-apex-locator",
+      "lastScraped": "2025-10-21T17:58:04.333758+00:00",
+      "scrapedData": {}
+    },
+    "variants": [],
+    "isBundle": false,
+    "bundleItems": [],
+    "createdAt": "2025-10-21T17:58:04.333758+00:00",
+    "updatedAt": "2025-10-21T17:58:04.333758+00:00",
+    "lastScrapedAt": "2025-10-21T17:58:04.333758+00:00"
+  },
+  {
+    "name": "Woodpecker Endo Pace Endomotor",
+    "nameAr": "",
+    "description": "Woodpecker Endo Pace Endomotor",
+    "shortDescription": "",
+    "price": 1450.0,
+    "originalPrice": null,
+    "currency": "LYD",
+    "sku": "9611659545023318",
+    "vendorSku": "9611659545023318",
+    "brand": "Woodpecker",
+    "model": "",
+    "categoryId": "categories/uncategorized",
+    "vendorId": "vendors/Kandil",
+    "stock": 10,
+    "minStockLevel": 5,
+    "maxStockLevel": 1000,
+    "images": [
+      {
+        "url": "https://s3.eu-west-1.amazonaws.com/drive.dentacarts.com/public/product_image/8486/848663.webp",
+        "alt": "Woodpecker Endo Pace Endomotor",
+        "isPrimary": true,
+        "order": 0
+      }
+    ],
+    "specifications": {},
+    "features": [],
+    "tags": [],
+    "weight": {
+      "value": null,
+      "unit": "g"
+    },
+    "dimensions": {
+      "length": null,
+      "width": null,
+      "height": null,
+      "unit": "cm"
+    },
+    "isActive": true,
+    "isFeatured": false,
+    "isOnSale": false,
+    "salePercentage": null,
+    "slug": "woodpecker-endo-pace-endomotor",
+    "metaTitle": "Woodpecker Endo Pace Endomotor",
+    "metaDescription": "Woodpecker Endo Pace Endomotor",
+    "averageRating": 0,
+    "totalReviews": 0,
+    "totalSold": 0,
+    "views": 0,
+    "searchKeywords": [
+      "endomotor",
+      "endo",
+      "woodpecker",
+      "pace"
+    ],
+    "vendorData": {
+      "sourceUrl": "https://dentacarts.com/products/endo-pace-endo-motor",
+      "lastScraped": "2025-10-21T17:58:05.097344+00:00",
+      "scrapedData": {}
+    },
+    "variants": [],
+    "isBundle": false,
+    "bundleItems": [],
+    "createdAt": "2025-10-21T17:58:05.097344+00:00",
+    "updatedAt": "2025-10-21T17:58:05.097344+00:00",
+    "lastScrapedAt": "2025-10-21T17:58:05.097344+00:00"
+  },
+  {
+    "name": "Water Distiller",
+    "nameAr": "",
+    "description": "Water Distiller",
+    "shortDescription": "",
+    "price": 3000.0,
+    "originalPrice": null,
+    "currency": "EGP",
+    "sku": "733186411500094",
+    "vendorSku": "733186411500094",
+    "brand": "",
+    "model": "",
+    "categoryId": "categories/uncategorized",
+    "vendorId": "vendors/Kandil",
+    "stock": 10,
+    "minStockLevel": 5,
+    "maxStockLevel": 1000,
+    "images": [
+      {
+        "url": "https://s3.eu-west-1.amazonaws.com/drive.dentacarts.com/public/products/56/5675_1.jpg",
+        "alt": "Water Distiller",
+        "isPrimary": true,
+        "order": 0
+      }
+    ],
+    "specifications": {},
+    "features": [],
+    "tags": [],
+    "weight": {
+      "value": null,
+      "unit": "g"
+    },
+    "dimensions": {
+      "length": null,
+      "width": null,
+      "height": null,
+      "unit": "cm"
+    },
+    "isActive": true,
+    "isFeatured": false,
+    "isOnSale": false,
+    "salePercentage": null,
+    "slug": "water-distiller",
+    "metaTitle": "Water Distiller",
+    "metaDescription": "Water Distiller",
+    "averageRating": 0,
+    "totalReviews": 0,
+    "totalSold": 0,
+    "views": 0,
+    "searchKeywords": [
+      "water",
+      "distiller"
+    ],
+    "vendorData": {
+      "sourceUrl": "https://dentacarts.com/products/water-distiller_2",
+      "lastScraped": "2025-10-21T17:58:05.097344+00:00",
+      "scrapedData": {}
+    },
+    "variants": [],
+    "isBundle": false,
+    "bundleItems": [],
+    "createdAt": "2025-10-21T17:58:05.097344+00:00",
+    "updatedAt": "2025-10-21T17:58:05.097344+00:00",
+    "lastScrapedAt": "2025-10-21T17:58:05.097344+00:00"
+  },
+  {
+    "name": "Sealing Device ماكينة لحام روول التعقيم",
+    "nameAr": "",
+    "description": "Sealing Device ماكينة لحام روول التعقيم",
+    "shortDescription": "",
+    "price": 4800.0,
+    "originalPrice": null,
+    "currency": "EGP",
+    "sku": "958490182162076",
+    "vendorSku": "958490182162076",
+    "brand": "",
+    "model": "",
+    "categoryId": "categories/uncategorized",
+    "vendorId": "vendors/Kandil",
+    "stock": 10,
+    "minStockLevel": 5,
+    "maxStockLevel": 1000,
+    "images": [
+      {
+        "url": "https://s3.eu-west-1.amazonaws.com/drive.dentacarts.com/public/products/56/5680_1.jpg",
+        "alt": "Sealing Device ماكينة لحام روول التعقيم",
+        "isPrimary": true,
+        "order": 0
+      }
+    ],
+    "specifications": {},
+    "features": [],
+    "tags": [],
+    "weight": {
+      "value": null,
+      "unit": "g"
+    },
+    "dimensions": {
+      "length": null,
+      "width": null,
+      "height": null,
+      "unit": "cm"
+    },
+    "isActive": true,
+    "isFeatured": false,
+    "isOnSale": false,
+    "salePercentage": null,
+    "slug": "sealing-device",
+    "metaTitle": "Sealing Device ماكينة لحام روول التعقيم",
+    "metaDescription": "Sealing Device ماكينة لحام روول التعقيم",
+    "averageRating": 0,
+    "totalReviews": 0,
+    "totalSold": 0,
+    "views": 0,
+    "searchKeywords": [
+      "sealing",
+      "device"
+    ],
+    "vendorData": {
+      "sourceUrl": "https://dentacarts.com/products/sealing-device-%D9%85%D8%A7%D9%83%D9%8A%D9%86%D8%A9-%D9%84%D8%AD%D8%A7%D9%85-%D8%B1%D9%88%D9%88%D9%84-%D8%A7%D9%84%D8%AA%D8%B9%D9%82%D9%8A%D9%85",
+      "lastScraped": "2025-10-21T17:58:05.097344+00:00",
+      "scrapedData": {}
+    },
+    "variants": [],
+    "isBundle": false,
+    "bundleItems": [],
+    "createdAt": "2025-10-21T17:58:05.097344+00:00",
+    "updatedAt": "2025-10-21T17:58:05.097344+00:00",
+    "lastScrapedAt": "2025-10-21T17:58:05.097344+00:00"
+  },
+  {
+    "name": "Woodpecker RTA Curing Light",
+    "nameAr": "",
+    "description": "Woodpecker RTA Curing Light",
+    "shortDescription": "",
+    "price": 2350.0,
+    "originalPrice": null,
+    "currency": "EGP",
+    "sku": "951567465858684",
+    "vendorSku": "951567465858684",
+    "brand": "Woodpecker",
+    "model": "",
+    "categoryId": "categories/uncategorized",
+    "vendorId": "vendors/Kandil",
+    "stock": 10,
+    "minStockLevel": 5,
+    "maxStockLevel": 1000,
+    "images": [
+      {
+        "url": "https://s3.eu-west-1.amazonaws.com/drive.dentacarts.com/public/products/63/6312_1.jpg",
+        "alt": "Woodpecker RTA Curing Light",
+        "isPrimary": true,
+        "order": 0
+      }
+    ],
+    "specifications": {},
+    "features": [],
+    "tags": [],
+    "weight": {
+      "value": null,
+      "unit": "g"
+    },
+    "dimensions": {
+      "length": null,
+      "width": null,
+      "height": null,
+      "unit": "cm"
+    },
+    "isActive": true,
+    "isFeatured": false,
+    "isOnSale": false,
+    "salePercentage": null,
+    "slug": "woodpecker-rta-curing-light",
+    "metaTitle": "Woodpecker RTA Curing Light",
+    "metaDescription": "Woodpecker RTA Curing Light",
+    "averageRating": 0,
+    "totalReviews": 0,
+    "totalSold": 0,
+    "views": 0,
+    "searchKeywords": [
+      "curing",
+      "rta",
+      "woodpecker",
+      "light"
+    ],
+    "vendorData": {
+      "sourceUrl": "https://dentacarts.com/products/light-cure-r-t-a",
+      "lastScraped": "2025-10-21T17:58:05.097344+00:00",
+      "scrapedData": {}
+    },
+    "variants": [],
+    "isBundle": false,
+    "bundleItems": [],
+    "createdAt": "2025-10-21T17:58:05.097344+00:00",
+    "updatedAt": "2025-10-21T17:58:05.097344+00:00",
+    "lastScrapedAt": "2025-10-21T17:58:05.097344+00:00"
+  },
+  {
+    "name": "Woodpecker LED D Lightcure",
+    "nameAr": "",
+    "description": "Woodpecker LED D Lightcure",
+    "shortDescription": "",
+    "price": 2900.0,
+    "originalPrice": null,
+    "currency": "EGP",
+    "sku": "421554239663518",
+    "vendorSku": "421554239663518",
+    "brand": "Woodpecker",
+    "model": "",
+    "categoryId": "categories/uncategorized",
+    "vendorId": "vendors/Kandil",
+    "stock": 10,
+    "minStockLevel": 5,
+    "maxStockLevel": 1000,
+    "images": [
+      {
+        "url": "https://s3.eu-west-1.amazonaws.com/drive.dentacarts.com/public/products/56/5670_1.jpg",
+        "alt": "Woodpecker LED D Lightcure",
+        "isPrimary": true,
+        "order": 0
+      }
+    ],
+    "specifications": {},
+    "features": [],
+    "tags": [],
+    "weight": {
+      "value": null,
+      "unit": "g"
+    },
+    "dimensions": {
+      "length": null,
+      "width": null,
+      "height": null,
+      "unit": "cm"
+    },
+    "isActive": true,
+    "isFeatured": false,
+    "isOnSale": false,
+    "salePercentage": null,
+    "slug": "woodpecker-led-d-lightcure",
+    "metaTitle": "Woodpecker LED D Lightcure",
+    "metaDescription": "Woodpecker LED D Lightcure",
+    "averageRating": 0,
+    "totalReviews": 0,
+    "totalSold": 0,
+    "views": 0,
+    "searchKeywords": [
+      "d",
+      "led",
+      "woodpecker",
+      "lightcure"
+    ],
+    "vendorData": {
+      "sourceUrl": "https://dentacarts.com/products/woodpecker--light-curing--led.d",
+      "lastScraped": "2025-10-21T17:58:05.097344+00:00",
+      "scrapedData": {}
+    },
+    "variants": [],
+    "isBundle": false,
+    "bundleItems": [],
+    "createdAt": "2025-10-21T17:58:05.097344+00:00",
+    "updatedAt": "2025-10-21T17:58:05.097344+00:00",
+    "lastScrapedAt": "2025-10-21T17:58:05.097344+00:00"
+  },
+  {
+    "name": "Woodpecker Antaeus High Speed Handpiece",
+    "nameAr": "",
+    "description": "Woodpecker Antaeus High Speed Handpiece",
+    "shortDescription": "",
+    "price": 4500.0,
+    "originalPrice": null,
+    "currency": "EGP",
+    "sku": "587384592546851",
+    "vendorSku": "587384592546851",
+    "brand": "Woodpecker",
+    "model": "",
+    "categoryId": "categories/uncategorized",
+    "vendorId": "vendors/Kandil",
+    "stock": 10,
+    "minStockLevel": 5,
+    "maxStockLevel": 1000,
+    "images": [
+      {
+        "url": "https://s3.eu-west-1.amazonaws.com/drive.dentacarts.com/public/product_image/8496/849624.jpg",
+        "alt": "Woodpecker Antaeus High Speed Handpiece",
+        "isPrimary": true,
+        "order": 0
+      }
+    ],
+    "specifications": {},
+    "features": [],
+    "tags": [],
+    "weight": {
+      "value": null,
+      "unit": "g"
+    },
+    "dimensions": {
+      "length": null,
+      "width": null,
+      "height": null,
+      "unit": "cm"
+    },
+    "isActive": true,
+    "isFeatured": false,
+    "isOnSale": false,
+    "salePercentage": null,
+    "slug": "woodpecker-antaeus-high-speed-handpiece",
+    "metaTitle": "Woodpecker Antaeus High Speed Handpiece",
+    "metaDescription": "Woodpecker Antaeus High Speed Handpiece",
+    "averageRating": 0,
+    "totalReviews": 0,
+    "totalSold": 0,
+    "views": 0,
+    "searchKeywords": [
+      "speed",
+      "high",
+      "antaeus",
+      "woodpecker",
+      "handpiece"
+    ],
+    "vendorData": {
+      "sourceUrl": "https://dentacarts.com/products/woodpecker-antaeus-handpiece-high-speed",
+      "lastScraped": "2025-10-21T17:58:05.097344+00:00",
+      "scrapedData": {}
+    },
+    "variants": [],
+    "isBundle": false,
+    "bundleItems": [],
+    "createdAt": "2025-10-21T17:58:05.097344+00:00",
+    "updatedAt": "2025-10-21T17:58:05.097344+00:00",
+    "lastScrapedAt": "2025-10-21T17:58:05.097344+00:00"
+  },
+  {
+    "name": "Woodpecker Ai-Motor",
+    "nameAr": "",
+    "description": "Woodpecker Ai-Motor",
+    "shortDescription": "",
+    "price": 35000.0,
+    "originalPrice": null,
+    "currency": "EGP",
+    "sku": "630453866625091",
+    "vendorSku": "630453866625091",
+    "brand": "Woodpecker",
+    "model": "",
+    "categoryId": "categories/uncategorized",
+    "vendorId": "vendors/Kandil",
+    "stock": 10,
+    "minStockLevel": 5,
+    "maxStockLevel": 1000,
+    "images": [
+      {
+        "url": "https://s3.eu-west-1.amazonaws.com/drive.dentacarts.com/public/products/332/33280_1.jpg",
+        "alt": "Woodpecker Ai-Motor",
+        "isPrimary": true,
+        "order": 0
+      }
+    ],
+    "specifications": {},
+    "features": [],
+    "tags": [],
+    "weight": {
+      "value": null,
+      "unit": "g"
+    },
+    "dimensions": {
+      "length": null,
+      "width": null,
+      "height": null,
+      "unit": "cm"
+    },
+    "isActive": true,
+    "isFeatured": false,
+    "isOnSale": false,
+    "salePercentage": null,
+    "slug": "woodpecker-ai-motor",
+    "metaTitle": "Woodpecker Ai-Motor",
+    "metaDescription": "Woodpecker Ai-Motor",
+    "averageRating": 0,
+    "totalReviews": 0,
+    "totalSold": 0,
+    "views": 0,
+    "searchKeywords": [
+      "ai",
+      "woodpecker",
+      "motor"
+    ],
+    "vendorData": {
+      "sourceUrl": "https://dentacarts.com/products/woodpecker-ai-motor",
+      "lastScraped": "2025-10-21T17:58:05.097344+00:00",
+      "scrapedData": {}
+    },
+    "variants": [],
+    "isBundle": false,
+    "bundleItems": [],
+    "createdAt": "2025-10-21T17:58:05.097344+00:00",
+    "updatedAt": "2025-10-21T17:58:05.097344+00:00",
+    "lastScrapedAt": "2025-10-21T17:58:05.097344+00:00"
+  },
+  {
+    "name": "Woodpecker Air Purifier Q7",
+    "nameAr": "",
+    "description": "Woodpecker Air Purifier Q7",
+    "shortDescription": "",
+    "price": 25000.0,
+    "originalPrice": null,
+    "currency": "EGP",
+    "sku": "996186460851381",
+    "vendorSku": "996186460851381",
+    "brand": "Woodpecker",
+    "model": "",
+    "categoryId": "categories/uncategorized",
+    "vendorId": "vendors/Kandil",
+    "stock": 10,
+    "minStockLevel": 5,
+    "maxStockLevel": 1000,
+    "images": [
+      {
+        "url": "https://s3.eu-west-1.amazonaws.com/drive.dentacarts.com/public/products/436/43685_1.png",
+        "alt": "Woodpecker Air Purifier Q7",
+        "isPrimary": true,
+        "order": 0
+      }
+    ],
+    "specifications": {},
+    "features": [],
+    "tags": [],
+    "weight": {
+      "value": null,
+      "unit": "g"
+    },
+    "dimensions": {
+      "length": null,
+      "width": null,
+      "height": null,
+      "unit": "cm"
+    },
+    "isActive": true,
+    "isFeatured": false,
+    "isOnSale": false,
+    "salePercentage": null,
+    "slug": "woodpecker-air-purifier-q7",
+    "metaTitle": "Woodpecker Air Purifier Q7",
+    "metaDescription": "Woodpecker Air Purifier Q7",
+    "averageRating": 0,
+    "totalReviews": 0,
+    "totalSold": 0,
+    "views": 0,
+    "searchKeywords": [
+      "air",
+      "q7",
+      "purifier",
+      "woodpecker"
+    ],
+    "vendorData": {
+      "sourceUrl": "https://dentacarts.com/products/woodpecker-air-purifier-q7",
+      "lastScraped": "2025-10-21T17:58:05.097344+00:00",
+      "scrapedData": {}
+    },
+    "variants": [],
+    "isBundle": false,
+    "bundleItems": [],
+    "createdAt": "2025-10-21T17:58:05.097344+00:00",
+    "updatedAt": "2025-10-21T17:58:05.097344+00:00",
+    "lastScrapedAt": "2025-10-21T17:58:05.097344+00:00"
+  },
+  {
+    "name": "Woodpecker Endo Gold Endomotor",
+    "nameAr": "",
+    "description": "Woodpecker Endo Gold Endomotor",
+    "shortDescription": "",
+    "price": 10500.0,
+    "originalPrice": null,
+    "currency": "EGP",
+    "sku": "101665520567012",
+    "vendorSku": "101665520567012",
+    "brand": "Woodpecker",
+    "model": "",
+    "categoryId": "categories/uncategorized",
+    "vendorId": "vendors/Kandil",
+    "stock": 10,
+    "minStockLevel": 5,
+    "maxStockLevel": 1000,
+    "images": [
+      {
+        "url": "https://s3.eu-west-1.amazonaws.com/drive.dentacarts.com/public/products/332/33273_3.jpg",
+        "alt": "Woodpecker Endo Gold Endomotor",
+        "isPrimary": true,
+        "order": 0
+      }
+    ],
+    "specifications": {},
+    "features": [],
+    "tags": [],
+    "weight": {
+      "value": null,
+      "unit": "g"
+    },
+    "dimensions": {
+      "length": null,
+      "width": null,
+      "height": null,
+      "unit": "cm"
+    },
+    "isActive": true,
+    "isFeatured": false,
+    "isOnSale": false,
+    "salePercentage": null,
+    "slug": "woodpecker-endo-gold-endomotor",
+    "metaTitle": "Woodpecker Endo Gold Endomotor",
+    "metaDescription": "Woodpecker Endo Gold Endomotor",
+    "averageRating": 0,
+    "totalReviews": 0,
+    "totalSold": 0,
+    "views": 0,
+    "searchKeywords": [
+      "endomotor",
+      "endo",
+      "woodpecker",
+      "gold"
+    ],
+    "vendorData": {
+      "sourceUrl": "https://dentacarts.com/products/woodpecker-endo-gold-endomotor",
+      "lastScraped": "2025-10-21T17:58:05.097344+00:00",
+      "scrapedData": {}
+    },
+    "variants": [],
+    "isBundle": false,
+    "bundleItems": [],
+    "createdAt": "2025-10-21T17:58:05.097344+00:00",
+    "updatedAt": "2025-10-21T17:58:05.097344+00:00",
+    "lastScrapedAt": "2025-10-21T17:58:05.097344+00:00"
+  },
+  {
+    "name": "Woodpecker Free Scan Image Plate Scanner",
+    "nameAr": "",
+    "description": "Woodpecker Free Scan Image Plate Scanner",
+    "shortDescription": "",
+    "price": 190000.0,
+    "originalPrice": null,
+    "currency": "EGP",
+    "sku": "2842023615534",
+    "vendorSku": "2842023615534",
+    "brand": "Woodpecker",
+    "model": "",
+    "categoryId": "categories/uncategorized",
+    "vendorId": "vendors/Kandil",
+    "stock": 10,
+    "minStockLevel": 5,
+    "maxStockLevel": 1000,
+    "images": [
+      {
+        "url": "https://s3.eu-west-1.amazonaws.com/drive.dentacarts.com/public/product_image/8170/817043.jpg",
+        "alt": "Woodpecker Free Scan Image Plate Scanner",
+        "isPrimary": true,
+        "order": 0
+      }
+    ],
+    "specifications": {},
+    "features": [],
+    "tags": [],
+    "weight": {
+      "value": null,
+      "unit": "g"
+    },
+    "dimensions": {
+      "length": null,
+      "width": null,
+      "height": null,
+      "unit": "cm"
+    },
+    "isActive": true,
+    "isFeatured": false,
+    "isOnSale": false,
+    "salePercentage": null,
+    "slug": "woodpecker-free-scan-image-plate-scanner",
+    "metaTitle": "Woodpecker Free Scan Image Plate Scanner",
+    "metaDescription": "Woodpecker Free Scan Image Plate Scanner",
+    "averageRating": 0,
+    "totalReviews": 0,
+    "totalSold": 0,
+    "views": 0,
+    "searchKeywords": [
+      "image",
+      "plate",
+      "free",
+      "scanner",
+      "scan",
+      "woodpecker"
+    ],
+    "vendorData": {
+      "sourceUrl": "https://dentacarts.com/products/woodpecker-free-scan-image-plate-scanner",
+      "lastScraped": "2025-10-21T17:58:05.097344+00:00",
+      "scrapedData": {}
+    },
+    "variants": [],
+    "isBundle": false,
+    "bundleItems": [],
+    "createdAt": "2025-10-21T17:58:05.097344+00:00",
+    "updatedAt": "2025-10-21T17:58:05.097344+00:00",
+    "lastScrapedAt": "2025-10-21T17:58:05.097344+00:00"
+  },
+  {
+    "name": "Woodpecker Apex Locator Woodpex lll Blue",
+    "nameAr": "",
+    "description": "Woodpecker Apex Locator Woodpex lll Blue",
+    "shortDescription": "",
+    "price": 7950.0,
+    "originalPrice": null,
+    "currency": "EGP",
+    "sku": "561579375444555",
+    "vendorSku": "561579375444555",
+    "brand": "Woodpecker",
+    "model": "",
+    "categoryId": "categories/uncategorized",
+    "vendorId": "vendors/Kandil",
+    "stock": 10,
+    "minStockLevel": 5,
+    "maxStockLevel": 1000,
+    "images": [
+      {
+        "url": "https://s3.eu-west-1.amazonaws.com/drive.dentacarts.com/public/product_image/8294/829440.png",
+        "alt": "Woodpecker Apex Locator Woodpex lll Blue",
+        "isPrimary": true,
+        "order": 0
+      }
+    ],
+    "specifications": {},
+    "features": [],
+    "tags": [],
+    "weight": {
+      "value": null,
+      "unit": "g"
+    },
+    "dimensions": {
+      "length": null,
+      "width": null,
+      "height": null,
+      "unit": "cm"
+    },
+    "isActive": true,
+    "isFeatured": false,
+    "isOnSale": false,
+    "salePercentage": null,
+    "slug": "woodpecker-apex-locator-woodpex-lll-blue",
+    "metaTitle": "Woodpecker Apex Locator Woodpex lll Blue",
+    "metaDescription": "Woodpecker Apex Locator Woodpex lll Blue",
+    "averageRating": 0,
+    "totalReviews": 0,
+    "totalSold": 0,
+    "views": 0,
+    "searchKeywords": [
+      "locator",
+      "lll",
+      "apex",
+      "woodpex",
+      "blue",
+      "woodpecker"
+    ],
+    "vendorData": {
+      "sourceUrl": "https://dentacarts.com/products/woodpecker-apex-locator-woodpex-lll-blue",
+      "lastScraped": "2025-10-21T17:58:05.097344+00:00",
+      "scrapedData": {}
+    },
+    "variants": [],
+    "isBundle": false,
+    "bundleItems": [],
+    "createdAt": "2025-10-21T17:58:05.097344+00:00",
+    "updatedAt": "2025-10-21T17:58:05.097344+00:00",
+    "lastScrapedAt": "2025-10-21T17:58:05.097344+00:00"
+  },
+  {
+    "name": "Woodpecker High Pressure Plasma Air Purifier Q3",
+    "nameAr": "",
+    "description": "Woodpecker High Pressure Plasma Air Purifier Q3",
+    "shortDescription": "",
+    "price": 20000.0,
+    "originalPrice": null,
+    "currency": "EGP",
+    "sku": "38126671238562",
+    "vendorSku": "38126671238562",
+    "brand": "Woodpecker",
+    "model": "",
+    "categoryId": "categories/uncategorized",
+    "vendorId": "vendors/Kandil",
+    "stock": 10,
+    "minStockLevel": 5,
+    "maxStockLevel": 1000,
+    "images": [
+      {
+        "url": "https://s3.eu-west-1.amazonaws.com/drive.dentacarts.com/public/products/253/25387_1.png",
+        "alt": "Woodpecker High Pressure Plasma Air Purifier Q3",
+        "isPrimary": true,
+        "order": 0
+      }
+    ],
+    "specifications": {},
+    "features": [],
+    "tags": [],
+    "weight": {
+      "value": null,
+      "unit": "g"
+    },
+    "dimensions": {
+      "length": null,
+      "width": null,
+      "height": null,
+      "unit": "cm"
+    },
+    "isActive": true,
+    "isFeatured": false,
+    "isOnSale": false,
+    "salePercentage": null,
+    "slug": "woodpecker-high-pressure-plasma-air-purifier-q3",
+    "metaTitle": "Woodpecker High Pressure Plasma Air Purifier Q3",
+    "metaDescription": "Woodpecker High Pressure Plasma Air Purifier Q3",
+    "averageRating": 0,
+    "totalReviews": 0,
+    "totalSold": 0,
+    "views": 0,
+    "searchKeywords": [
+      "plasma",
+      "q3",
+      "pressure",
+      "high",
+      "purifier",
+      "air",
+      "woodpecker"
+    ],
+    "vendorData": {
+      "sourceUrl": "https://dentacarts.com/products/woodpecker-high-pressure-plasma-air-purifier-q3",
+      "lastScraped": "2025-10-21T17:58:05.097344+00:00",
+      "scrapedData": {}
+    },
+    "variants": [],
+    "isBundle": false,
+    "bundleItems": [],
+    "createdAt": "2025-10-21T17:58:05.097344+00:00",
+    "updatedAt": "2025-10-21T17:58:05.097344+00:00",
+    "lastScrapedAt": "2025-10-21T17:58:05.097344+00:00"
+  },
+  {
+    "name": "Yabangbang HW-5L led Optic Scaler Handpiece",
+    "nameAr": "",
+    "description": "Yabangbang HW-5L led Optic Scaler Handpiece",
+    "shortDescription": "",
+    "price": 640.0,
+    "originalPrice": null,
+    "currency": "SAR",
+    "sku": "59194133080136",
+    "vendorSku": "59194133080136",
+    "brand": "Yabangbang",
+    "model": "",
+    "categoryId": "categories/uncategorized",
+    "vendorId": "vendors/Kandil",
+    "stock": 10,
+    "minStockLevel": 5,
+    "maxStockLevel": 1000,
+    "images": [
+      {
+        "url": "https://s3.eu-west-1.amazonaws.com/drive.dentacarts.com/public/product_image/8383/838365.jpg",
+        "alt": "Yabangbang HW-5L led Optic Scaler Handpiece",
+        "isPrimary": true,
+        "order": 0
+      }
+    ],
+    "specifications": {},
+    "features": [],
+    "tags": [],
+    "weight": {
+      "value": null,
+      "unit": "g"
+    },
+    "dimensions": {
+      "length": null,
+      "width": null,
+      "height": null,
+      "unit": "cm"
+    },
+    "isActive": true,
+    "isFeatured": false,
+    "isOnSale": false,
+    "salePercentage": null,
+    "slug": "yabangbang-hw-5l-led-optic-scaler-handpiece",
+    "metaTitle": "Yabangbang HW-5L led Optic Scaler Handpiece",
+    "metaDescription": "Yabangbang HW-5L led Optic Scaler Handpiece",
+    "averageRating": 0,
+    "totalReviews": 0,
+    "totalSold": 0,
+    "views": 0,
+    "searchKeywords": [
+      "5l",
+      "hw",
+      "scaler",
+      "optic",
+      "yabangbang",
+      "led",
+      "handpiece"
+    ],
+    "vendorData": {
+      "sourceUrl": "https://dentacarts.com/products/woodpecker-hw-5l-optic-handpiece",
+      "lastScraped": "2025-10-21T17:58:05.097344+00:00",
+      "scrapedData": {}
+    },
+    "variants": [],
+    "isBundle": false,
+    "bundleItems": [],
+    "createdAt": "2025-10-21T17:58:05.097344+00:00",
+    "updatedAt": "2025-10-21T17:58:05.097344+00:00",
+    "lastScrapedAt": "2025-10-21T17:58:05.097344+00:00"
+  },
+  {
+    "name": "Woodpecker i-Scan Phosphorus Plate",
+    "nameAr": "",
+    "description": "Woodpecker i-Scan Phosphorus Plate",
+    "shortDescription": "",
+    "price": 3200.0,
+    "originalPrice": null,
+    "currency": "EGP",
+    "sku": "9666866115491",
+    "vendorSku": "9666866115491",
+    "brand": "Woodpecker",
+    "model": "",
+    "categoryId": "categories/uncategorized",
+    "vendorId": "vendors/Kandil",
+    "stock": 10,
+    "minStockLevel": 5,
+    "maxStockLevel": 1000,
+    "images": [
+      {
+        "url": "https://s3.eu-west-1.amazonaws.com/drive.dentacarts.com/public/products/436/43688_1.jpg",
+        "alt": "Woodpecker i-Scan Phosphorus Plate",
+        "isPrimary": true,
+        "order": 0
+      }
+    ],
+    "specifications": {},
+    "features": [],
+    "tags": [],
+    "weight": {
+      "value": null,
+      "unit": "g"
+    },
+    "dimensions": {
+      "length": null,
+      "width": null,
+      "height": null,
+      "unit": "cm"
+    },
+    "isActive": true,
+    "isFeatured": false,
+    "isOnSale": false,
+    "salePercentage": null,
+    "slug": "woodpecker-i-scan-phosphorus-plate",
+    "metaTitle": "Woodpecker i-Scan Phosphorus Plate",
+    "metaDescription": "Woodpecker i-Scan Phosphorus Plate",
+    "averageRating": 0,
+    "totalReviews": 0,
+    "totalSold": 0,
+    "views": 0,
+    "searchKeywords": [
+      "plate",
+      "phosphorus",
+      "i",
+      "scan",
+      "woodpecker"
+    ],
+    "vendorData": {
+      "sourceUrl": "https://dentacarts.com/products/woodpecker-i-scan-phosphorus-plate_1",
+      "lastScraped": "2025-10-21T17:58:05.097344+00:00",
+      "scrapedData": {}
+    },
+    "variants": [],
+    "isBundle": false,
+    "bundleItems": [],
+    "createdAt": "2025-10-21T17:58:05.097344+00:00",
+    "updatedAt": "2025-10-21T17:58:05.097344+00:00",
+    "lastScrapedAt": "2025-10-21T17:58:05.097344+00:00"
+  },
+  {
+    "name": "Woodpecker iLED Max Light Cure",
+    "nameAr": "",
+    "description": "Woodpecker iLED Max Light Cure",
+    "shortDescription": "",
+    "price": 5700.0,
+    "originalPrice": null,
+    "currency": "EGP",
+    "sku": "87076934785601",
+    "vendorSku": "87076934785601",
+    "brand": "Woodpecker",
+    "model": "",
+    "categoryId": "categories/uncategorized",
+    "vendorId": "vendors/Kandil",
+    "stock": 10,
+    "minStockLevel": 5,
+    "maxStockLevel": 1000,
+    "images": [
+      {
+        "url": "https://s3.eu-west-1.amazonaws.com/drive.dentacarts.com/public/products/353/35350_8686.jpg",
+        "alt": "Woodpecker iLED Max Light Cure",
+        "isPrimary": true,
+        "order": 0
+      }
+    ],
+    "specifications": {},
+    "features": [],
+    "tags": [],
+    "weight": {
+      "value": null,
+      "unit": "g"
+    },
+    "dimensions": {
+      "length": null,
+      "width": null,
+      "height": null,
+      "unit": "cm"
+    },
+    "isActive": true,
+    "isFeatured": false,
+    "isOnSale": false,
+    "salePercentage": null,
+    "slug": "woodpecker-iled-max-light-cure",
+    "metaTitle": "Woodpecker iLED Max Light Cure",
+    "metaDescription": "Woodpecker iLED Max Light Cure",
+    "averageRating": 0,
+    "totalReviews": 0,
+    "totalSold": 0,
+    "views": 0,
+    "searchKeywords": [
+      "iled",
+      "max",
+      "cure",
+      "light",
+      "woodpecker"
+    ],
+    "vendorData": {
+      "sourceUrl": "https://dentacarts.com/products/woodpecker-iled-max-light-cure",
+      "lastScraped": "2025-10-21T17:58:05.097344+00:00",
+      "scrapedData": {}
+    },
+    "variants": [],
+    "isBundle": false,
+    "bundleItems": [],
+    "createdAt": "2025-10-21T17:58:05.097344+00:00",
+    "updatedAt": "2025-10-21T17:58:05.097344+00:00",
+    "lastScrapedAt": "2025-10-21T17:58:05.097344+00:00"
+  },
+  {
+    "name": "Woodpecker i-Scan Protective Barrier Envelope",
+    "nameAr": "",
+    "description": "Woodpecker i-Scan Protective Barrier Envelope",
+    "shortDescription": "",
+    "price": 740.0,
+    "originalPrice": null,
+    "currency": "EGP",
+    "sku": "101764962258768",
+    "vendorSku": "101764962258768",
+    "brand": "Woodpecker",
+    "model": "",
+    "categoryId": "categories/uncategorized",
+    "vendorId": "vendors/Kandil",
+    "stock": 0,
+    "minStockLevel": 5,
+    "maxStockLevel": 1000,
+    "images": [
+      {
+        "url": "https://s3.eu-west-1.amazonaws.com/drive.dentacarts.com/public/products/436/43692_1.jpg",
+        "alt": "Woodpecker i-Scan Protective Barrier Envelope",
+        "isPrimary": true,
+        "order": 0
+      }
+    ],
+    "specifications": {},
+    "features": [],
+    "tags": [],
+    "weight": {
+      "value": null,
+      "unit": "g"
+    },
+    "dimensions": {
+      "length": null,
+      "width": null,
+      "height": null,
+      "unit": "cm"
+    },
+    "isActive": true,
+    "isFeatured": false,
+    "isOnSale": false,
+    "salePercentage": null,
+    "slug": "woodpecker-i-scan-protective-barrier-envelope",
+    "metaTitle": "Woodpecker i-Scan Protective Barrier Envelope",
+    "metaDescription": "Woodpecker i-Scan Protective Barrier Envelope",
+    "averageRating": 0,
+    "totalReviews": 0,
+    "totalSold": 0,
+    "views": 0,
+    "searchKeywords": [
+      "scan",
+      "protective",
+      "i",
+      "envelope",
+      "barrier",
+      "woodpecker"
+    ],
+    "vendorData": {
+      "sourceUrl": "https://dentacarts.com/products/woodpecker-i-scan-protective-barrier-envelope",
+      "lastScraped": "2025-10-21T17:58:05.097344+00:00",
+      "scrapedData": {}
+    },
+    "variants": [],
+    "isBundle": false,
+    "bundleItems": [],
+    "createdAt": "2025-10-21T17:58:05.097344+00:00",
+    "updatedAt": "2025-10-21T17:58:05.097344+00:00",
+    "lastScrapedAt": "2025-10-21T17:58:05.097344+00:00"
+  },
+  {
+    "name": "Woodpecker Infrared Thermometer",
+    "nameAr": "",
+    "description": "Woodpecker Infrared Thermometer",
+    "shortDescription": "",
+    "price": 1200.0,
+    "originalPrice": null,
+    "currency": "EGP",
+    "sku": "519667988068814",
+    "vendorSku": "519667988068814",
+    "brand": "Woodpecker",
+    "model": "",
+    "categoryId": "categories/uncategorized",
+    "vendorId": "vendors/Kandil",
+    "stock": 10,
+    "minStockLevel": 5,
+    "maxStockLevel": 1000,
+    "images": [
+      {
+        "url": "https://s3.eu-west-1.amazonaws.com/drive.dentacarts.com/public/products/436/43686_1.png",
+        "alt": "Woodpecker Infrared Thermometer",
+        "isPrimary": true,
+        "order": 0
+      }
+    ],
+    "specifications": {},
+    "features": [],
+    "tags": [],
+    "weight": {
+      "value": null,
+      "unit": "g"
+    },
+    "dimensions": {
+      "length": null,
+      "width": null,
+      "height": null,
+      "unit": "cm"
+    },
+    "isActive": true,
+    "isFeatured": false,
+    "isOnSale": false,
+    "salePercentage": null,
+    "slug": "woodpecker-infrared-thermometer",
+    "metaTitle": "Woodpecker Infrared Thermometer",
+    "metaDescription": "Woodpecker Infrared Thermometer",
+    "averageRating": 0,
+    "totalReviews": 0,
+    "totalSold": 0,
+    "views": 0,
+    "searchKeywords": [
+      "thermometer",
+      "woodpecker",
+      "infrared"
+    ],
+    "vendorData": {
+      "sourceUrl": "https://dentacarts.com/products/woodpecker-infrared-thermometer",
+      "lastScraped": "2025-10-21T17:58:05.097344+00:00",
+      "scrapedData": {}
+    },
+    "variants": [],
+    "isBundle": false,
+    "bundleItems": [],
+    "createdAt": "2025-10-21T17:58:05.097344+00:00",
+    "updatedAt": "2025-10-21T17:58:05.097344+00:00",
+    "lastScrapedAt": "2025-10-21T17:58:05.097344+00:00"
+  },
+  {
+    "name": "Woodpecker King Kong High Speed Handpiece",
+    "nameAr": "",
+    "description": "Woodpecker King Kong High Speed Handpiece",
+    "shortDescription": "",
+    "price": 4750.0,
+    "originalPrice": null,
+    "currency": "EGP",
+    "sku": "5052023615465",
+    "vendorSku": "5052023615465",
+    "brand": "Woodpecker",
+    "model": "",
+    "categoryId": "categories/uncategorized",
+    "vendorId": "vendors/Kandil",
+    "stock": 10,
+    "minStockLevel": 5,
+    "maxStockLevel": 1000,
+    "images": [
+      {
+        "url": "https://s3.eu-west-1.amazonaws.com/drive.dentacarts.com/public/product_image/8496/849627.jpg",
+        "alt": "Woodpecker King Kong High Speed Handpiece",
+        "isPrimary": true,
+        "order": 0
+      }
+    ],
+    "specifications": {},
+    "features": [],
+    "tags": [],
+    "weight": {
+      "value": null,
+      "unit": "g"
+    },
+    "dimensions": {
+      "length": null,
+      "width": null,
+      "height": null,
+      "unit": "cm"
+    },
+    "isActive": true,
+    "isFeatured": false,
+    "isOnSale": false,
+    "salePercentage": null,
+    "slug": "woodpecker-king-kong-high-speed-handpiece",
+    "metaTitle": "Woodpecker King Kong High Speed Handpiece",
+    "metaDescription": "Woodpecker King Kong High Speed Handpiece",
+    "averageRating": 0,
+    "totalReviews": 0,
+    "totalSold": 0,
+    "views": 0,
+    "searchKeywords": [
+      "speed",
+      "kong",
+      "king",
+      "high",
+      "woodpecker",
+      "handpiece"
+    ],
+    "vendorData": {
+      "sourceUrl": "https://dentacarts.com/products/woodpecker-kingkong-drop-resistant-high-speed-handpiece",
+      "lastScraped": "2025-10-21T17:58:05.097344+00:00",
+      "scrapedData": {}
+    },
+    "variants": [],
+    "isBundle": false,
+    "bundleItems": [],
+    "createdAt": "2025-10-21T17:58:05.097344+00:00",
+    "updatedAt": "2025-10-21T17:58:05.097344+00:00",
+    "lastScrapedAt": "2025-10-21T17:58:05.097344+00:00"
+  },
+  {
+    "name": "Woodpecker Light Cure I Led",
+    "nameAr": "",
+    "description": "Super capacity Li-ion battery, full charge can be used more than 400 times under 10s working time mode. wavelength (420nm~480nm) , 1 second for 2mm in, intensity up to 2300mw/ cm².shop now from DC",
+    "shortDescription": "",
+    "price": 4200.0,
+    "originalPrice": null,
+    "currency": "EGP",
+    "sku": "112030355611701",
+    "vendorSku": "112030355611701",
+    "brand": "Woodpecker",
+    "model": "",
+    "categoryId": "categories/uncategorized",
+    "vendorId": "vendors/Kandil",
+    "stock": 10,
+    "minStockLevel": 5,
+    "maxStockLevel": 1000,
+    "images": [
+      {
+        "url": "https://s3.eu-west-1.amazonaws.com/drive.dentacarts.com/public/products/100/10052_1.jpg",
+        "alt": "Woodpecker Light Cure I Led",
+        "isPrimary": true,
+        "order": 0
+      }
+    ],
+    "specifications": {},
+    "features": [],
+    "tags": [],
+    "weight": {
+      "value": null,
+      "unit": "g"
+    },
+    "dimensions": {
+      "length": null,
+      "width": null,
+      "height": null,
+      "unit": "cm"
+    },
+    "isActive": true,
+    "isFeatured": false,
+    "isOnSale": false,
+    "salePercentage": null,
+    "slug": "woodpecker-light-cure-i-led",
+    "metaTitle": "Woodpecker Light Cure I Led",
+    "metaDescription": "Super capacity Li-ion battery, full charge can be used more than 400 times under 10s working time mode. wavelength (420nm~480nm) , 1 second for 2mm in, intensit",
+    "averageRating": 0,
+    "totalReviews": 0,
+    "totalSold": 0,
+    "views": 0,
+    "searchKeywords": [
+      "light",
+      "cure",
+      "i",
+      "led",
+      "woodpecker"
+    ],
+    "vendorData": {
+      "sourceUrl": "https://dentacarts.com/products/woodpecker-light-cure-i-led_1",
+      "lastScraped": "2025-10-21T17:58:05.097344+00:00",
+      "scrapedData": {}
+    },
+    "variants": [],
+    "isBundle": false,
+    "bundleItems": [],
+    "createdAt": "2025-10-21T17:58:05.097344+00:00",
+    "updatedAt": "2025-10-21T17:58:05.097344+00:00",
+    "lastScrapedAt": "2025-10-21T17:58:05.097344+00:00"
+  },
+  {
+    "name": "Woodpecker mini ray x-ray",
+    "nameAr": "",
+    "description": "Woodpecker mini ray x-ray",
+    "shortDescription": "",
+    "price": 39500.0,
+    "originalPrice": null,
+    "currency": "EGP",
+    "sku": "99720231112419",
+    "vendorSku": "99720231112419",
+    "brand": "Woodpecker",
+    "model": "",
+    "categoryId": "categories/uncategorized",
+    "vendorId": "vendors/Kandil",
+    "stock": 10,
+    "minStockLevel": 5,
+    "maxStockLevel": 1000,
+    "images": [
+      {
+        "url": "https://s3.eu-west-1.amazonaws.com/drive.dentacarts.com/public/product_image/8276/827669.jpg",
+        "alt": "Woodpecker mini ray x-ray",
+        "isPrimary": true,
+        "order": 0
+      }
+    ],
+    "specifications": {},
+    "features": [],
+    "tags": [],
+    "weight": {
+      "value": null,
+      "unit": "g"
+    },
+    "dimensions": {
+      "length": null,
+      "width": null,
+      "height": null,
+      "unit": "cm"
+    },
+    "isActive": true,
+    "isFeatured": false,
+    "isOnSale": false,
+    "salePercentage": null,
+    "slug": "woodpecker-mini-ray-x-ray",
+    "metaTitle": "Woodpecker mini ray x-ray",
+    "metaDescription": "Woodpecker mini ray x-ray",
+    "averageRating": 0,
+    "totalReviews": 0,
+    "totalSold": 0,
+    "views": 0,
+    "searchKeywords": [
+      "ray",
+      "x",
+      "woodpecker",
+      "mini"
+    ],
+    "vendorData": {
+      "sourceUrl": "https://dentacarts.com/products/woodpecker-mini-ray-x-ray",
+      "lastScraped": "2025-10-21T17:58:05.097344+00:00",
+      "scrapedData": {}
+    },
+    "variants": [],
+    "isBundle": false,
+    "bundleItems": [],
+    "createdAt": "2025-10-21T17:58:05.097344+00:00",
+    "updatedAt": "2025-10-21T17:58:05.097344+00:00",
+    "lastScrapedAt": "2025-10-21T17:58:05.097344+00:00"
+  },
+  {
+    "name": "Woodpecker Light Curing LED F",
+    "nameAr": "",
+    "description": "Woodpecker Light Curing LED F",
+    "shortDescription": "",
+    "price": 5900.0,
+    "originalPrice": null,
+    "currency": "EGP",
+    "sku": "692182154119005",
+    "vendorSku": "692182154119005",
+    "brand": "Woodpecker",
+    "model": "",
+    "categoryId": "categories/uncategorized",
+    "vendorId": "vendors/Kandil",
+    "stock": 10,
+    "minStockLevel": 5,
+    "maxStockLevel": 1000,
+    "images": [
+      {
+        "url": "https://s3.eu-west-1.amazonaws.com/drive.dentacarts.com/public/product_image/8220/822079.jpg",
+        "alt": "Woodpecker Light Curing LED F",
+        "isPrimary": true,
+        "order": 0
+      }
+    ],
+    "specifications": {},
+    "features": [],
+    "tags": [],
+    "weight": {
+      "value": null,
+      "unit": "g"
+    },
+    "dimensions": {
+      "length": null,
+      "width": null,
+      "height": null,
+      "unit": "cm"
+    },
+    "isActive": true,
+    "isFeatured": false,
+    "isOnSale": false,
+    "salePercentage": null,
+    "slug": "woodpecker-light-curing-led-f",
+    "metaTitle": "Woodpecker Light Curing LED F",
+    "metaDescription": "Woodpecker Light Curing LED F",
+    "averageRating": 0,
+    "totalReviews": 0,
+    "totalSold": 0,
+    "views": 0,
+    "searchKeywords": [
+      "curing",
+      "f",
+      "light",
+      "led",
+      "woodpecker"
+    ],
+    "vendorData": {
+      "sourceUrl": "https://dentacarts.com/products/woodpecker-light-curing-led.f-1600w-1800w%C2%A0",
+      "lastScraped": "2025-10-21T17:58:05.277222+00:00",
+      "scrapedData": {}
+    },
+    "variants": [],
+    "isBundle": false,
+    "bundleItems": [],
+    "createdAt": "2025-10-21T17:58:05.277222+00:00",
+    "updatedAt": "2025-10-21T17:58:05.277222+00:00",
+    "lastScrapedAt": "2025-10-21T17:58:05.277222+00:00"
+  },
+  {
+    "name": "Woodpecker Model Ai Endo Motor - Dr Yoshi Edition",
+    "nameAr": "",
+    "description": "Woodpecker Model Ai Endo Motor - Dr Yoshi Edition",
+    "shortDescription": "",
+    "price": 60000.0,
+    "originalPrice": null,
+    "currency": "EGP",
+    "sku": "61740466182415",
+    "vendorSku": "61740466182415",
+    "brand": "Woodpecker",
+    "model": "",
+    "categoryId": "categories/uncategorized",
+    "vendorId": "vendors/Kandil",
+    "stock": 10,
+    "minStockLevel": 5,
+    "maxStockLevel": 1000,
+    "images": [
+      {
+        "url": "https://s3.eu-west-1.amazonaws.com/drive.dentacarts.com/public/products/436/43652_1.jpg",
+        "alt": "Woodpecker Model Ai Endo Motor - Dr Yoshi Edition",
+        "isPrimary": true,
+        "order": 0
+      }
+    ],
+    "specifications": {},
+    "features": [],
+    "tags": [],
+    "weight": {
+      "value": null,
+      "unit": "g"
+    },
+    "dimensions": {
+      "length": null,
+      "width": null,
+      "height": null,
+      "unit": "cm"
+    },
+    "isActive": true,
+    "isFeatured": false,
+    "isOnSale": false,
+    "salePercentage": null,
+    "slug": "woodpecker-model-ai-endo-motor-dr-yoshi-edition",
+    "metaTitle": "Woodpecker Model Ai Endo Motor - Dr Yoshi Edition",
+    "metaDescription": "Woodpecker Model Ai Endo Motor - Dr Yoshi Edition",
+    "averageRating": 0,
+    "totalReviews": 0,
+    "totalSold": 0,
+    "views": 0,
+    "searchKeywords": [
+      "model",
+      "endo",
+      "motor",
+      "dr",
+      "yoshi",
+      "edition",
+      "ai",
+      "woodpecker"
+    ],
+    "vendorData": {
+      "sourceUrl": "https://dentacarts.com/products/woodpecker-model-ai-endo-motor---dr-yoshi-edition",
+      "lastScraped": "2025-10-21T17:58:05.278222+00:00",
+      "scrapedData": {}
+    },
+    "variants": [],
+    "isBundle": false,
+    "bundleItems": [],
+    "createdAt": "2025-10-21T17:58:05.278222+00:00",
+    "updatedAt": "2025-10-21T17:58:05.278222+00:00",
+    "lastScrapedAt": "2025-10-21T17:58:05.278222+00:00"
+  },
+  {
+    "name": "Woodpecker Motopex",
+    "nameAr": "",
+    "description": "Woodpecker Motopex",
+    "shortDescription": "",
+    "price": 2500.0,
+    "originalPrice": null,
+    "currency": "SAR",
+    "sku": "861842200077089",
+    "vendorSku": "861842200077089",
+    "brand": "Woodpecker",
+    "model": "",
+    "categoryId": "categories/uncategorized",
+    "vendorId": "vendors/Kandil",
+    "stock": 10,
+    "minStockLevel": 5,
+    "maxStockLevel": 1000,
+    "images": [
+      {
+        "url": "https://s3.eu-west-1.amazonaws.com/drive.dentacarts.com/public/products/332/33290_1.jpg",
+        "alt": "Woodpecker Motopex",
+        "isPrimary": true,
+        "order": 0
+      }
+    ],
+    "specifications": {},
+    "features": [],
+    "tags": [],
+    "weight": {
+      "value": null,
+      "unit": "g"
+    },
+    "dimensions": {
+      "length": null,
+      "width": null,
+      "height": null,
+      "unit": "cm"
+    },
+    "isActive": true,
+    "isFeatured": false,
+    "isOnSale": false,
+    "salePercentage": null,
+    "slug": "woodpecker-motopex",
+    "metaTitle": "Woodpecker Motopex",
+    "metaDescription": "Woodpecker Motopex",
+    "averageRating": 0,
+    "totalReviews": 0,
+    "totalSold": 0,
+    "views": 0,
+    "searchKeywords": [
+      "motopex",
+      "woodpecker"
+    ],
+    "vendorData": {
+      "sourceUrl": "https://dentacarts.com/products/woodpecker-motopex",
+      "lastScraped": "2025-10-21T17:58:05.278222+00:00",
+      "scrapedData": {}
+    },
+    "variants": [],
+    "isBundle": false,
+    "bundleItems": [],
+    "createdAt": "2025-10-21T17:58:05.278222+00:00",
+    "updatedAt": "2025-10-21T17:58:05.278222+00:00",
+    "lastScrapedAt": "2025-10-21T17:58:05.278222+00:00"
+  },
+  {
+    "name": "Woodpecker Obturation Gun pen",
+    "nameAr": "",
+    "description": "Woodpecker Obturation Gun pen",
+    "shortDescription": "",
+    "price": 39000.0,
+    "originalPrice": null,
+    "currency": "EGP",
+    "sku": "176498619251251",
+    "vendorSku": "176498619251251",
+    "brand": "Woodpecker",
+    "model": "",
+    "categoryId": "categories/uncategorized",
+    "vendorId": "vendors/Kandil",
+    "stock": 10,
+    "minStockLevel": 5,
+    "maxStockLevel": 1000,
+    "images": [
+      {
+        "url": "https://s3.eu-west-1.amazonaws.com/drive.dentacarts.com/public/product_image/8294/829442.png",
+        "alt": "Woodpecker Obturation Gun pen",
+        "isPrimary": true,
+        "order": 0
+      }
+    ],
+    "specifications": {},
+    "features": [],
+    "tags": [],
+    "weight": {
+      "value": null,
+      "unit": "g"
+    },
+    "dimensions": {
+      "length": null,
+      "width": null,
+      "height": null,
+      "unit": "cm"
+    },
+    "isActive": true,
+    "isFeatured": false,
+    "isOnSale": false,
+    "salePercentage": null,
+    "slug": "woodpecker-obturation-gun-pen",
+    "metaTitle": "Woodpecker Obturation Gun pen",
+    "metaDescription": "Woodpecker Obturation Gun pen",
+    "averageRating": 0,
+    "totalReviews": 0,
+    "totalSold": 0,
+    "views": 0,
+    "searchKeywords": [
+      "pen",
+      "obturation",
+      "gun",
+      "woodpecker"
+    ],
+    "vendorData": {
+      "sourceUrl": "https://dentacarts.com/products/woodpecker-obturation-system_2",
+      "lastScraped": "2025-10-21T17:58:05.278222+00:00",
+      "scrapedData": {}
+    },
+    "variants": [],
+    "isBundle": false,
+    "bundleItems": [],
+    "createdAt": "2025-10-21T17:58:05.278222+00:00",
+    "updatedAt": "2025-10-21T17:58:05.278222+00:00",
+    "lastScrapedAt": "2025-10-21T17:58:05.278222+00:00"
+  },
+  {
+    "name": "Woodpecker UDS-A LED Ultrasonic Scaler",
+    "nameAr": "",
+    "description": "Woodpecker UDS-A LED Ultrasonic Scaler",
+    "shortDescription": "",
+    "price": 7350.0,
+    "originalPrice": null,
+    "currency": "EGP",
+    "sku": "802145858826107",
+    "vendorSku": "802145858826107",
+    "brand": "Woodpecker",
+    "model": "",
+    "categoryId": "categories/uncategorized",
+    "vendorId": "vendors/Kandil",
+    "stock": 10,
+    "minStockLevel": 5,
+    "maxStockLevel": 1000,
+    "images": [
+      {
+        "url": "https://s3.eu-west-1.amazonaws.com/drive.dentacarts.com/public/product_image/8224/822457.jpg",
+        "alt": "Woodpecker UDS-A LED Ultrasonic Scaler",
+        "isPrimary": true,
+        "order": 0
+      }
+    ],
+    "specifications": {},
+    "features": [],
+    "tags": [],
+    "weight": {
+      "value": null,
+      "unit": "g"
+    },
+    "dimensions": {
+      "length": null,
+      "width": null,
+      "height": null,
+      "unit": "cm"
+    },
+    "isActive": true,
+    "isFeatured": false,
+    "isOnSale": false,
+    "salePercentage": null,
+    "slug": "woodpecker-uds-a-led-ultrasonic-scaler",
+    "metaTitle": "Woodpecker UDS-A LED Ultrasonic Scaler",
+    "metaDescription": "Woodpecker UDS-A LED Ultrasonic Scaler",
+    "averageRating": 0,
+    "totalReviews": 0,
+    "totalSold": 0,
+    "views": 0,
+    "searchKeywords": [
+      "uds",
+      "ultrasonic",
+      "scaler",
+      "a",
+      "led",
+      "woodpecker"
+    ],
+    "vendorData": {
+      "sourceUrl": "https://dentacarts.com/products/woodpecker-uds-a-led",
+      "lastScraped": "2025-10-21T17:58:05.278222+00:00",
+      "scrapedData": {}
+    },
+    "variants": [],
+    "isBundle": false,
+    "bundleItems": [],
+    "createdAt": "2025-10-21T17:58:05.278222+00:00",
+    "updatedAt": "2025-10-21T17:58:05.278222+00:00",
+    "lastScrapedAt": "2025-10-21T17:58:05.278222+00:00"
+  },
+  {
+    "name": "Woodpecker UDS-E LED Ultrasonic Scaler",
+    "nameAr": "",
+    "description": "Woodpecker UDS-E LED Ultrasonic Scaler",
+    "shortDescription": "",
+    "price": 8500.0,
+    "originalPrice": null,
+    "currency": "EGP",
+    "sku": "269964922115299",
+    "vendorSku": "269964922115299",
+    "brand": "Woodpecker",
+    "model": "",
+    "categoryId": "categories/uncategorized",
+    "vendorId": "vendors/Kandil",
+    "stock": 10,
+    "minStockLevel": 5,
+    "maxStockLevel": 1000,
+    "images": [
+      {
+        "url": "https://s3.eu-west-1.amazonaws.com/drive.dentacarts.com/public/products/329/32961_1.jpg",
+        "alt": "Woodpecker UDS-E LED Ultrasonic Scaler",
+        "isPrimary": true,
+        "order": 0
+      }
+    ],
+    "specifications": {},
+    "features": [],
+    "tags": [],
+    "weight": {
+      "value": null,
+      "unit": "g"
+    },
+    "dimensions": {
+      "length": null,
+      "width": null,
+      "height": null,
+      "unit": "cm"
+    },
+    "isActive": true,
+    "isFeatured": false,
+    "isOnSale": false,
+    "salePercentage": null,
+    "slug": "woodpecker-uds-e-led-ultrasonic-scaler",
+    "metaTitle": "Woodpecker UDS-E LED Ultrasonic Scaler",
+    "metaDescription": "Woodpecker UDS-E LED Ultrasonic Scaler",
+    "averageRating": 0,
+    "totalReviews": 0,
+    "totalSold": 0,
+    "views": 0,
+    "searchKeywords": [
+      "e",
+      "uds",
+      "ultrasonic",
+      "scaler",
+      "led",
+      "woodpecker"
+    ],
+    "vendorData": {
+      "sourceUrl": "https://dentacarts.com/products/woodpecker-uds-e-led",
+      "lastScraped": "2025-10-21T17:58:05.278222+00:00",
+      "scrapedData": {}
+    },
+    "variants": [],
+    "isBundle": false,
+    "bundleItems": [],
+    "createdAt": "2025-10-21T17:58:05.278222+00:00",
+    "updatedAt": "2025-10-21T17:58:05.278222+00:00",
+    "lastScrapedAt": "2025-10-21T17:58:05.278222+00:00"
+  },
+  {
+    "name": "Woodpecker Rotary Files W3-Pro",
+    "nameAr": "",
+    "description": "Woodpecker Rotary Files W3-Pro",
+    "shortDescription": "",
+    "price": 425.0,
+    "originalPrice": null,
+    "currency": "EGP",
+    "sku": "594489911695574",
+    "vendorSku": "594489911695574",
+    "brand": "Woodpecker",
+    "model": "",
+    "categoryId": "categories/uncategorized",
+    "vendorId": "vendors/Kandil",
+    "stock": 10,
+    "minStockLevel": 5,
+    "maxStockLevel": 1000,
+    "images": [
+      {
+        "url": "https://s3.eu-west-1.amazonaws.com/drive.dentacarts.com/public/products/100/10003_3.PNG",
+        "alt": "Woodpecker Rotary Files W3-Pro",
+        "isPrimary": true,
+        "order": 0
+      }
+    ],
+    "specifications": {},
+    "features": [],
+    "tags": [],
+    "weight": {
+      "value": null,
+      "unit": "g"
+    },
+    "dimensions": {
+      "length": null,
+      "width": null,
+      "height": null,
+      "unit": "cm"
+    },
+    "isActive": true,
+    "isFeatured": false,
+    "isOnSale": false,
+    "salePercentage": null,
+    "slug": "woodpecker-rotary-files-w3-pro",
+    "metaTitle": "Woodpecker Rotary Files W3-Pro",
+    "metaDescription": "Woodpecker Rotary Files W3-Pro",
+    "averageRating": 0,
+    "totalReviews": 0,
+    "totalSold": 0,
+    "views": 0,
+    "searchKeywords": [
+      "rotary",
+      "pro",
+      "files",
+      "woodpecker",
+      "w3"
+    ],
+    "vendorData": {
+      "sourceUrl": "https://dentacarts.com/products/woodpecker-rotary-files-w3-pro",
+      "lastScraped": "2025-10-21T17:58:05.278222+00:00",
+      "scrapedData": {}
+    },
+    "variants": [],
+    "isBundle": false,
+    "bundleItems": [],
+    "createdAt": "2025-10-21T17:58:05.278222+00:00",
+    "updatedAt": "2025-10-21T17:58:05.278222+00:00",
+    "lastScrapedAt": "2025-10-21T17:58:05.278222+00:00"
+  },
+  {
+    "name": "Woodpecker R1 Plus Gutta-Percha Cutter",
+    "nameAr": "",
+    "description": "Woodpecker R1 Plus Gutta-Percha Cutter",
+    "shortDescription": "",
+    "price": 2250.0,
+    "originalPrice": null,
+    "currency": "EGP",
+    "sku": "56091149865211",
+    "vendorSku": "56091149865211",
+    "brand": "Woodpecker",
+    "model": "",
+    "categoryId": "categories/uncategorized",
+    "vendorId": "vendors/Kandil",
+    "stock": 10,
+    "minStockLevel": 5,
+    "maxStockLevel": 1000,
+    "images": [
+      {
+        "url": "https://s3.eu-west-1.amazonaws.com/drive.dentacarts.com/public/products/436/43684_1.jpg",
+        "alt": "Woodpecker R1 Plus Gutta-Percha Cutter",
+        "isPrimary": true,
+        "order": 0
+      }
+    ],
+    "specifications": {},
+    "features": [],
+    "tags": [],
+    "weight": {
+      "value": null,
+      "unit": "g"
+    },
+    "dimensions": {
+      "length": null,
+      "width": null,
+      "height": null,
+      "unit": "cm"
+    },
+    "isActive": true,
+    "isFeatured": false,
+    "isOnSale": false,
+    "salePercentage": null,
+    "slug": "woodpecker-r1-plus-gutta-percha-cutter",
+    "metaTitle": "Woodpecker R1 Plus Gutta-Percha Cutter",
+    "metaDescription": "Woodpecker R1 Plus Gutta-Percha Cutter",
+    "averageRating": 0,
+    "totalReviews": 0,
+    "totalSold": 0,
+    "views": 0,
+    "searchKeywords": [
+      "percha",
+      "plus",
+      "r1",
+      "cutter",
+      "gutta",
+      "woodpecker"
+    ],
+    "vendorData": {
+      "sourceUrl": "https://dentacarts.com/products/woodpecker-r1-plus%3A-gutta-percha-cutter",
+      "lastScraped": "2025-10-21T17:58:05.278222+00:00",
+      "scrapedData": {}
+    },
+    "variants": [],
+    "isBundle": false,
+    "bundleItems": [],
+    "createdAt": "2025-10-21T17:58:05.278222+00:00",
+    "updatedAt": "2025-10-21T17:58:05.278222+00:00",
+    "lastScrapedAt": "2025-10-21T17:58:05.278222+00:00"
+  },
+  {
+    "name": "Woodpecker UDS-P LED Ultrasonic Scaler Ende",
+    "nameAr": "",
+    "description": "Woodpecker UDS-P LED Ultrasonic Scaler Ende",
+    "shortDescription": "",
+    "price": 7350.0,
+    "originalPrice": null,
+    "currency": "EGP",
+    "sku": "173695364102455",
+    "vendorSku": "173695364102455",
+    "brand": "Woodpecker",
+    "model": "",
+    "categoryId": "categories/uncategorized",
+    "vendorId": "vendors/Kandil",
+    "stock": 10,
+    "minStockLevel": 5,
+    "maxStockLevel": 1000,
+    "images": [
+      {
+        "url": "https://s3.eu-west-1.amazonaws.com/drive.dentacarts.com/public/products/95/9552_1.jpg",
+        "alt": "Woodpecker UDS-P LED Ultrasonic Scaler Ende",
+        "isPrimary": true,
+        "order": 0
+      }
+    ],
+    "specifications": {},
+    "features": [],
+    "tags": [],
+    "weight": {
+      "value": null,
+      "unit": "g"
+    },
+    "dimensions": {
+      "length": null,
+      "width": null,
+      "height": null,
+      "unit": "cm"
+    },
+    "isActive": true,
+    "isFeatured": false,
+    "isOnSale": false,
+    "salePercentage": null,
+    "slug": "woodpecker-uds-p-led-ultrasonic-scaler-ende",
+    "metaTitle": "Woodpecker UDS-P LED Ultrasonic Scaler Ende",
+    "metaDescription": "Woodpecker UDS-P LED Ultrasonic Scaler Ende",
+    "averageRating": 0,
+    "totalReviews": 0,
+    "totalSold": 0,
+    "views": 0,
+    "searchKeywords": [
+      "p",
+      "ende",
+      "uds",
+      "ultrasonic",
+      "scaler",
+      "led",
+      "woodpecker"
+    ],
+    "vendorData": {
+      "sourceUrl": "https://dentacarts.com/products/woodpecker-uds-p-led-ultrasonic-scaler-ende_1",
+      "lastScraped": "2025-10-21T17:58:05.278222+00:00",
+      "scrapedData": {}
+    },
+    "variants": [],
+    "isBundle": false,
+    "bundleItems": [],
+    "createdAt": "2025-10-21T17:58:05.278222+00:00",
+    "updatedAt": "2025-10-21T17:58:05.278222+00:00",
+    "lastScrapedAt": "2025-10-21T17:58:05.278222+00:00"
+  },
+  {
+    "name": "Woodpecker RVG i-Sensor",
+    "nameAr": "",
+    "description": "Woodpecker RVG i-Sensor",
+    "shortDescription": "",
+    "price": 37000.0,
+    "originalPrice": null,
+    "currency": "EGP",
+    "sku": "447627233118365",
+    "vendorSku": "447627233118365",
+    "brand": "Woodpecker",
+    "model": "",
+    "categoryId": "categories/uncategorized",
+    "vendorId": "vendors/Kandil",
+    "stock": 10,
+    "minStockLevel": 5,
+    "maxStockLevel": 1000,
+    "images": [
+      {
+        "url": "https://s3.eu-west-1.amazonaws.com/drive.dentacarts.com/public/products/8/841_1.jpg",
+        "alt": "Woodpecker RVG i-Sensor",
+        "isPrimary": true,
+        "order": 0
+      }
+    ],
+    "specifications": {},
+    "features": [],
+    "tags": [],
+    "weight": {
+      "value": null,
+      "unit": "g"
+    },
+    "dimensions": {
+      "length": null,
+      "width": null,
+      "height": null,
+      "unit": "cm"
+    },
+    "isActive": true,
+    "isFeatured": false,
+    "isOnSale": false,
+    "salePercentage": null,
+    "slug": "woodpecker-rvg-i-sensor",
+    "metaTitle": "Woodpecker RVG i-Sensor",
+    "metaDescription": "Woodpecker RVG i-Sensor",
+    "averageRating": 0,
+    "totalReviews": 0,
+    "totalSold": 0,
+    "views": 0,
+    "searchKeywords": [
+      "rvg",
+      "sensor",
+      "woodpecker",
+      "i"
+    ],
+    "vendorData": {
+      "sourceUrl": "https://dentacarts.com/products/woodpecker-sensor-dental-rvg-sensor_2",
+      "lastScraped": "2025-10-21T17:58:05.278222+00:00",
+      "scrapedData": {}
+    },
+    "variants": [],
+    "isBundle": false,
+    "bundleItems": [],
+    "createdAt": "2025-10-21T17:58:05.278222+00:00",
+    "updatedAt": "2025-10-21T17:58:05.278222+00:00",
+    "lastScrapedAt": "2025-10-21T17:58:05.278222+00:00"
+  },
+  {
+    "name": "Yabangbang Ultrasonic Piezo Scaler Handpiece HW-3H",
+    "nameAr": "",
+    "description": "Yabangbang Ultrasonic Piezo Scaler Handpiece HW-3H",
+    "shortDescription": "",
+    "price": 560.0,
+    "originalPrice": null,
+    "currency": "SAR",
+    "sku": "1656924893948",
+    "vendorSku": "1656924893948",
+    "brand": "Yabangbang",
+    "model": "",
+    "categoryId": "categories/uncategorized",
+    "vendorId": "vendors/Kandil",
+    "stock": 10,
+    "minStockLevel": 5,
+    "maxStockLevel": 1000,
+    "images": [
+      {
+        "url": "https://s3.eu-west-1.amazonaws.com/drive.dentacarts.com/public/product_image/8383/838369.png",
+        "alt": "Yabangbang Ultrasonic Piezo Scaler Handpiece HW-3H",
+        "isPrimary": true,
+        "order": 0
+      }
+    ],
+    "specifications": {},
+    "features": [],
+    "tags": [],
+    "weight": {
+      "value": null,
+      "unit": "g"
+    },
+    "dimensions": {
+      "length": null,
+      "width": null,
+      "height": null,
+      "unit": "cm"
+    },
+    "isActive": true,
+    "isFeatured": false,
+    "isOnSale": false,
+    "salePercentage": null,
+    "slug": "yabangbang-ultrasonic-piezo-scaler-handpiece-hw-3h",
+    "metaTitle": "Yabangbang Ultrasonic Piezo Scaler Handpiece HW-3H",
+    "metaDescription": "Yabangbang Ultrasonic Piezo Scaler Handpiece HW-3H",
+    "averageRating": 0,
+    "totalReviews": 0,
+    "totalSold": 0,
+    "views": 0,
+    "searchKeywords": [
+      "3h",
+      "ultrasonic",
+      "hw",
+      "scaler",
+      "piezo",
+      "yabangbang",
+      "handpiece"
+    ],
+    "vendorData": {
+      "sourceUrl": "https://dentacarts.com/products/woodpecker-ultrasonic-scaler-handpiece-hw-3h",
+      "lastScraped": "2025-10-21T17:58:05.278222+00:00",
+      "scrapedData": {}
+    },
+    "variants": [],
+    "isBundle": false,
+    "bundleItems": [],
+    "createdAt": "2025-10-21T17:58:05.278222+00:00",
+    "updatedAt": "2025-10-21T17:58:05.278222+00:00",
+    "lastScrapedAt": "2025-10-21T17:58:05.278222+00:00"
+  },
+  {
+    "name": "Woodpecker UDS-N2 LED Ultrasonic Scaler",
+    "nameAr": "",
+    "description": "Woodpecker UDS-N2 LED Ultrasonic Scaler",
+    "shortDescription": "",
+    "price": 6000.0,
+    "originalPrice": null,
+    "currency": "EGP",
+    "sku": "033959802111867",
+    "vendorSku": "033959802111867",
+    "brand": "Woodpecker",
+    "model": "",
+    "categoryId": "categories/uncategorized",
+    "vendorId": "vendors/Kandil",
+    "stock": 10,
+    "minStockLevel": 5,
+    "maxStockLevel": 1000,
+    "images": [
+      {
+        "url": "https://s3.eu-west-1.amazonaws.com/drive.dentacarts.com/public/products/95/9550_1.jpg",
+        "alt": "Woodpecker UDS-N2 LED Ultrasonic Scaler",
+        "isPrimary": true,
+        "order": 0
+      }
+    ],
+    "specifications": {},
+    "features": [],
+    "tags": [],
+    "weight": {
+      "value": null,
+      "unit": "g"
+    },
+    "dimensions": {
+      "length": null,
+      "width": null,
+      "height": null,
+      "unit": "cm"
+    },
+    "isActive": true,
+    "isFeatured": false,
+    "isOnSale": false,
+    "salePercentage": null,
+    "slug": "woodpecker-uds-n2-led-ultrasonic-scaler",
+    "metaTitle": "Woodpecker UDS-N2 LED Ultrasonic Scaler",
+    "metaDescription": "Woodpecker UDS-N2 LED Ultrasonic Scaler",
+    "averageRating": 0,
+    "totalReviews": 0,
+    "totalSold": 0,
+    "views": 0,
+    "searchKeywords": [
+      "uds",
+      "ultrasonic",
+      "scaler",
+      "n2",
+      "led",
+      "woodpecker"
+    ],
+    "vendorData": {
+      "sourceUrl": "https://dentacarts.com/products/woodpecker-uds_n2-led-ultrasonic-scaler-built-in",
+      "lastScraped": "2025-10-21T17:58:05.278222+00:00",
+      "scrapedData": {}
+    },
+    "variants": [],
+    "isBundle": false,
+    "bundleItems": [],
+    "createdAt": "2025-10-21T17:58:05.278222+00:00",
+    "updatedAt": "2025-10-21T17:58:05.278222+00:00",
+    "lastScrapedAt": "2025-10-21T17:58:05.278222+00:00"
+  },
+  {
+    "name": "Ultrasonic Scaler U6 LED",
+    "nameAr": "",
+    "description": "Ultrasonic Scaler U6 LED",
+    "shortDescription": "",
+    "price": 1598.0,
+    "originalPrice": null,
+    "currency": "SAR",
+    "sku": "540619551834972",
+    "vendorSku": "540619551834972",
+    "brand": "Woodpecker",
+    "model": "",
+    "categoryId": "categories/uncategorized",
+    "vendorId": "vendors/Kandil",
+    "stock": 10,
+    "minStockLevel": 5,
+    "maxStockLevel": 1000,
+    "images": [
+      {
+        "url": "https://s3.eu-west-1.amazonaws.com/drive.dentacarts.com/public/products/328/32885_1.jpg",
+        "alt": "Ultrasonic Scaler U6 LED",
+        "isPrimary": true,
+        "order": 0
+      }
+    ],
+    "specifications": {},
+    "features": [],
+    "tags": [],
+    "weight": {
+      "value": null,
+      "unit": "g"
+    },
+    "dimensions": {
+      "length": null,
+      "width": null,
+      "height": null,
+      "unit": "cm"
+    },
+    "isActive": true,
+    "isFeatured": false,
+    "isOnSale": false,
+    "salePercentage": null,
+    "slug": "ultrasonic-scaler-u6-led",
+    "metaTitle": "Ultrasonic Scaler U6 LED",
+    "metaDescription": "Ultrasonic Scaler U6 LED",
+    "averageRating": 0,
+    "totalReviews": 0,
+    "totalSold": 0,
+    "views": 0,
+    "searchKeywords": [
+      "ultrasonic",
+      "scaler",
+      "u6",
+      "led"
+    ],
+    "vendorData": {
+      "sourceUrl": "https://dentacarts.com/products/woodpecker-ultrasonic-scaler-u6-led",
+      "lastScraped": "2025-10-21T17:58:05.278222+00:00",
+      "scrapedData": {}
+    },
+    "variants": [],
+    "isBundle": false,
+    "bundleItems": [],
+    "createdAt": "2025-10-21T17:58:05.278222+00:00",
+    "updatedAt": "2025-10-21T17:58:05.278222+00:00",
+    "lastScrapedAt": "2025-10-21T17:58:05.278222+00:00"
+  },
+  {
+    "name": "Woodpecker Endo 3",
+    "nameAr": "",
+    "description": "Woodpecker Endo 3",
+    "shortDescription": "",
+    "price": 13500.0,
+    "originalPrice": null,
+    "currency": "EGP",
+    "sku": "1782025101727",
+    "vendorSku": "1782025101727",
+    "brand": "Woodpecker",
+    "model": "",
+    "categoryId": "categories/uncategorized",
+    "vendorId": "vendors/Kandil",
+    "stock": 10,
+    "minStockLevel": 5,
+    "maxStockLevel": 1000,
+    "images": [
+      {
+        "url": "https://s3.eu-west-1.amazonaws.com/drive.dentacarts.com/public/product_image/8504/850413.webp",
+        "alt": "Woodpecker Endo 3",
+        "isPrimary": true,
+        "order": 0
+      }
+    ],
+    "specifications": {},
+    "features": [],
+    "tags": [],
+    "weight": {
+      "value": null,
+      "unit": "g"
+    },
+    "dimensions": {
+      "length": null,
+      "width": null,
+      "height": null,
+      "unit": "cm"
+    },
+    "isActive": true,
+    "isFeatured": false,
+    "isOnSale": false,
+    "salePercentage": null,
+    "slug": "woodpecker-endo-3",
+    "metaTitle": "Woodpecker Endo 3",
+    "metaDescription": "Woodpecker Endo 3",
+    "averageRating": 0,
+    "totalReviews": 0,
+    "totalSold": 0,
+    "views": 0,
+    "searchKeywords": [
+      "3",
+      "endo",
+      "woodpecker"
+    ],
+    "vendorData": {
+      "sourceUrl": "https://dentacarts.com/products/woodpeckerendo3",
+      "lastScraped": "2025-10-21T17:58:05.278222+00:00",
+      "scrapedData": {}
+    },
+    "variants": [],
+    "isBundle": false,
+    "bundleItems": [],
+    "createdAt": "2025-10-21T17:58:05.278222+00:00",
+    "updatedAt": "2025-10-21T17:58:05.278222+00:00",
+    "lastScrapedAt": "2025-10-21T17:58:05.278222+00:00"
+  },
+  {
+    "name": "Woodpecker Ultrasonic Scaler UDS-N3",
+    "nameAr": "",
+    "description": "Woodpecker Ultrasonic Scaler UDS-N3",
+    "shortDescription": "",
+    "price": 7000.0,
+    "originalPrice": null,
+    "currency": "EGP",
+    "sku": "023321811647169",
+    "vendorSku": "023321811647169",
+    "brand": "Woodpecker",
+    "model": "",
+    "categoryId": "categories/uncategorized",
+    "vendorId": "vendors/Kandil",
+    "stock": 10,
+    "minStockLevel": 5,
+    "maxStockLevel": 1000,
+    "images": [
+      {
+        "url": "https://s3.eu-west-1.amazonaws.com/drive.dentacarts.com/public/product_image/8224/822462.jpg",
+        "alt": "Woodpecker Ultrasonic Scaler UDS-N3",
+        "isPrimary": true,
+        "order": 0
+      }
+    ],
+    "specifications": {},
+    "features": [],
+    "tags": [],
+    "weight": {
+      "value": null,
+      "unit": "g"
+    },
+    "dimensions": {
+      "length": null,
+      "width": null,
+      "height": null,
+      "unit": "cm"
+    },
+    "isActive": true,
+    "isFeatured": false,
+    "isOnSale": false,
+    "salePercentage": null,
+    "slug": "woodpecker-ultrasonic-scaler-uds-n3",
+    "metaTitle": "Woodpecker Ultrasonic Scaler UDS-N3",
+    "metaDescription": "Woodpecker Ultrasonic Scaler UDS-N3",
+    "averageRating": 0,
+    "totalReviews": 0,
+    "totalSold": 0,
+    "views": 0,
+    "searchKeywords": [
+      "uds",
+      "ultrasonic",
+      "scaler",
+      "n3",
+      "woodpecker"
+    ],
+    "vendorData": {
+      "sourceUrl": "https://dentacarts.com/products/woodpecker-ultrasonic-scaler-uds-n3",
+      "lastScraped": "2025-10-21T17:58:05.278222+00:00",
+      "scrapedData": {}
+    },
+    "variants": [],
+    "isBundle": false,
+    "bundleItems": [],
+    "createdAt": "2025-10-21T17:58:05.278222+00:00",
+    "updatedAt": "2025-10-21T17:58:05.278222+00:00",
+    "lastScrapedAt": "2025-10-21T17:58:05.278222+00:00"
+  },
+  {
+    "name": "Woodpecker i LED II Focused Curing Light",
+    "nameAr": "",
+    "description": "Woodpecker i LED II Focused Curing Light",
+    "shortDescription": "",
+    "price": 10500.0,
+    "originalPrice": null,
+    "currency": "EGP",
+    "sku": "6992024116397",
+    "vendorSku": "6992024116397",
+    "brand": "Woodpecker",
+    "model": "",
+    "categoryId": "categories/uncategorized",
+    "vendorId": "vendors/Kandil",
+    "stock": 10,
+    "minStockLevel": 5,
+    "maxStockLevel": 1000,
+    "images": [
+      {
+        "url": "https://s3.eu-west-1.amazonaws.com/drive.dentacarts.com/public/product_image/8298/829838.png",
+        "alt": "Woodpecker i LED II Focused Curing Light",
+        "isPrimary": true,
+        "order": 0
+      }
+    ],
+    "specifications": {},
+    "features": [],
+    "tags": [],
+    "weight": {
+      "value": null,
+      "unit": "g"
+    },
+    "dimensions": {
+      "length": null,
+      "width": null,
+      "height": null,
+      "unit": "cm"
+    },
+    "isActive": true,
+    "isFeatured": false,
+    "isOnSale": false,
+    "salePercentage": null,
+    "slug": "woodpecker-i-led-ii-focused-curing-light",
+    "metaTitle": "Woodpecker i LED II Focused Curing Light",
+    "metaDescription": "Woodpecker i LED II Focused Curing Light",
+    "averageRating": 0,
+    "totalReviews": 0,
+    "totalSold": 0,
+    "views": 0,
+    "searchKeywords": [
+      "ii",
+      "light",
+      "focused",
+      "curing",
+      "i",
+      "led",
+      "woodpecker"
+    ],
+    "vendorData": {
+      "sourceUrl": "https://dentacarts.com/products/woodpeckerilediifocusedcuringlight",
+      "lastScraped": "2025-10-21T17:58:05.278222+00:00",
+      "scrapedData": {}
+    },
+    "variants": [],
+    "isBundle": false,
+    "bundleItems": [],
+    "createdAt": "2025-10-21T17:58:05.278222+00:00",
+    "updatedAt": "2025-10-21T17:58:05.278222+00:00",
+    "lastScrapedAt": "2025-10-21T17:58:05.278222+00:00"
+  },
+  {
+    "name": "Woodpecker Ultrasonic scaler HW-6L",
+    "nameAr": "",
+    "description": "Woodpecker Ultrasonic scaler HW-6L",
+    "shortDescription": "",
+    "price": 6750.0,
+    "originalPrice": null,
+    "currency": "EGP",
+    "sku": "8862024121695",
+    "vendorSku": "8862024121695",
+    "brand": "Woodpecker",
+    "model": "",
+    "categoryId": "categories/uncategorized",
+    "vendorId": "vendors/Kandil",
+    "stock": 10,
+    "minStockLevel": 5,
+    "maxStockLevel": 1000,
+    "images": [
+      {
+        "url": "https://s3.eu-west-1.amazonaws.com/drive.dentacarts.com/public/product_image/8298/829846.png",
+        "alt": "Woodpecker Ultrasonic scaler HW-6L",
+        "isPrimary": true,
+        "order": 0
+      }
+    ],
+    "specifications": {},
+    "features": [],
+    "tags": [],
+    "weight": {
+      "value": null,
+      "unit": "g"
+    },
+    "dimensions": {
+      "length": null,
+      "width": null,
+      "height": null,
+      "unit": "cm"
+    },
+    "isActive": true,
+    "isFeatured": false,
+    "isOnSale": false,
+    "salePercentage": null,
+    "slug": "woodpecker-ultrasonic-scaler-hw-6l",
+    "metaTitle": "Woodpecker Ultrasonic scaler HW-6L",
+    "metaDescription": "Woodpecker Ultrasonic scaler HW-6L",
+    "averageRating": 0,
+    "totalReviews": 0,
+    "totalSold": 0,
+    "views": 0,
+    "searchKeywords": [
+      "ultrasonic",
+      "hw",
+      "scaler",
+      "6l",
+      "woodpecker"
+    ],
+    "vendorData": {
+      "sourceUrl": "https://dentacarts.com/products/woodpeckerultrasonicscalerhw-6l",
+      "lastScraped": "2025-10-21T17:58:05.279223+00:00",
+      "scrapedData": {}
+    },
+    "variants": [],
+    "isBundle": false,
+    "bundleItems": [],
+    "createdAt": "2025-10-21T17:58:05.279223+00:00",
+    "updatedAt": "2025-10-21T17:58:05.279223+00:00",
+    "lastScrapedAt": "2025-10-21T17:58:05.279223+00:00"
+  },
+  {
+    "name": "Woodpex X Apex Locator",
+    "nameAr": "",
+    "description": "Woodpex X Apex Locator",
+    "shortDescription": "",
+    "price": 11500.0,
+    "originalPrice": null,
+    "currency": "EGP",
+    "sku": "2712025101844",
+    "vendorSku": "2712025101844",
+    "brand": "Woodpecker",
+    "model": "",
+    "categoryId": "categories/uncategorized",
+    "vendorId": "vendors/Kandil",
+    "stock": 10,
+    "minStockLevel": 5,
+    "maxStockLevel": 1000,
+    "images": [
+      {
+        "url": "https://s3.eu-west-1.amazonaws.com/drive.dentacarts.com/public/product_image/8504/850411.webp",
+        "alt": "Woodpex X Apex Locator",
+        "isPrimary": true,
+        "order": 0
+      }
+    ],
+    "specifications": {},
+    "features": [],
+    "tags": [],
+    "weight": {
+      "value": null,
+      "unit": "g"
+    },
+    "dimensions": {
+      "length": null,
+      "width": null,
+      "height": null,
+      "unit": "cm"
+    },
+    "isActive": true,
+    "isFeatured": false,
+    "isOnSale": false,
+    "salePercentage": null,
+    "slug": "woodpex-x-apex-locator",
+    "metaTitle": "Woodpex X Apex Locator",
+    "metaDescription": "Woodpex X Apex Locator",
+    "averageRating": 0,
+    "totalReviews": 0,
+    "totalSold": 0,
+    "views": 0,
+    "searchKeywords": [
+      "locator",
+      "x",
+      "woodpex",
+      "apex"
+    ],
+    "vendorData": {
+      "sourceUrl": "https://dentacarts.com/products/woodpexxapexlocator",
+      "lastScraped": "2025-10-21T17:58:05.279223+00:00",
+      "scrapedData": {}
+    },
+    "variants": [],
+    "isBundle": false,
+    "bundleItems": [],
+    "createdAt": "2025-10-21T17:58:05.279223+00:00",
+    "updatedAt": "2025-10-21T17:58:05.279223+00:00",
+    "lastScrapedAt": "2025-10-21T17:58:05.279223+00:00"
+  }
+]

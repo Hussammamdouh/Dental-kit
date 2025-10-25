@@ -18,7 +18,7 @@ const inferBaseURL = () => {
     if (isLocal) return 'http://localhost:5000/api';
   }
   // Default to the correct backend URL for production
-  return 'https://dental-website-backend.fly.dev/api';
+  return 'https://dental-website-backend-v2.fly.dev/api';
 };
 
 // Create axios instance with enhanced security

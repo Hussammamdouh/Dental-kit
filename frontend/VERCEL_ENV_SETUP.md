@@ -6,8 +6,8 @@ Set these environment variables in your Vercel dashboard:
 
 ### 1. API Configuration
 ```
-VITE_API_URL=https://dental-website-backend.fly.dev/api
-VITE_SOCKET_URL=https://dental-website-backend.fly.dev
+VITE_API_URL=https://dental-website-backend-v2.fly.dev/api
+VITE_SOCKET_URL=https://dental-website-backend-v2.fly.dev
 ```
 
 ### 2. App Configuration
@@ -56,7 +56,7 @@ VITE_MOCK_API=false
 ## Current Configuration
 
 The frontend is currently configured to use:
-- **Default API URL**: `https://dental-website-backend.fly.dev/api`
+- **Default API URL**: `https://dental-website-backend-v2.fly.dev/api`
 - **Fallback**: If `VITE_API_URL` is not set, it will use the default URL above
 
 This means your frontend will work even without setting environment variables, but it's recommended to set them for better control.

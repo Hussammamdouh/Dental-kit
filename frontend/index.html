@@ -17,7 +17,7 @@
       style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
       font-src 'self' https://fonts.gstatic.com;
       img-src 'self' data: https: blob:;
-      connect-src 'self' http://localhost:8080 http://127.0.0.1:8080 ws://localhost:8080 ws://127.0.0.1:8080 http://localhost:3000 http://127.0.0.1:3000 ws://localhost:3000 ws://127.0.0.1:3000 blob: data: webpack: wss: https: http: https://dental-website-backend.fly.dev https://api.dentalkit.com;
+      connect-src 'self' http://localhost:8080 http://127.0.0.1:8080 ws://localhost:8080 ws://127.0.0.1:8080 http://localhost:3000 http://127.0.0.1:3000 ws://localhost:3000 ws://127.0.0.1:3000 blob: data: webpack: wss: https: http: https://dental-website-backend-v2.fly.dev https://api.dentalkit.com;
       frame-src 'none';
       object-src 'none';
       base-uri 'self';
@@ -40,14 +40,17 @@
     <meta property="og:title" content="DentalKit - Professional Dental Supplies">
     <meta property="og:description" content="Professional dental supplies and equipment for modern dental practices.">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://dentalkit.com">
-    <meta property="og:image" content="https://dentalkit.com/Logo Lightmode.png">
+    <meta property="og:url" content="https://dental-website-frontend.vercel.app">
+    <meta property="og:image" content="https://dental-website-frontend.vercel.app/Logo%20Lightmode.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="DentalKit Logo">
     
     <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="DentalKit - Professional Dental Supplies">
     <meta name="twitter:description" content="Professional dental supplies and equipment for modern dental practices.">
-    <meta name="twitter:image" content="https://dentalkit.com/Logo Lightmode.png">
+    <meta name="twitter:image" content="https://dental-website-frontend.vercel.app/Logo%20Lightmode.png">
     
     <!-- Preconnect to external domains -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -59,6 +62,23 @@
     <link rel="manifest" href="/site.webmanifest">
     
     <title>DentalKit - Professional Dental Supplies</title>
+    
+    <!-- Structured Data for Organization -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "DentalKit",
+      "url": "https://dental-website-frontend.vercel.app",
+      "logo": "https://dental-website-frontend.vercel.app/Logo%20Lightmode.png",
+      "description": "Professional dental supplies and equipment for modern dental practices",
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "email": "info@dentalkit.com",
+        "contactType": "customer service"
+      }
+    }
+    </script>
   </head>
   <body>
     <div id="root"></div>
