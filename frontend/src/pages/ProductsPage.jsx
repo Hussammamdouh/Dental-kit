@@ -646,43 +646,59 @@ const ProductsPage = () => {
                 {/* Pagination */}
                 {totalPages > 1 && (
                   <AnimatedSection animation="fadeInUp" delay={300} className="mt-12">
-                    <div className="flex items-center justify-center">
-                      <nav className="flex items-center space-x-2">
+                    <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-xl px-4 py-3 flex items-center justify-between border-t border-gray-200 dark:border-gray-700 sm:px-6 rounded-xl shadow-sm">
+                      <div className="flex-1 flex justify-between sm:hidden">
                         <button
                           onClick={() => handlePageChange(currentPage - 1)}
                           disabled={currentPage === 1}
-                          className="px-4 py-2 text-sm font-medium text-gray-500 bg-white/50 dark:bg-gray-700/50 backdrop-blur-sm border border-gray-300 dark:border-gray-600 rounded-xl hover:bg-white dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                          className="relative inline-flex items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-700 dark:text-white dark:border-gray-600"
                         >
                           {t('products.pagination.previous')}
                         </button>
-                        
-                        {[...Array(totalPages)].map((_, index) => {
-                          const page = index + 1;
-                          const isCurrentPage = page === currentPage;
-                          
-                          return (
-                            <button
-                              key={page}
-                              onClick={() => handlePageChange(page)}
-                              className={`px-4 py-2 text-sm font-medium rounded-xl transition-all duration-200 ${
-                                isCurrentPage
-                                  ? 'bg-gradient-to-r from-sky-500 to-blue-600 text-white shadow-lg'
-                                  : 'text-gray-500 bg-white/50 dark:bg-gray-700/50 backdrop-blur-sm border border-gray-300 dark:border-gray-600 hover:bg-white dark:hover:bg-gray-700'
-                              }`}
-                            >
-                              {page}
-                            </button>
-                          );
-                        })}
-                        
+                        <div className="flex items-center">
+                          <span className="text-sm text-gray-700 dark:text-gray-300">
+                            {currentPage} / {totalPages}
+                          </span>
+                        </div>
                         <button
                           onClick={() => handlePageChange(currentPage + 1)}
                           disabled={currentPage === totalPages}
-                          className="px-4 py-2 text-sm font-medium text-gray-500 bg-white/50 dark:bg-gray-700/50 backdrop-blur-sm border border-gray-300 dark:border-gray-600 rounded-xl hover:bg-white dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                          className="relative inline-flex items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-700 dark:text-white dark:border-gray-600"
                         >
                           {t('products.pagination.next')}
                         </button>
-                      </nav>
+                      </div>
+                      <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                        <div>
+                          <p className="text-sm text-gray-700 dark:text-gray-300">
+                            Showing <span className="font-medium">{(currentPage - 1) * 12 + 1}</span> to <span className="font-medium">{Math.min(currentPage * 12, totalProducts)}</span> of <span className="font-medium">{totalProducts}</span> results
+                          </p>
+                        </div>
+                        <div>
+                          <nav className="relative z-0 inline-flex rounded-lg shadow-sm -space-x-px" aria-label="Pagination">
+                            <button
+                              onClick={() => handlePageChange(currentPage - 1)}
+                              disabled={currentPage === 1}
+                              className="relative inline-flex items-center px-4 py-2 rounded-l-lg border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-700 dark:text-white dark:border-gray-600"
+                            >
+                              {t('products.pagination.previous')}
+                            </button>
+                            
+                            {/* Current Page Info */}
+                            <div className="relative inline-flex items-center px-4 py-2 border-t border-b border-gray-300 bg-white text-sm font-medium text-gray-700 dark:bg-gray-700 dark:text-white dark:border-gray-600">
+                              {currentPage} / {totalPages}
+                            </div>
+                            
+                            <button
+                              onClick={() => handlePageChange(currentPage + 1)}
+                              disabled={currentPage === totalPages}
+                              className="relative inline-flex items-center px-4 py-2 rounded-r-lg border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-700 dark:text-white dark:border-gray-600"
+                            >
+                              {t('products.pagination.next')}
+                            </button>
+                          </nav>
+                        </div>
+                      </div>
                     </div>
                   </AnimatedSection>
                 )}
@@ -743,7 +759,7 @@ const ProductCard = ({
 
   return (
     <div 
-      className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-xl rounded-2xl shadow-lg border border-white/20 dark:border-gray-700/50 overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:scale-105 cursor-pointer h-80 sm:h-96 flex flex-col"
+      className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-xl rounded-2xl shadow-lg border border-white/20 dark:border-gray-700/50 overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:scale-105 cursor-pointer flex flex-col min-h-[320px] sm:min-h-[400px]"
       onClick={handleCardClick}
     >
       {/* Product Image */}
@@ -788,8 +804,8 @@ const ProductCard = ({
       </div>
 
       {/* Product Info */}
-      <div className="p-4 sm:p-6 flex flex-col flex-grow">
-        <h3 className="font-semibold text-gray-900 dark:text-white mb-2 sm:mb-3 line-clamp-2 text-sm sm:text-lg flex-grow">
+      <div className="p-4 sm:p-6 flex flex-col flex-grow min-h-0">
+        <h3 className="font-semibold text-gray-900 dark:text-white mb-2 sm:mb-3 line-clamp-2 text-sm sm:text-lg min-h-[2.5rem] sm:min-h-[3rem]">
           {displayName}
         </h3>
         
@@ -828,7 +844,7 @@ const ProductCard = ({
         <Button
           onClick={handleAddToCartClick}
           disabled={addingToCart || !product.inStock}
-          className="w-full bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-700 hover:to-blue-700 text-white font-semibold py-2 sm:py-3 rounded-xl transition-all duration-200 transform hover:scale-105 disabled:transform-none disabled:opacity-50 text-sm sm:text-base"
+          className="w-full bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-700 hover:to-blue-700 text-white font-semibold py-2 sm:py-3 rounded-xl transition-all duration-200 transform hover:scale-105 disabled:transform-none disabled:opacity-50 text-sm sm:text-base mt-auto"
           loading={addingToCart}
         >
           {addingToCart ? (

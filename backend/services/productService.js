@@ -146,8 +146,8 @@ class ProductService extends FirebaseService {
       // Get a reasonable number of documents for in-memory processing
       // For admin requests with includeInactive, fetch more documents
       const maxFetch = includeInactive 
-        ? Math.min(limit * 20, 5000) // Fetch up to 20x the limit, max 5000 for admin
-        : Math.min(limit * 3, 500);  // Fetch up to 3x the limit, max 500 for regular users
+        ? Math.min(limit * 20, 10000) // Fetch up to 20x the limit, max 10000 for admin
+        : Math.min(limit * 70, 1500);  // Fetch up to 70x the limit, max 1500 for regular users
       query = query.limit(maxFetch);
 
       const querySnapshot = await query.get();
