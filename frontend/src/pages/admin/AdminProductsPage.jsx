@@ -111,6 +111,8 @@ const AdminProductsPage = () => {
     } catch (err) {
       console.error('Error fetching products:', err);
       throw err;
+    } finally {
+      setIsLoading(false);
     }
   };
 
