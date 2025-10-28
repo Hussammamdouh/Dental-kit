@@ -66,66 +66,66 @@ const VerifyEmailSentPage = () => {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-sky-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 overflow-x-hidden">
       <Seo {...buildAuthSeo({ tSeo, kind: 'verifyEmail', isDark, currentLanguage })} />
       
-      <div className="min-h-screen flex">
-        {/* Left Section - Branding & Features */}
-        <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-sky-500 via-blue-500 to-sky-600">
-            <div className="absolute inset-0 bg-black/20"></div>
-            
-            {/* Animated Background Elements */}
-            <div className="absolute top-20 left-10 w-72 h-72 bg-white/10 rounded-full blur-3xl animate-pulse"></div>
-            <div className="absolute bottom-20 right-10 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
-            <div className="absolute top-1/2 left-1/4 w-64 h-64 bg-blue-500/20 rounded-full blur-2xl animate-pulse delay-500"></div>
-          </div>
-          
-          <div className="relative z-10 w-full flex flex-col justify-center items-center text-center p-8 xl:p-12 text-white">
-            <AnimatedSection animation="fadeInUp" delay={0}>
-              <div className="mb-8 max-w-lg">
-                <img
-                  src={getLogoPath()}
-                  alt="DentalKit Logo"
-                  className="w-24 h-24 mx-auto mb-6 drop-shadow-2xl"
-                  loading="eager"
-                />
-                <h1 className="text-4xl xl:text-5xl font-bold mb-4 leading-tight">
-                  {t('brand.name')}
-                </h1>
-                <p className="text-xl xl:text-2xl text-blue-100 leading-relaxed">
-                  {t('brand.tagline')}
-                </p>
+      <div className="min-h-screen flex items-center justify-center px-3 sm:px-4 py-6">
+        <div className="relative w-full max-w-6xl">
+          <div className="absolute -inset-2 bg-gradient-to-br from-sky-400/25 via-sky-500/15 to-blue-600/15 rounded-[24px] blur-xl" aria-hidden="true"></div>
+          <div className="relative bg-white dark:bg-gray-900 rounded-[24px] shadow-xl ring-1 ring-black/5 overflow-hidden flex">
+            {/* Left Section - Branding & Features */}
+            <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-sky-400 via-sky-500 to-blue-600">
+                <div className="absolute inset-0 bg-black/20"></div>
+                {/* Animated Background Elements */}
+                <div className="absolute top-20 left-10 w-72 h-72 bg-white/10 rounded-full blur-3xl animate-pulse"></div>
+                <div className="absolute bottom-20 right-10 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
+                <div className="absolute top-1/2 left-1/4 w-64 h-64 bg-blue-500/20 rounded-full blur-2xl animate-pulse delay-500"></div>
               </div>
-            </AnimatedSection>
-
-            <AnimatedSection animation="fadeInUp" delay={200}>
-              <div className="grid grid-cols-2 gap-4 xl:gap-6 max-w-lg">
-                <div className="text-center p-4 xl:p-6 bg-white/10 backdrop-blur-sm rounded-xl hover:bg-white/20 transition-all duration-300">
-                  <EnvelopeIcon className="w-8 h-8 xl:w-10 xl:h-10 mx-auto mb-3 text-blue-400" />
-                  <div className="text-2xl xl:text-3xl font-bold">✓</div>
-                  <div className="text-sm xl:text-base text-blue-100 font-medium">Sent</div>
-                </div>
-                <div className="text-center p-4 xl:p-6 bg-white/10 backdrop-blur-sm rounded-xl hover:bg-white/20 transition-all duration-300">
-                  <ShieldCheckIcon className="w-8 h-8 xl:w-10 xl:h-10 mx-auto mb-3 text-yellow-400" />
-                  <div className="text-2xl xl:text-3xl font-bold">100%</div>
-                  <div className="text-sm xl:text-base text-blue-100 font-medium">Secure</div>
-                </div>
-                <div className="text-center p-4 xl:p-6 bg-white/10 backdrop-blur-sm rounded-xl hover:bg-white/20 transition-all duration-300">
-                  <TruckIcon className="w-8 h-8 xl:w-10 xl:h-10 mx-auto mb-3 text-green-400" />
-                  <div className="text-2xl xl:text-3xl font-bold">24/7</div>
-                  <div className="text-sm xl:text-base text-blue-100 font-medium">Support</div>
-                </div>
-                <div className="text-center p-4 xl:p-6 bg-white/10 backdrop-blur-sm rounded-xl hover:bg-white/20 transition-all duration-300">
-                  <StarIcon className="w-8 h-8 xl:w-10 xl:h-10 mx-auto mb-3 text-purple-400" />
-                  <div className="text-2xl xl:text-3xl font-bold">5★</div>
-                  <div className="text-sm xl:text-base text-blue-100 font-medium">Rating</div>
-                </div>
+              <div className="relative z-10 w-full flex flex-col justify-center items-center text-center p-8 xl:p-12 text-white">
+                <AnimatedSection animation="fadeInUp" delay={0}>
+                  <div className="mb-8 max-w-lg">
+                    <img
+                      src={getLogoPath()}
+                      alt="DentalKit Logo"
+                      className="w-24 h-24 mx-auto mb-6 drop-shadow-2xl"
+                      loading="eager"
+                    />
+                    <h1 className="text-4xl xl:text-5xl font-bold mb-4 leading-tight">
+                      {t('brand.name')}
+                    </h1>
+                    <p className="text-xl xl:text-2xl text-blue-100 leading-relaxed">
+                      {t('brand.tagline')}
+                    </p>
+                  </div>
+                </AnimatedSection>
+                <AnimatedSection animation="fadeInUp" delay={200}>
+                  <div className="grid grid-cols-2 gap-4 xl:gap-6 max-w-lg">
+                    <div className="text-center p-4 xl:p-6 bg-white/10 backdrop-blur-sm rounded-xl hover:bg-white/20 transition-all duration-300">
+                      <EnvelopeIcon className="w-8 h-8 xl:w-10 xl:h-10 mx-auto mb-3 text-blue-400" />
+                      <div className="text-2xl xl:text-3xl font-bold">✓</div>
+                      <div className="text-sm xl:text-base text-blue-100 font-medium">Sent</div>
+                    </div>
+                    <div className="text-center p-4 xl:p-6 bg-white/10 backdrop-blur-sm rounded-xl hover:bg-white/20 transition-all duration-300">
+                      <ShieldCheckIcon className="w-8 h-8 xl:w-10 xl:h-10 mx-auto mb-3 text-yellow-400" />
+                      <div className="text-2xl xl:text-3xl font-bold">100%</div>
+                      <div className="text-sm xl:text-base text-blue-100 font-medium">Secure</div>
+                    </div>
+                    <div className="text-center p-4 xl:p-6 bg-white/10 backdrop-blur-sm rounded-xl hover:bg-white/20 transition-all duration-300">
+                      <TruckIcon className="w-8 h-8 xl:w-10 xl:h-10 mx-auto mb-3 text-green-400" />
+                      <div className="text-2xl xl:text-3xl font-bold">24/7</div>
+                      <div className="text-sm xl:text-base text-blue-100 font-medium">Support</div>
+                    </div>
+                    <div className="text-center p-4 xl:p-6 bg-white/10 backdrop-blur-sm rounded-xl hover:bg-white/20 transition-all duration-300">
+                      <StarIcon className="w-8 h-8 xl:w-10 xl:h-10 mx-auto mb-3 text-purple-400" />
+                      <div className="text-2xl xl:text-3xl font-bold">5★</div>
+                      <div className="text-sm xl:text-base text-blue-100 font-medium">Rating</div>
+                    </div>
+                  </div>
+                </AnimatedSection>
               </div>
-            </AnimatedSection>
-          </div>
-        </div>
+            </div>
 
-        {/* Right Section - Email Sent */}
-        <div className="w-full lg:w-1/2 flex items-center justify-center p-4 sm:p-6 lg:p-8 xl:p-12">
-          <div className="w-full max-w-md xl:max-w-lg">
+            {/* Right Section - Email Sent */}
+            <div className="w-full lg:w-1/2 flex items-center justify-center p-4 sm:p-6 lg:p-8 xl:p-12">
+              <div className="w-full max-w-md xl:max-w-lg">
             {/* Mobile Logo */}
             <AnimatedSection animation="fadeInDown" delay={0} className="lg:hidden text-center mb-6 sm:mb-8">
               <div className="bg-gradient-to-br from-sky-500 via-blue-500 to-sky-600 rounded-2xl p-6 mb-6 shadow-xl">
@@ -268,6 +268,8 @@ const VerifyEmailSentPage = () => {
                 </div>
               </div>
             </AnimatedSection>
+          </div>
+            </div>
           </div>
         </div>
       </div>

@@ -360,7 +360,7 @@ const AdminUsersPage = () => {
       <div className="pl-2 pr-4 py-6">
         {/* Page Header */}
         <div className="mb-6">
-          <div className="bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 rounded-xl p-4 sm:p-6 text-white shadow-lg">
+          <div className="bg-gradient-to-r from-sky-600 via-sky-500 to-blue-600 rounded-xl p-4 sm:p-6 text-white shadow-lg">
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
               <div className="flex-1">
                 <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2">
@@ -375,13 +375,13 @@ const AdminUsersPage = () => {
                   <EnvelopeIcon className="h-5 w-5" />
                   {t('users.exportCSV')}
                 </Button>
-                                 <Button 
-                   className="flex items-center gap-2 bg-white text-blue-600 hover:bg-gray-100"
-                   onClick={handleAddUser}
-                 >
-                   <PlusIcon className="h-5 w-5" />
-                   {t('users.addNew')}
-                 </Button>
+                <Button 
+                  className="flex items-center gap-2 bg-white text-blue-600 hover:bg-gray-100"
+                  onClick={handleAddUser}
+                >
+                  <PlusIcon className="h-5 w-5" />
+                  {t('users.addNew')}
+                </Button>
               </div>
             </div>
           </div>

@@ -93,24 +93,7 @@ const HomePage = () => {
 	];
 
 	return (
-		<div className="relative z-10 min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-sky-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 overflow-x-hidden" style={{ maxWidth: '100vw', overflowX: 'hidden' }}>
-			<style jsx>{`
-				@media (max-width: 1024px) {
-					* {
-						max-width: 100vw !important;
-						overflow-x: hidden !important;
-					}
-					.container {
-						max-width: 100vw !important;
-						padding-left: 1rem !important;
-						padding-right: 1rem !important;
-					}
-					section {
-						max-width: 100vw !important;
-						overflow-x: hidden !important;
-					}
-				}
-			`}</style>
+		<div className="relative z-10 min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-sky-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900" style={{ maxWidth: '100vw' }}>
 			<Seo
 				title={t('seo.home.title', 'DentalKit - Premium Dental Supplies')}
 				description={t('seo.home.description', 'Discover cutting-edge dental equipment and supplies')}
@@ -149,14 +132,14 @@ const HomePage = () => {
 			</section>
 
 			{/* Categories */}
-			<section className="py-8 sm:py-12 lg:py-16 bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 overflow-hidden" style={{ maxWidth: '100vw', overflowX: 'hidden' }}>
+			<section className="py-8 sm:py-12 lg:py-16 bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-gray-800" style={{ maxWidth: '100vw' }}>
 				<div className="container mx-auto px-4 max-w-xs sm:max-w-sm md:max-w-md lg:max-w-6xl xl:max-w-7xl" style={{ maxWidth: '1500px', maxWidth: '100vw' }}>
 					<div className="text-center mb-8 sm:mb-12">
 						<h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-3 sm:mb-4">{t('home.categories.title')}</h2>
 						<p className="text-base sm:text-lg lg:text-xl text-gray-600 dark:text-gray-300 px-4">{t('home.categories.subtitle')}</p>
 					</div>
-					<div className="w-full overflow-hidden" style={{ maxWidth: '100vw', overflowX: 'hidden' }}>
-						<div ref={categoriesRef} className="flex gap-3 sm:gap-4 md:gap-6 overflow-x-auto snap-x snap-mandatory pb-2 scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600" style={{ scrollbarWidth: 'thin', maxWidth: '100%', overflowX: 'auto' }}>
+					<div className="w-full overflow-x-auto" style={{ maxWidth: '100vw', WebkitOverflowScrolling: 'touch', overscrollBehaviorX: 'contain' }}>
+						<div ref={categoriesRef} className="flex gap-3 sm:gap-4 md:gap-6 overflow-x-auto snap-x snap-mandatory pb-2 scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600" style={{ scrollbarWidth: 'thin', maxWidth: '100%', WebkitOverflowScrolling: 'touch' }}>
 							{categories.map((category) => {
 								const Icon = getCategoryIcon(category);
 								return (
@@ -181,14 +164,14 @@ const HomePage = () => {
 			</section>
 
 			{/* Featured Products */}
-			<section className="py-8 sm:py-12 lg:py-16 bg-white dark:bg-gray-800 overflow-hidden" style={{ maxWidth: '100vw', overflowX: 'hidden' }}>
+			<section className="py-8 sm:py-12 lg:py-16 bg-white dark:bg-gray-800" style={{ maxWidth: '100vw' }}>
 				<div className="container mx-auto px-4 max-w-xs sm:max-w-sm md:max-w-md lg:max-w-6xl xl:max-w-7xl" style={{ maxWidth: '1500px', maxWidth: '100vw' }}>
 					<div className="text-center mb-8 sm:mb-12">
 						<h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-3 sm:mb-4">{t('home.featured.title')}</h2>
 						<p className="text-base sm:text-lg lg:text-xl text-gray-600 dark:text-gray-300 px-4">{t('home.featured.subtitle')}</p>
 					</div>
-					<div className="w-full overflow-hidden" style={{ maxWidth: '100vw', overflowX: 'hidden' }}>
-						<div ref={featuredRef} className="flex gap-3 sm:gap-4 md:gap-6 overflow-x-auto snap-x snap-mandatory pb-2 scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600" style={{ scrollbarWidth: 'thin', maxWidth: '100%', overflowX: 'auto' }}>
+					<div className="w-full overflow-x-auto" style={{ maxWidth: '100vw', WebkitOverflowScrolling: 'touch', overscrollBehaviorX: 'contain' }}>
+						<div ref={featuredRef} className="flex gap-3 sm:gap-4 md:gap-6 overflow-x-auto snap-x snap-mandatory pb-2 scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600" style={{ scrollbarWidth: 'thin', maxWidth: '100%', WebkitOverflowScrolling: 'touch' }}>
 							{featuredProducts.map((product) => (
 								<div key={product.id || product._id} className="group snap-start w-[200px] sm:w-[240px] md:w-[280px] lg:w-[300px] min-w-[200px] sm:min-w-[240px] md:min-w-[280px] lg:min-w-[300px] max-w-[200px] sm:max-w-[240px] md:max-w-[280px] lg:max-w-[300px]">
 									<div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden h-[400px] sm:h-[420px] flex flex-col">

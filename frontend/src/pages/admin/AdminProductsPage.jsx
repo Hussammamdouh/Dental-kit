@@ -18,7 +18,8 @@ import {
   ShoppingBagIcon,
   CheckCircleIcon,
   TagIcon,
-  CubeIcon
+  CubeIcon,
+  UserGroupIcon
 } from '@heroicons/react/24/outline';
 import { getAllProducts, bulkProductOperations, createProduct, updateProduct, deleteProduct, getAllCategories, getAllVendors } from '../../services/adminApi';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
@@ -71,6 +72,29 @@ const AdminProductsPage = () => {
   const [categories, setCategories] = useState([]);
   const [vendors, setVendors] = useState([]);
 
+  // Lookup maps for category and vendor names
+  const categoryIdToName = useMemo(() => {
+    const map = {};
+    (categories || []).forEach((cat) => {
+      if (!cat) return;
+      const idCandidates = [cat.id, cat._id, cat.slug, cat.value, cat.code];
+      const label = currentLanguage === 'ar' ? (cat.nameAr || cat.name || cat.label) : (cat.name || cat.label || cat.nameAr);
+      idCandidates.filter(Boolean).forEach((k) => { map[k] = label; });
+    });
+    return map;
+  }, [categories, currentLanguage]);
+
+  const vendorIdToName = useMemo(() => {
+    const map = {};
+    (vendors || []).forEach((v) => {
+      if (!v) return;
+      const idCandidates = [v.id, v._id, v.slug, v.value, v.code];
+      const label = currentLanguage === 'ar' ? (v.nameAr || v.name || v.label) : (v.name || v.label || v.nameAr);
+      idCandidates.filter(Boolean).forEach((k) => { map[k] = label; });
+    });
+    return map;
+  }, [vendors, currentLanguage]);
+
   // Function to fetch all products with large limit
   const fetchProductsQuotaFriendly = async (params = {}) => {
     try {
@@ -99,13 +123,8 @@ const AdminProductsPage = () => {
         requestParams.status = selectedStatus.trim();
       }
       
-      console.log('Fetching products with params:', requestParams);
       const response = await getAllProducts(requestParams);
       const products = response.products || response || [];
-      
-      console.log(`Total products fetched: ${products.length}`);
-      console.log(`Response total: ${response.total}`);
-      console.log(`Response totalPages: ${response.totalPages}`);
       
       return products;
     } catch (err) {
@@ -239,22 +258,7 @@ const AdminProductsPage = () => {
     loadInitialData();
   }, []); // Empty dependency array - only runs once
 
-  // Handle filter changes - only refetch when filters actually change
-  useEffect(() => {
-    if (products.length > 0) { // Only refetch if we have initial data
-      const refetchProducts = async () => {
-        try {
-          const allProducts = await fetchProductsQuotaFriendly({ sortBy, sortOrder });
-          setProducts(allProducts);
-        } catch (err) {
-          console.error('Error refetching products:', err);
-          setError(err.message);
-        }
-      };
-      
-      refetchProducts();
-    }
-  }, [selectedCategory, selectedVendor, selectedStatus, searchTerm, sortBy, sortOrder, products.length]);
+  // No API refetch on filter changes - just filter the already loaded products
 
   // Filter and sort products when dependencies change
   useEffect(() => {
@@ -497,13 +501,13 @@ const AdminProductsPage = () => {
       <div className="pl-2 pr-4 py-6">
         {/* Page Header */}
         <div className="mb-6">
-          <div className="bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 rounded-xl p-4 sm:p-6 text-white shadow-lg">
+          <div className="bg-gradient-to-r from-sky-600 via-sky-500 to-blue-600 rounded-xl p-4 sm:p-6 text-white shadow-lg">
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
               <div className="flex-1">
                 <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2">
               {t('products.title')}
             </h1>
-                <p className="text-green-100 text-sm sm:text-base">
+                <p className="text-blue-100 text-sm sm:text-base">
               {t('products.subtitle')}
             </p>
           </div>
@@ -513,7 +517,7 @@ const AdminProductsPage = () => {
                   {t('products.exportCSV')}
             </Button>
             <Button
-                  className="flex items-center gap-2 bg-white text-green-600 hover:bg-gray-100"
+                  className="flex items-center gap-2 bg-white text-blue-600 hover:bg-gray-100"
                   onClick={handleAddProduct}
             >
               <PlusIcon className="h-5 w-5" />
@@ -746,6 +750,8 @@ const AdminProductsPage = () => {
               onViewProduct={handleViewProduct}
               onEditProduct={handleEditProduct}
               onDeleteProductClick={handleDeleteProductClick}
+              categoryIdToName={categoryIdToName}
+              vendorIdToName={vendorIdToName}
             />
         ) : (
                       <ProductsTableView
@@ -760,6 +766,8 @@ const AdminProductsPage = () => {
               onSort={handleSort}
               sortBy={sortBy}
               sortOrder={sortOrder}
+              categoryIdToName={categoryIdToName}
+              vendorIdToName={vendorIdToName}
             />
         )}
         </div>
@@ -1378,7 +1386,7 @@ const AdminProductsPage = () => {
 };
 
 // Products Grid View Component
-const ProductsGridView = ({ products, selectedProducts, onSelectProduct, onToggleStatus, onViewProduct, onEditProduct, onDeleteProductClick }) => {
+const ProductsGridView = ({ products, selectedProducts, onSelectProduct, onToggleStatus, onViewProduct, onEditProduct, onDeleteProductClick, categoryIdToName, vendorIdToName }) => {
   const { t } = useTranslation('admin');
   return (
     <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-6 mb-8">
@@ -1430,7 +1438,13 @@ const ProductsGridView = ({ products, selectedProducts, onSelectProduct, onToggl
                 <div className="p-1 bg-blue-50 dark:bg-blue-900/20 rounded-md">
                   <TagIcon className="h-3 w-3 text-blue-600 dark:text-blue-400" />
               </div>
-                <span className="truncate font-medium">{product.categoryName || product.category?.name || '-'}</span>
+                <span className="truncate font-medium">{product.categoryName || product.category?.name || categoryIdToName?.[product.categoryId] || '-'}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="p-1 bg-indigo-50 dark:bg-indigo-900/20 rounded-md">
+                  <UserGroupIcon className="h-3 w-3 text-indigo-600 dark:text-indigo-400" />
+                </div>
+                <span className="truncate font-medium">{product.vendorName || product.vendor?.name || vendorIdToName?.[product.vendorId] || '-'}</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="p-1 bg-purple-50 dark:bg-purple-900/20 rounded-md">
@@ -1510,7 +1524,7 @@ const ProductsGridView = ({ products, selectedProducts, onSelectProduct, onToggl
 };
 
 // Products Table View Component
-const ProductsTableView = ({ products, selectedProducts, onSelectAll, onSelectProduct, onToggleStatus, onViewProduct, onEditProduct, onDeleteProductClick, onSort, sortBy, sortOrder }) => {
+const ProductsTableView = ({ products, selectedProducts, onSelectAll, onSelectProduct, onToggleStatus, onViewProduct, onEditProduct, onDeleteProductClick, onSort, sortBy, sortOrder, categoryIdToName, vendorIdToName }) => {
   const { t } = useTranslation('admin');
   return (
     <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
@@ -1615,7 +1629,7 @@ const ProductsTableView = ({ products, selectedProducts, onSelectAll, onSelectPr
                   </div>
                 </td>
                 <td className="px-4 lg:px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
-                  {product.categoryName || product.category?.name || '-'}
+                  {product.categoryName || product.category?.name || (categoryIdToName ? categoryIdToName[product.categoryId] : undefined) || '-'}
                 </td>
                 <td className="px-4 lg:px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
                   ${product.price}
@@ -1632,7 +1646,7 @@ const ProductsTableView = ({ products, selectedProducts, onSelectAll, onSelectPr
                   </span>
                 </td>
                 <td className="px-4 lg:px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
-                  {product.vendorName || product.vendor?.name || '-'}
+                  {product.vendorName || product.vendor?.name || (vendorIdToName ? vendorIdToName[product.vendorId] : undefined) || '-'}
                 </td>
                 <td className="px-4 lg:px-6 py-4 whitespace-nowrap">
                   <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
@@ -1778,12 +1792,12 @@ const ProductsTableView = ({ products, selectedProducts, onSelectAll, onSelectPr
                       {t('products.stock')}: {product.stock}
                     </span>
                     <span className="truncate">
-                      {t('products.category')}: {product.categoryName || product.category?.name || '-'}
+                      {t('products.category')}: {product.categoryName || product.category?.name || (categoryIdToName ? categoryIdToName[product.categoryId] : undefined) || '-'}
                     </span>
                   </div>
                   
                   <div className="text-xs text-gray-500 dark:text-gray-400 truncate">
-                    {t('products.vendor')}: {product.vendorName || product.vendor?.name || '-'}
+                    {t('products.vendor')}: {product.vendorName || product.vendor?.name || (vendorIdToName ? vendorIdToName[product.vendorId] : undefined) || '-'}
                   </div>
                 </div>
               </div>

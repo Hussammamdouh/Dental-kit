@@ -5,70 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Order Confirmation - {{orderNumber}}</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        .header {
-            background: linear-gradient(135deg, #0d9488, #14b8a6);
-            color: white;
-            padding: 30px;
-            text-align: center;
-            border-radius: 10px 10px 0 0;
-        }
-        .content {
-            background: #f8fafc;
-            padding: 30px;
-            border-radius: 0 0 10px 10px;
-        }
-        .order-details {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            margin: 20px 0;
-        }
-        .item {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px 0;
-            border-bottom: 1px solid #e5e7eb;
-        }
-        .item:last-child {
-            border-bottom: none;
-        }
-        .total {
-            font-weight: bold;
-            font-size: 18px;
-            color: #0d9488;
-        }
-        .button {
-            display: inline-block;
-            background: #0d9488;
-            color: white;
-            padding: 12px 24px;
-            text-decoration: none;
-            border-radius: 6px;
-            margin: 10px 0;
-        }
-        .footer {
-            text-align: center;
-            margin-top: 30px;
-            color: #6b7280;
-            font-size: 14px;
-        }
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #0f172a; background: #f8fafc; margin: 0; padding: 24px; }
+        .container { max-width: 640px; margin: 0 auto; background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(2,6,23,0.06); }
+        .header { background: linear-gradient(135deg, #0ea5e9, #0369a1); color: #ffffff; padding: 28px 28px; text-align: center; }
+        .content { padding: 28px; }
+        .order-details { background: #ffffff; padding: 20px; border-radius: 8px; margin: 20px 0; border: 1px solid #e2e8f0; }
+        .item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #e5e7eb; }
+        .item:last-child { border-bottom: none; }
+        .total { font-weight: bold; font-size: 18px; color: #0369a1; }
+        .button { display: inline-block; background: #0ea5e9; color: #ffffff !important; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 10px 0; font-weight: 600; }
+        .footer { text-align: center; margin-top: 30px; color: #64748b; font-size: 14px; padding: 0 28px 28px; }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>🎉 Order Confirmed!</h1>
-        <p>Thank you for your purchase</p>
-    </div>
-    
-    <div class="content">
+    <div class="container">
+      <div class="header">
+        <h1 style="margin:0; font-size:24px;">🎉 Order confirmed</h1>
+        <p style="margin:8px 0 0; opacity:.95;">Thank you for your purchase</p>
+      </div>
+
+      <div class="content">
         <h2>Hello {{customerName}},</h2>
         
         <p>Your order has been successfully placed and confirmed. Here are your order details:</p>
@@ -118,21 +74,22 @@
         </p>
         
         <div style="text-align: center; margin: 30px 0;">
-            <a href="{{orderUrl}}" class="button">View Order Details</a>
+            <a href="{{orderUrl}}" class="button">View order details</a>
         </div>
         
         <p><strong>Estimated Delivery:</strong> {{estimatedDelivery}}</p>
         
         <p>We'll send you updates about your order status via email. You can also track your order through your account dashboard.</p>
         
-        <p>If you have any questions, please don't hesitate to contact our customer support team.</p>
+        <p>If you have any questions, please contact our customer support team.</p>
         
-        <p>Thank you for choosing DentalKit!</p>
-        
-        <div class="footer">
-            <p>© 2024 DentalKit. All rights reserved.</p>
-            <p>This email was sent to {{customerEmail}}</p>
-        </div>
+        <p>Thank you for choosing DentalKit.</p>
+
+      </div>
+      <div class="footer">
+        <p>© {{year}} DentalKit. All rights reserved.</p>
+        <p>This email was sent to {{customerEmail}}</p>
+      </div>
     </div>
 </body>
 </html> 

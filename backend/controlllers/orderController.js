@@ -146,6 +146,22 @@ exports.createOrder = async (req, res) => {
           customerEmail: req.user.email
         }
       });
+
+      // Notify admin about the new order
+      await sendEmail({
+        to: 'artcode-admin@dentalkit.org',
+        subject: `New order received - ${order.id}`,
+        template: 'new-order-notification',
+        context: {
+          orderNumber: order.id,
+          customerName: `${orderData?.shippingAddress?.firstName || req.user.firstName || ''} ${orderData?.shippingAddress?.lastName || req.user.lastName || ''}`.trim() || req.user.email,
+          customerEmail: req.user.email,
+          orderTotal: total.toFixed(2),
+          itemCount: validatedItems.length,
+          orderDate: new Date(order.createdAt || Date.now()).toLocaleString(),
+          orderUrl
+        }
+      });
     } catch (emailErr) {
       console.warn('Order confirmation email failed:', emailErr.message);
     }
