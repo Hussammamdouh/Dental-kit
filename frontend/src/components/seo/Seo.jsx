@@ -19,7 +19,7 @@ export const Seo = ({
     if (image) return image;
     const baseUrl = (typeof window !== 'undefined')
       ? window.location.origin
-      : (import.meta?.env?.VITE_SITE_URL || 'https://dental-website-frontend.vercel.app');
+      : (import.meta?.env?.VITE_SITE_URL || 'https://dentalkit.org');
     return `${baseUrl}/OG.png`;
   })();
   const hrefLangs = (() => {
