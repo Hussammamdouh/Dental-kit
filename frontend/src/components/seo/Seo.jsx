@@ -17,7 +17,10 @@ export const Seo = ({
   const resolvedTitle = title ? `${title} | ${siteName}` : siteName;
   const autoOg = (() => {
     if (image) return image;
-    return '/OG.png';
+    const baseUrl = (typeof window !== 'undefined')
+      ? window.location.origin
+      : (import.meta?.env?.VITE_SITE_URL || 'https://dental-website-frontend.vercel.app');
+    return `${baseUrl}/OG.png`;
   })();
   const hrefLangs = (() => {
     if (alternates && Array.isArray(alternates)) return alternates;
