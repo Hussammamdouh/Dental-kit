@@ -17,12 +17,7 @@ export const Seo = ({
   const resolvedTitle = title ? `${title} | ${siteName}` : siteName;
   const autoOg = (() => {
     if (image) return image;
-    if (typeof window === 'undefined') return 'https://dental-website-frontend.vercel.app/LogoLightmode.png';
-    const u = new URL(window.location.href);
-    const titleParam = (new URLSearchParams(u.search)).get('title') || title || siteName;
-    const theme = (new URLSearchParams(u.search)).get('theme') || 'light';
-    const base = (import.meta?.env?.VITE_API_BASE_URL || '/api');
-    return `${base}/og/image?title=${encodeURIComponent(titleParam)}&subtitle=${encodeURIComponent(description || '')}&theme=${encodeURIComponent(theme)}&image=${encodeURIComponent('https://dental-website-frontend.vercel.app/LogoLightmode.png')}`;
+    return '/OG.png';
   })();
   const hrefLangs = (() => {
     if (alternates && Array.isArray(alternates)) return alternates;

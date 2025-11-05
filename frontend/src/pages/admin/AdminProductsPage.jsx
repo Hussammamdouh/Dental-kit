@@ -37,7 +37,8 @@ const AdminProductsPage = () => {
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
-  const [selectedStatus, setSelectedStatus] = useState('');
+  const [selectedStatus, setSelectedStatus] = useState('active');
+  const [activeTab, setActiveTab] = useState('active'); // 'active' | 'archived'
   const [selectedVendor, setSelectedVendor] = useState('');
   const [priceRange, setPriceRange] = useState({ min: '', max: '' });
   const [stockRange, setStockRange] = useState({ min: '', max: '' });
@@ -528,8 +529,27 @@ const AdminProductsPage = () => {
             </div>
           </div>
 
-        {/* Filters and Search - Mobile Responsive */}
+        {/* Tabs + Filters and Search - Mobile Responsive */}
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6 mb-6">
+          {/* Tabs */}
+          <div className="mb-4">
+            <div className="inline-flex rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700">
+              <button
+                type="button"
+                onClick={() => { setActiveTab('active'); setSelectedStatus('active'); setCurrentPage(1); }}
+                className={`${activeTab === 'active' ? 'bg-blue-600 text-white' : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200'} px-4 py-2 text-sm font-medium focus:outline-none`}
+              >
+                {t('products.active')} ({stats.active})
+              </button>
+              <button
+                type="button"
+                onClick={() => { setActiveTab('archived'); setSelectedStatus('inactive'); setCurrentPage(1); }}
+                className={`${activeTab === 'archived' ? 'bg-blue-600 text-white' : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200'} px-4 py-2 text-sm font-medium border-l border-gray-200 dark:border-gray-700 focus:outline-none`}
+              >
+                Archived ({Math.max(0, (stats.total || 0) - (stats.active || 0))})
+              </button>
+            </div>
+          </div>
           <div className="space-y-4">
             {/* Search and Filter Toggle */}
             <div className="flex flex-col sm:flex-row gap-4">
@@ -594,16 +614,7 @@ const AdminProductsPage = () => {
               })}
             </select>
 
-            {/* Status Filter */}
-            <select
-              value={selectedStatus}
-              onChange={handleStatusFilter}
-                  className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:text-white"
-            >
-              <option value="">{t('products.allStatuses')}</option>
-              <option value="active">{t('products.active')}</option>
-              <option value="inactive">{t('products.inactive')}</option>
-            </select>
+            {/* Status Filter replaced by tabs (Active / Archived) */}
 
                 {/* Sort By */}
                   <select
@@ -709,14 +720,14 @@ const AdminProductsPage = () => {
                     variant="outline"
                     onClick={() => handleBulkOperation('activate')}
                   >
-                    {t('products.activate')}
+                    Unarchive
                   </Button>
                   <Button
                     size="sm"
                     variant="outline"
                     onClick={() => handleBulkOperation('deactivate')}
                   >
-                    {t('products.deactivate')}
+                    Archive
                   </Button>
                   <Button
                     size="sm"
@@ -1316,7 +1327,7 @@ const AdminProductsPage = () => {
                         ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
                         : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
                     }`}>
-                      {selectedProduct.isActive ? t('products.active') : t('products.inactive')}
+                      {selectedProduct.isActive ? t('products.active') : 'Archived'}
                     </span>
                   </div>
                   
@@ -1418,7 +1429,7 @@ const ProductsGridView = ({ products, selectedProducts, onSelectProduct, onToggl
                   ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-200'
                   : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-200'
               }`}>
-                {product.isActive ? t('products.active') : t('products.inactive')}
+                {product.isActive ? t('products.active') : 'Archived'}
               </span>
             </div>
             {/* Gradient overlay for better text readability */}
@@ -1483,7 +1494,7 @@ const ProductsGridView = ({ products, selectedProducts, onSelectProduct, onToggl
                 <button
                   onClick={() => onToggleStatus(product.id, product.isActive)}
                     className="p-1.5 text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 shadow-sm hover:shadow-md"
-                  title={product.isActive ? t('products.deactivate') : t('products.activate')}
+                  title={product.isActive ? 'Archive' : 'Unarchive'}
                 >
                   {product.isActive ? (
                     <XMarkIcon className="h-4 w-4" />
@@ -1654,7 +1665,7 @@ const ProductsTableView = ({ products, selectedProducts, onSelectAll, onSelectPr
                       ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
                       : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
                   }`}>
-                    {product.isActive ? t('products.active') : t('products.inactive')}
+                    {product.isActive ? t('products.active') : 'Archived'}
                   </span>
                 </td>
                 <td className="px-4 lg:px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -1662,7 +1673,7 @@ const ProductsTableView = ({ products, selectedProducts, onSelectAll, onSelectPr
                     <button
                       onClick={() => onToggleStatus(product.id, product.isActive)}
                       className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
-                      title={product.isActive ? t('products.deactivate') : t('products.activate')}
+                      title={product.isActive ? 'Archive' : 'Unarchive'}
                     >
                       {product.isActive ? (
                         <XMarkIcon className="h-4 w-4" />
@@ -1734,7 +1745,7 @@ const ProductsTableView = ({ products, selectedProducts, onSelectAll, onSelectPr
                     <button
                       onClick={() => onToggleStatus(product.id, product.isActive)}
                       className="p-1.5 text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 rounded-md hover:bg-blue-50 dark:hover:bg-blue-900/20"
-                      title={product.isActive ? t('products.deactivate') : t('products.activate')}
+                      title={product.isActive ? 'Archive' : 'Unarchive'}
                     >
                       {product.isActive ? (
                         <XMarkIcon className="h-4 w-4" />
@@ -1776,7 +1787,7 @@ const ProductsTableView = ({ products, selectedProducts, onSelectAll, onSelectPr
                         ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
                         : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
                     }`}>
-                      {product.isActive ? t('products.active') : t('products.inactive')}
+                      {product.isActive ? t('products.active') : 'Archived'}
                     </span>
                   </div>
                   
