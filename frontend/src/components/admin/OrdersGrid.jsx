@@ -4,7 +4,8 @@ import {
   EyeIcon,
   TrashIcon,
   UserIcon,
-  CalendarIcon
+  CalendarIcon,
+  CreditCardIcon
 } from '@heroicons/react/24/outline';
 
 const OrdersGrid = ({ 
@@ -77,9 +78,14 @@ const OrdersGrid = ({
             {/* Amount */}
             <div className="flex items-center justify-between">
               <span className="text-sm text-gray-600 dark:text-gray-400">{t('orders.amount')}</span>
-              <span className="text-lg font-bold text-gray-900 dark:text-white">
-                {formatCurrency(order.total)}
-              </span>
+              <div className="flex items-center space-x-2">
+                <span className="text-lg font-bold text-gray-900 dark:text-white">
+                  {formatCurrency(order.total)}
+                </span>
+                {(order.shakeoutInvoiceId || order.shakeoutInvoiceUrl) && (
+                  <CreditCardIcon className="h-4 w-4 text-teal-600 dark:text-teal-400" title="Invoice Available" />
+                )}
+              </div>
             </div>
 
             {/* Items */}

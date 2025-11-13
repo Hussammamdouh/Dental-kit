@@ -38,6 +38,11 @@ import CartPage from './pages/CartPage';
 import CheckoutPage from './pages/CheckoutPage';
 import OrderConfirmationPage from './pages/OrderConfirmationPage';
 import OrdersPage from './pages/OrdersPage';
+import PaymentPage from './pages/payment/PaymentPage';
+import PaymentSuccessPage from './pages/payment/PaymentSuccessPage';
+import PaymentFailPage from './pages/payment/PaymentFailPage';
+import PaymentPendingPage from './pages/payment/PaymentPendingPage';
+import PaymentMethodsPage from './pages/PaymentMethodsPage';
 import CategoriesPage from './pages/CategoriesPage';
 import NotFoundPage from './pages/NotFoundPage';
 import UnauthorizedPage from './pages/UnauthorizedPage';
@@ -286,6 +291,41 @@ function App() {
                         <Route path="/orders/:orderId" element={
                           <ProtectedRoute>
                             <OrderConfirmationPage />
+                          </ProtectedRoute>
+                        } />
+                        
+                        {/* Payment Routes */}
+                        <Route path="/payment" element={
+                          <ProtectedRoute>
+                            <Layout>
+                              <PaymentPage />
+                            </Layout>
+                          </ProtectedRoute>
+                        } />
+                        
+                        <Route path="/payment/success" element={
+                          <Layout>
+                            <PaymentSuccessPage />
+                          </Layout>
+                        } />
+                        
+                        <Route path="/payment/fail" element={
+                          <Layout>
+                            <PaymentFailPage />
+                          </Layout>
+                        } />
+                        
+                        <Route path="/payment/pending" element={
+                          <Layout>
+                            <PaymentPendingPage />
+                          </Layout>
+                        } />
+                        
+                        <Route path="/payment-methods" element={
+                          <ProtectedRoute>
+                            <Layout>
+                              <PaymentMethodsPage />
+                            </Layout>
                           </ProtectedRoute>
                         } />
                         

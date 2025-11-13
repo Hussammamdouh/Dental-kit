@@ -369,21 +369,84 @@
   },
   "checkout": {
     "title": "إتمام الطلب",
+    "subtitle": "أكمل عملية الشراء بأمان",
     "orderPlaced": "تم تقديم الطلب بنجاح!",
+    "steps": {
+      "shipping": "الشحن",
+      "billing": "الفوترة",
+      "payment": "الدفع",
+      "review": "المراجعة"
+    },
+    "payment": {
+      "title": "طريقة الدفع",
+      "subtitle": "اختر طريقة الدفع التي تفضلها",
+      "securePayment": "دفع آمن ومشفر",
+      "password": "كلمة المرور",
+      "creditCard": "بطاقة ائتمان / خصم",
+      "creditDebitCard": "بطاقة ائتمان / خصم",
+      "paypal": "PayPal",
+      "cashOnDelivery": "الدفع عند الاستلام",
+      "bankTransfer": "تحويل بنكي",
+      "payWhenReceive": "ادفع عند استلام طلبك",
+      "gatewayRedirect": "سيتم توجيهك إلى بوابة الدفع الآمنة لإكمال عملية الدفع.",
+      "paymentInfo": "معلومات بطاقتك محمية بتشفير معياري في الصناعة.",
+      "cardholderName": "اسم حامل البطاقة",
+      "cardNumber": "رقم البطاقة",
+      "expiryDate": "تاريخ الانتهاء",
+      "cvv": "CVV"
+    },
+    "billing": {
+      "title": "معلومات الفوترة",
+      "subtitle": "تفاصيل الفوترة لطريقة الدفع الخاصة بك",
+      "sameAsShipping": "عنوان الفوترة هو نفسه عنوان الشحن"
+    },
+    "shipping": {
+      "title": "معلومات الشحن",
+      "subtitle": "إلى أين يجب أن نرسل طلبك؟",
+      "useDefaultAddress": "استخدم عنواني الافتراضي",
+      "firstName": "الاسم الأول",
+      "lastName": "اسم العائلة",
+      "company": "الشركة (اختياري)",
+      "phone": "رقم الهاتف",
+      "address1": "عنوان السطر 1",
+      "address2": "عنوان السطر 2 (اختياري)",
+      "city": "المدينة",
+      "state": "المحافظة / الولاية",
+      "country": "الدولة",
+      "zipCode": "الرمز البريدي"
+    },
     "shippingMethod": {
+      "title": "طريقة الشحن",
+      "subtitle": "اختر خيار التسليم الذي يناسبك",
       "standard": "الشحن العادي",
       "express": "الشحن السريع",
       "overnight": "الشحن الليلي",
-      "pickup": "استلام من المتجر"
+      "pickup": "استلام من المتجر",
+      "free": "مجاني",
+      "deliveryTime": "التسليم: {{time}}"
     },
+    "orderSummary": {
+      "title": "ملخص الطلب",
+      "subtitle": "راجع تفاصيل طلبك",
+      "items": "العناصر",
+      "shipping": "الشحن",
+      "tax": "الضريبة",
+      "total": "الإجمالي",
+      "orderProtection": "حماية الطلب"
+    },
+    "customerNotes": "ملاحظات العميل",
+    "customerNotesPlaceholder": "أضف أي ملاحظات تسليم أو تعليمات خاصة (اختياري)",
+    "placeOrder": "تقديم الطلب",
     "error": {
       "title": "خطأ في إتمام الطلب",
       "placingOrder": "فشل في تقديم الطلب"
-    }
+    },
+    "processing": "جاري معالجة طلبك..."
   },
   "profile": {
     "title": "ملفي الشخصي",
     "subtitle": "إدارة إعدادات حسابك وتفضيلاتك",
+    "cancel": "إلغاء",
     "personalInfo": "المعلومات الشخصية",
     "firstName": "الاسم الأول",
     "lastName": "اسم العائلة",

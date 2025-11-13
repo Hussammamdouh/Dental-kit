@@ -22,7 +22,7 @@ const CheckoutNavigation = ({
           className="flex items-center px-4 sm:px-6 py-2.5 sm:py-3 text-sm sm:text-base"
         >
           <ChevronLeftIcon className="w-4 h-4 mr-2" />
-          {t('profile.cancel')}
+          {t('common.back')}
         </Button>
       )}
       

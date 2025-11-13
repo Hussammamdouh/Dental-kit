@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTranslation } from '../../hooks/useTranslation';
 import { ShoppingCartIcon, ShieldCheckIcon } from '@heroicons/react/24/outline';
+import { getImageUrl } from '../../utils/imageUtils';
 
 const CheckoutOrderSummary = ({ cart, orderSummary }) => {
   const { t } = useTranslation('ecommerce');
@@ -8,7 +9,7 @@ const CheckoutOrderSummary = ({ cart, orderSummary }) => {
   const formatPrice = (price) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'USD'
+      currency: 'EGP',
     }).format(price);
   };
 
@@ -34,12 +35,13 @@ const CheckoutOrderSummary = ({ cart, orderSummary }) => {
       {/* Cart Items */}
       <div className="space-y-3 sm:space-y-4 mb-4 sm:mb-6">
         {cart.map((item) => (
-          <div key={item.productId} className="flex items-center space-x-2 sm:space-x-3">
+          <div key={item.productId || item.id} className="flex items-center space-x-2 sm:space-x-3">
             <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden flex-shrink-0">
               <img
-                src={item.image || '/placeholder-product.svg'}
-                alt={item.name}
+                src={getImageUrl(item.image)}
+                alt={item.name || 'Product'}
                 className="w-full h-full object-cover"
+                onError={(e) => { e.currentTarget.src = '/placeholder-product.svg'; }}
               />
             </div>
             <div className="flex-1 min-w-0">

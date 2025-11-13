@@ -1,10 +1,13 @@
 const OrderService = require('../services/orderService');
 const CartService = require('../services/cartService');
 const ProductService = require('../services/productService');
+const ShakeoutService = require('../services/shakeoutService');
+const UserService = require('../services/userService');
 
 const orderService = new OrderService();
 const cartService = new CartService();
 const productService = new ProductService();
+const shakeoutService = new ShakeoutService();
 
 // Get user orders
 exports.getUserOrders = async (req, res) => {
@@ -121,6 +124,92 @@ exports.createOrder = async (req, res) => {
       await productService.updateStock(item.productId, item.quantity, 'decrease');
     }
 
+    // Create Shakeout invoice if payment method is shakeout
+    let shakeoutInvoiceData = null;
+    if (orderData.paymentMethod === 'shakeout') {
+      let customer = null; // Declare outside try block for error logging
+      try {
+        const userService = new UserService();
+        const user = await userService.getById(userId);
+        
+        // Prepare customer information
+        customer = {
+          firstName: orderData.shippingAddress?.firstName || user?.firstName || 'Customer',
+          lastName: orderData.shippingAddress?.lastName || user?.lastName || '',
+          email: req.user.email,
+          phone: orderData.shippingAddress?.phone || user?.phone || '+201000000000',
+          address: orderData.shippingAddress?.address1 || 
+                   `${orderData.shippingAddress?.city || ''} ${orderData.shippingAddress?.state || ''}`.trim() || 
+                   'Address not provided'
+        };
+
+        // Prepare invoice items
+        const invoiceItems = validatedItems.map(item => ({
+          name: item.name || 'Product',
+          price: item.price || 0,
+          quantity: item.quantity || 1
+        }));
+
+        // Calculate due date (7 days from now)
+        const dueDate = new Date();
+        dueDate.setDate(dueDate.getDate() + 7);
+        
+        // Format due date as YYYY-MM-DD for Shakeout API
+        const formattedDueDate = dueDate.toISOString().split('T')[0];
+
+        // Prepare redirection URLs
+        const baseUrl = process.env.FRONTEND_URL || process.env.CLIENT_URL || 'http://localhost:3000';
+        const redirectionUrls = {
+          successUrl: `${baseUrl}/payment/success?orderId=${order.id}`,
+          failUrl: `${baseUrl}/payment/fail?orderId=${order.id}`,
+          pendingUrl: `${baseUrl}/payment/pending?orderId=${order.id}`
+        };
+
+        // Create invoice in Shakeout
+        const invoiceResult = await shakeoutService.createInvoice({
+          amount: total,
+          currency: 'EGP',
+          dueDate: formattedDueDate,
+          customer: customer,
+          redirectionUrls: redirectionUrls,
+          invoiceItems: invoiceItems,
+          taxEnabled: tax > 0,
+          taxValue: tax > 0 ? ((tax / subtotal) * 100) : undefined,
+          discountEnabled: discount > 0,
+          discountType: 'fixed',
+          discountValue: discount
+        });
+
+        // Update order with invoice details
+        await orderService.updateOrder(order.id, {
+          shakeoutInvoiceId: invoiceResult.invoiceId,
+          shakeoutInvoiceRef: invoiceResult.invoiceRef,
+          shakeoutInvoiceUrl: invoiceResult.invoiceUrl
+        });
+
+        shakeoutInvoiceData = {
+          invoiceUrl: invoiceResult.invoiceUrl,
+          invoiceId: invoiceResult.invoiceId,
+          invoiceRef: invoiceResult.invoiceRef
+        };
+      } catch (shakeoutError) {
+        console.error('Shakeout invoice creation error:', shakeoutError);
+        console.error('Error details:', {
+          message: shakeoutError.message,
+          stack: shakeoutError.stack,
+          orderId: order.id,
+          paymentMethod: orderData.paymentMethod,
+          customer: customer || 'Not initialized',
+          invoiceItemsCount: validatedItems.length,
+          total: total,
+          subtotal: subtotal,
+          tax: tax
+        });
+        // Don't fail the order creation if invoice creation fails
+        // The user can create the invoice later via the payment endpoint
+      }
+    }
+
     // Send order confirmation email (non-blocking)
     try {
       const sendEmail = require('../utils/email');
@@ -168,7 +257,13 @@ exports.createOrder = async (req, res) => {
 
     // Note: Cart clearing is handled by frontend after successful order
 
-    res.status(201).json({ order });
+    // Include Shakeout invoice data in response if available
+    const response = { order };
+    if (shakeoutInvoiceData) {
+      response.shakeoutInvoice = shakeoutInvoiceData;
+    }
+
+    res.status(201).json(response);
   } catch (error) {
     console.error('Create order error:', error);
     res.status(500).json({ message: 'Error creating order' });

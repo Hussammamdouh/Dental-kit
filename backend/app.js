@@ -5,7 +5,13 @@ const compression = require('compression');
 const rateLimit = require('express-rate-limit');
 const cookieParser = require('cookie-parser');
 const path = require('path');
-require('dotenv').config();
+// Only load dotenv in local development (not in Vercel/production)
+if (!process.env.VERCEL && process.env.NODE_ENV !== 'production') {
+  require('dotenv').config();
+  console.log('📝 Loaded .env file (local development)');
+} else if (process.env.VERCEL) {
+  console.log('☁️  Running on Vercel - using environment variables from Vercel Dashboard');
+}
 const i18n = require('i18n');
 
 // Import services and middleware
@@ -43,25 +49,35 @@ const itRoutes = require('./routes/it');
 const ogRoutes = require('./routes/og');
 const itAuthRoutes = require('./routes/it-auth');
 const languageRoutes = require('./routes/language');
+const paymentRoutes = require('./routes/payments');
+const paymentProfileRoutes = require('./routes/paymentProfiles');
 
 const app = express();
 
 // Enhanced environment variable validation
+// Note: Firebase uses FIREBASE_ADMIN_* prefix, not FIREBASE_*
 const requiredEnvVars = [
   'JWT_SECRET',
-  'FIREBASE_PROJECT_ID',
-  'FIREBASE_PRIVATE_KEY_ID',
-  'FIREBASE_PRIVATE_KEY',
-  'FIREBASE_CLIENT_EMAIL',
-  'FIREBASE_CLIENT_ID'
+  'FIREBASE_ADMIN_PROJECT_ID',
+  'FIREBASE_ADMIN_PRIVATE_KEY_ID',
+  'FIREBASE_ADMIN_PRIVATE_KEY',
+  'FIREBASE_ADMIN_CLIENT_EMAIL',
+  'FIREBASE_ADMIN_CLIENT_ID'
 ];
 
 const missingEnvVars = requiredEnvVars.filter(varName => !process.env[varName]);
 
 if (missingEnvVars.length > 0) {
   console.error('❌ Missing required environment variables:', missingEnvVars);
-  console.error('Please check your .env file and ensure all required variables are set.');
-  process.exit(1);
+  if (process.env.VERCEL) {
+    console.error('⚠️  Running on Vercel - Please set these variables in Vercel Dashboard → Project Settings → Environment Variables');
+  } else {
+    console.error('Please check your .env file and ensure all required variables are set.');
+  }
+  // Don't exit in Vercel - let it fail gracefully so we can see the error
+  if (!process.env.VERCEL) {
+    process.exit(1);
+  }
 }
 
 // Warning for development JWT secret
@@ -217,6 +233,14 @@ app.use(i18n.init);
 app.use(languageMiddleware.languageDetection);
 app.use(languageMiddleware.rtlSupport);
 
+// Request logging middleware (for Vercel debugging)
+if (process.env.VERCEL || process.env.NODE_ENV === 'production') {
+  app.use((req, res, next) => {
+    console.log(`[Vercel] ${req.method} ${req.url} - Original: ${req.originalUrl} - Path: ${req.path}`);
+    next();
+  });
+}
+
 // CSRF token issuance on all requests (sets X-CSRF-Token header)
 app.use(csrfMiddleware.generateAndSendCSRFToken);
 
@@ -231,12 +255,22 @@ app.use((req, res, next) => {
 // CSRF protection for non-GET requests (OPTIONS already handled)
 app.use(csrfMiddleware.csrfProtection);
 
-// Static files with caching headers
-app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {
-  maxAge: '1d',
-  etag: true,
-  lastModified: true
-}));
+// Static files with caching headers (only in local development)
+// In Vercel/serverless, files should be served from Cloudinary, not local storage
+if (!process.env.VERCEL && !process.env.AWS_LAMBDA_FUNCTION_NAME) {
+  const uploadsPath = path.join(__dirname, 'uploads');
+  try {
+    if (require('fs').existsSync(uploadsPath)) {
+      app.use('/uploads', express.static(uploadsPath, {
+        maxAge: '1d',
+        etag: true,
+        lastModified: true
+      }));
+    }
+  } catch (error) {
+    console.warn('⚠️  Could not serve static uploads directory:', error.message);
+  }
+}
 
 // Health check endpoints
 app.get('/api/health', async (req, res) => {
@@ -376,6 +410,8 @@ app.use('/api/vendors', vendorRoutes);
 app.use('/api/comparisons', comparisonRoutes);
 app.use('/api/packages', packageRoutes);
 app.use('/api/admin', authMiddleware, adminRoutes);
+app.use('/api/payments', paymentRoutes);
+app.use('/api/payment-profiles', paymentProfileRoutes);
 app.use('/api/it', itRoutes);
 app.use('/api/it-auth', itAuthRoutes);
 app.use('/api/language', languageRoutes);

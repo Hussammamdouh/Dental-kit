@@ -4,10 +4,17 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { useTranslation } from '../hooks/useTranslation';
 import { useNavigate } from 'react-router-dom';
+import {
+  DocumentArrowDownIcon,
+  ArrowTopRightOnSquareIcon,
+  CreditCardIcon
+} from '@heroicons/react/24/outline';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
 import Button from '../components/ui/Button';
 import api, { endpoints } from '../services/api';
 import { getImageUrl } from '../utils/imageUtils';
+import { PDFGenerator } from '../utils/pdfGenerator';
+import { toast } from 'react-hot-toast';
 
 const OrdersPage = () => {
   const { t } = useTranslation('ecommerce');
@@ -18,6 +25,7 @@ const OrdersPage = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [downloadingInvoices, setDownloadingInvoices] = useState({});
 
   useEffect(() => {
     let active = true;
@@ -35,6 +43,37 @@ const OrdersPage = () => {
     })();
     return () => { active = false; };
   }, []);
+
+  // Download invoice
+  const downloadInvoice = async (order) => {
+    try {
+      setDownloadingInvoices(prev => ({ ...prev, [order.id]: true }));
+      
+      // If order has Shakeout invoice URL, open it
+      if (order.shakeoutInvoiceUrl) {
+        window.open(order.shakeoutInvoiceUrl, '_blank');
+        toast.success('Opening invoice in new tab');
+        return;
+      }
+
+      // Otherwise, generate PDF invoice
+      const pdfGenerator = new PDFGenerator();
+      const pdfDoc = pdfGenerator.generateInvoice(order);
+      pdfDoc.save(`invoice-${order.id || order.orderNumber || 'order'}.pdf`);
+      
+      toast.success('Invoice downloaded successfully');
+    } catch (err) {
+      console.error('Invoice download error:', err);
+      toast.error('Failed to download invoice');
+    } finally {
+      setDownloadingInvoices(prev => ({ ...prev, [order.id]: false }));
+    }
+  };
+
+  // Check if order has invoice
+  const hasInvoice = (order) => {
+    return order.shakeoutInvoiceId || order.shakeoutInvoiceUrl || order.shakeoutInvoiceRef;
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-sky-50 via-blue-50 to-sky-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
@@ -116,6 +155,48 @@ const OrdersPage = () => {
                     <div className="text-sm text-gray-600 dark:text-gray-300">{t('orders.orderTotal') || t('orders.orderSummary.total', 'Total')}</div>
                     <div className="text-lg font-bold text-gray-900 dark:text-white">{(order.total || 0).toFixed(2)} EGP</div>
                   </div>
+
+                  {/* Invoice Section */}
+                  {hasInvoice(order) && (
+                    <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-2">
+                          <CreditCardIcon className="w-4 h-4 text-gray-500" />
+                          <span className="text-xs text-gray-600 dark:text-gray-400">Invoice Available</span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          {order.shakeoutInvoiceUrl && (
+                            <a
+                              href={order.shakeoutInvoiceUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-xs text-teal-600 hover:text-teal-700 dark:text-teal-400 dark:hover:text-teal-300 flex items-center"
+                            >
+                              <ArrowTopRightOnSquareIcon className="w-3 h-3 mr-1" />
+                              View
+                            </a>
+                          )}
+                          <button
+                            onClick={() => downloadInvoice(order)}
+                            disabled={downloadingInvoices[order.id]}
+                            className="text-xs text-teal-600 hover:text-teal-700 dark:text-teal-400 dark:hover:text-teal-300 flex items-center disabled:opacity-50"
+                          >
+                            {downloadingInvoices[order.id] ? (
+                              <>
+                                <LoadingSpinner size="xs" className="mr-1" />
+                                Downloading...
+                              </>
+                            ) : (
+                              <>
+                                <DocumentArrowDownIcon className="w-3 h-3 mr-1" />
+                                Download
+                              </>
+                            )}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
                 <div className="p-4 bg-gray-50/60 dark:bg-gray-900/40 rounded-b-2xl flex items-center gap-3">
                   <Button variant="secondary" className="flex-1" onClick={() => navigate(`/orders/${order.id}`)}>{t('orders.viewDetails')}</Button>

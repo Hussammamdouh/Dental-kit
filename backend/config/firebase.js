@@ -1,5 +1,8 @@
 const admin = require('firebase-admin');
-require('dotenv').config();
+// Only load dotenv in local development (not in Vercel/production)
+if (!process.env.VERCEL && process.env.NODE_ENV !== 'production') {
+  require('dotenv').config();
+}
 
 // Initialize Firebase Admin SDK with enhanced security
 let app;

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { 
   XMarkIcon, 
@@ -16,14 +16,51 @@ import {
   TagIcon,
   BuildingOfficeIcon,
   PhoneIcon,
-  EnvelopeIcon
+  EnvelopeIcon,
+  DocumentArrowDownIcon,
+  ArrowTopRightOnSquareIcon
 } from '@heroicons/react/24/outline';
 import Button from '../../ui/Button';
+import LoadingSpinner from '../../ui/LoadingSpinner';
+import { PDFGenerator } from '../../../utils/pdfGenerator';
+import { toast } from 'react-hot-toast';
 
 const OrderViewModal = ({ isOpen, order, onClose, formatCurrency, formatDate, getStatusBadgeColor, getStatusIcon }) => {
   const { t } = useTranslation('admin');
+  const [downloadingInvoice, setDownloadingInvoice] = useState(false);
 
   if (!isOpen || !order) return null;
+
+  // Download invoice
+  const downloadInvoice = async () => {
+    try {
+      setDownloadingInvoice(true);
+      
+      // If order has Shakeout invoice URL, open it
+      if (order.shakeoutInvoiceUrl) {
+        window.open(order.shakeoutInvoiceUrl, '_blank');
+        toast.success('Opening invoice in new tab');
+        return;
+      }
+
+      // Otherwise, generate PDF invoice
+      const pdfGenerator = new PDFGenerator();
+      const pdfDoc = pdfGenerator.generateInvoice(order);
+      pdfDoc.save(`invoice-${order.id || order.orderNumber || 'order'}.pdf`);
+      
+      toast.success('Invoice downloaded successfully');
+    } catch (err) {
+      console.error('Invoice download error:', err);
+      toast.error('Failed to download invoice');
+    } finally {
+      setDownloadingInvoice(false);
+    }
+  };
+
+  // Check if order has invoice
+  const hasInvoice = () => {
+    return order.shakeoutInvoiceId || order.shakeoutInvoiceUrl || order.shakeoutInvoiceRef;
+  };
 
   const getPaymentMethodIcon = (method) => {
     switch (method) {
@@ -155,6 +192,50 @@ const OrderViewModal = ({ isOpen, order, onClose, formatCurrency, formatDate, ge
                     {formatCurrency(order.total)}
                   </span>
                 </div>
+                
+                {/* Invoice Section */}
+                {hasInvoice() && (
+                  <div className="mt-3 pt-3 border-t border-gray-300 dark:border-gray-600">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-gray-500 dark:text-gray-400">Invoice:</span>
+                      <div className="flex items-center space-x-2">
+                        {order.shakeoutInvoiceUrl && (
+                          <a
+                            href={order.shakeoutInvoiceUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-xs text-teal-600 hover:text-teal-700 dark:text-teal-400 dark:hover:text-teal-300 flex items-center"
+                          >
+                            <ArrowTopRightOnSquareIcon className="w-3 h-3 mr-1" />
+                            View
+                          </a>
+                        )}
+                        <button
+                          onClick={downloadInvoice}
+                          disabled={downloadingInvoice}
+                          className="text-xs text-teal-600 hover:text-teal-700 dark:text-teal-400 dark:hover:text-teal-300 flex items-center disabled:opacity-50"
+                        >
+                          {downloadingInvoice ? (
+                            <>
+                              <LoadingSpinner size="xs" className="mr-1" />
+                              Downloading...
+                            </>
+                          ) : (
+                            <>
+                              <DocumentArrowDownIcon className="w-3 h-3 mr-1" />
+                              Download
+                            </>
+                          )}
+                        </button>
+                      </div>
+                    </div>
+                    {order.shakeoutInvoiceId && (
+                      <p className="text-xs text-gray-400 mt-1">
+                        Invoice ID: {order.shakeoutInvoiceId}
+                      </p>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           </div>

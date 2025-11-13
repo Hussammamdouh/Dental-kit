@@ -6,7 +6,8 @@ import {
   EyeIcon,
   TrashIcon,
   ArrowUpIcon,
-  ArrowDownIcon
+  ArrowDownIcon,
+  CreditCardIcon
 } from '@heroicons/react/24/outline';
 
 const OrdersTable = ({ 
@@ -141,8 +142,13 @@ const OrdersTable = ({
                   <div className="font-medium text-gray-900 dark:text-white">
                     {formatCurrency(order.total)}
                   </div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400">
+                  <div className="text-sm text-gray-500 dark:text-gray-400 flex items-center">
                     {order.items?.length || 0} {t('orders.items')}
+                    {(order.shakeoutInvoiceId || order.shakeoutInvoiceUrl) && (
+                      <span className="ml-2 inline-flex items-center text-teal-600 dark:text-teal-400" title="Invoice Available">
+                        <CreditCardIcon className="h-3 w-3" />
+                      </span>
+                    )}
                   </div>
                 </td>
                 <td className="px-4 lg:px-6 py-4 whitespace-nowrap">

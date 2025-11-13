@@ -103,7 +103,7 @@ const orderSchema = new mongoose.Schema({
   paymentMethod: {
     type: String,
     required: true,
-    enum: ['stripe', 'paypal', 'cash_on_delivery', 'bank_transfer'],
+    enum: ['stripe', 'paypal', 'cash_on_delivery', 'bank_transfer', 'shakeout'],
   },
   paymentStatus: {
     type: String,
@@ -113,6 +113,10 @@ const orderSchema = new mongoose.Schema({
   },
   paymentId: String,
   paymentDate: Date,
+  // Shakeout payment gateway fields
+  shakeoutInvoiceId: String,
+  shakeoutInvoiceRef: String,
+  shakeoutInvoiceUrl: String,
   // Shipping
   shippingMethod: {
     type: String,

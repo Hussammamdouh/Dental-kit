@@ -2,22 +2,52 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 
-// Create uploads directory if it doesn't exist
-const uploadDir = path.join(__dirname, '../uploads');
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
+// Check if we're in a serverless environment (Vercel, AWS Lambda, etc.)
+// In Vercel, the filesystem is read-only except for /tmp
+// Vercel sets VERCEL=1 automatically, so we check for that first
+const isServerless = !!process.env.VERCEL || !!process.env.AWS_LAMBDA_FUNCTION_NAME;
 
-// Configure storage
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, uploadDir);
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+// Configure storage based on environment
+let storage;
+if (isServerless) {
+  // Use memory storage in serverless environments (Vercel, Lambda, etc.)
+  // Files will be in req.file.buffer and should be uploaded directly to Cloudinary
+  console.log('📦 Using memory storage (serverless environment)');
+  storage = multer.memoryStorage();
+} else {
+  // Use disk storage in local development
+  console.log('💾 Attempting to use disk storage (local development)');
+  const uploadDir = path.join(__dirname, '../uploads');
+  
+  // Double-check we're not in serverless before trying to create directory
+  if (!process.env.VERCEL && !process.env.AWS_LAMBDA_FUNCTION_NAME) {
+    try {
+      if (!fs.existsSync(uploadDir)) {
+        fs.mkdirSync(uploadDir, { recursive: true });
+      }
+      // Use disk storage if directory creation succeeded
+      storage = multer.diskStorage({
+        destination: (req, file, cb) => {
+          cb(null, uploadDir);
+        },
+        filename: (req, file, cb) => {
+          const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+          cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+        }
+      });
+      console.log('✅ Disk storage configured successfully');
+    } catch (error) {
+      console.warn('⚠️  Could not create uploads directory:', error.message);
+      // Fall back to memory storage if directory creation fails
+      console.log('📦 Falling back to memory storage due to filesystem restrictions');
+      storage = multer.memoryStorage();
+    }
+  } else {
+    // Safety fallback: use memory storage if somehow we got here in serverless
+    console.log('📦 Using memory storage (serverless detected in else block)');
+    storage = multer.memoryStorage();
   }
-});
+}
 
 // File filter for images
 const fileFilter = (req, file, cb) => {
@@ -69,21 +99,32 @@ const handleUploadError = (err, req, res, next) => {
   next(err);
 };
 
-// Clean up uploaded files
+// Clean up uploaded files (only needed for disk storage, not memory storage)
 const cleanupUploads = (req, res, next) => {
-  res.on('finish', () => {
-    if (req.files) {
-      req.files.forEach(file => {
-        if (fs.existsSync(file.path)) {
-          fs.unlinkSync(file.path);
+  if (!isServerless) {
+    // Only cleanup disk files in local development
+    res.on('finish', () => {
+      if (req.files) {
+        req.files.forEach(file => {
+          if (file.path && fs.existsSync && fs.existsSync(file.path)) {
+            try {
+              fs.unlinkSync(file.path);
+            } catch (error) {
+              console.warn('⚠️  Could not delete file:', error.message);
+            }
+          }
+        });
+      } else if (req.file && req.file.path) {
+        if (fs.existsSync && fs.existsSync(req.file.path)) {
+          try {
+            fs.unlinkSync(req.file.path);
+          } catch (error) {
+            console.warn('⚠️  Could not delete file:', error.message);
+          }
         }
-      });
-    } else if (req.file) {
-      if (fs.existsSync(req.file.path)) {
-        fs.unlinkSync(req.file.path);
       }
-    }
-  });
+    });
+  }
   next();
 };
 

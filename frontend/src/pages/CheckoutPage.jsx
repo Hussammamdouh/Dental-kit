@@ -25,7 +25,7 @@ const CheckoutPage = () => {
   const { t } = useTranslation('ecommerce');
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { items: cartItems, subtotal, total, totalItems, clearCart } = useCart();
+  const { items: cartItems, subtotal, total, totalItems, clearCart, tax: cartTax, shipping: cartShipping, discount: cartDiscount } = useCart();
   const { currentLanguage } = useLanguage();
   const { currentTheme } = useTheme();
   
@@ -64,17 +64,9 @@ const CheckoutPage = () => {
   
   const [useDefaultAddresses, setUseDefaultAddresses] = useState(false);
   const [sameAsShipping, setSameAsShipping] = useState(true);
-  const [paymentMethod, setPaymentMethod] = useState('stripe');
+  const [paymentMethod, setPaymentMethod] = useState('cash_on_delivery');
   const [shippingMethod, setShippingMethod] = useState('standard');
   const [customerNotes, setCustomerNotes] = useState('');
-  
-  // Payment form
-  const [paymentForm, setPaymentForm] = useState({
-    cardNumber: '',
-    expiryDate: '',
-    cvv: '',
-    cardholderName: ''
-  });
   
 
 
@@ -152,17 +144,25 @@ const CheckoutPage = () => {
     
     const cartSubtotal = subtotal || 0;
     const selectedShipping = shippingMethods.find(m => m.id === shippingMethod);
-    const shipping = selectedShipping ? selectedShipping.cost : 0;
-    const tax = cartSubtotal * 0.14; // 14% tax
-    const discount = 0; // Could be from applied coupon
-    const orderTotal = cartSubtotal + shipping + tax - discount;
+    // Use selected shipping method cost, or fall back to cart shipping
+    const shippingCost = selectedShipping ? selectedShipping.cost : (cartShipping || 0);
+    // Use cart tax if available, otherwise calculate 14%
+    const taxAmount = cartTax || (cartSubtotal * 0.14);
+    // Use cart discount if available
+    const discountAmount = cartDiscount || 0;
+    
+    // If shipping method changed, recalculate total; otherwise use cart total
+    const recalculatedTotal = cartSubtotal + shippingCost + taxAmount - discountAmount;
+    const finalTotal = selectedShipping && selectedShipping.cost !== cartShipping 
+      ? recalculatedTotal 
+      : (total || recalculatedTotal);
     
     return {
       subtotal: cartSubtotal,
-      shipping,
-      tax,
-      discount,
-      total: orderTotal,
+      shipping: shippingCost,
+      tax: taxAmount,
+      discount: discountAmount,
+      total: finalTotal,
       itemCount: totalItems || 0
     };
   };
@@ -276,6 +276,12 @@ const CheckoutPage = () => {
         toast.error('Please select a payment method');
         return;
       }
+      
+      // If Credit/Debit Card is selected, create order and redirect to payment gateway
+      if (paymentMethod === 'shakeout') {
+        handleRedirectToPaymentGateway();
+        return; // Don't proceed to next step, redirect instead
+      }
     }
     
     if (currentStep < 4) {
@@ -286,6 +292,80 @@ const CheckoutPage = () => {
   const prevStep = () => {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
+    }
+  };
+
+  // Handle redirect to payment gateway
+  const handleRedirectToPaymentGateway = async () => {
+    try {
+      setPlacingOrder(true);
+      
+      // Validate cart has items
+      if (!cartItems || cartItems.length === 0) {
+        toast.error('Cart is empty. Please add items to your cart.');
+        return;
+      }
+      
+      // Validate shipping address if not using default
+      if (!useDefaultAddresses) {
+        if (!shippingAddress.firstName || !shippingAddress.lastName || !shippingAddress.address1 || !shippingAddress.city || !shippingAddress.country) {
+          toast.error('Please fill in all required shipping information');
+          return;
+        }
+      }
+      
+      // Validate billing address if not using default and not same as shipping
+      if (!sameAsShipping && !useDefaultAddresses) {
+        if (!billingAddress.firstName || !billingAddress.lastName || !billingAddress.address1 || !billingAddress.city || !billingAddress.country) {
+          toast.error('Please fill in all required billing information');
+          return;
+        }
+      }
+      
+      const orderData = {
+        items: cartItems.map(item => ({
+          productId: item.productId,
+          name: item.name,
+          sku: item.sku,
+          quantity: item.quantity,
+          price: item.price,
+          total: item.price * item.quantity,
+          image: item.image,
+          category: item.category,
+          brand: item.brand,
+          vendor: item.vendor || null
+        })),
+        shippingAddress: useDefaultAddresses ? {} : shippingAddress,
+        billingAddress: (useDefaultAddresses || sameAsShipping) ? {} : billingAddress,
+        paymentMethod: 'shakeout', // Use shakeout for credit/debit card
+        shippingMethod: shippingMethod,
+        customerNotes: customerNotes || '',
+        useDefaultAddresses: useDefaultAddresses || false,
+        sameAsShipping: sameAsShipping || false,
+        orderSummary: orderSummary
+      };
+      
+      const response = await api.post(endpoints.orders.checkout, orderData);
+      
+      console.log('Order creation response:', response?.data);
+      
+      const order = response?.data?.order || response?.data;
+      const orderId = order?.id || order?._id || order?.orderNumber;
+      
+      if (orderId) {
+        // Redirect to payment page where user can complete payment
+        console.log('Redirecting to payment page for order:', orderId);
+        navigate(`/payment?orderId=${orderId}`);
+      } else {
+        console.error('Failed to get order ID:', { order, response: response?.data });
+        toast.error('Failed to create order. Please try again.');
+        setPlacingOrder(false);
+      }
+      
+    } catch (err) {
+      const errorMessage = err.response?.data?.message || t('checkout.error.placingOrder');
+      toast.error(errorMessage);
+      setPlacingOrder(false);
     }
   };
 
@@ -386,8 +466,6 @@ const CheckoutPage = () => {
                 <CheckoutPaymentForm
                   paymentMethod={paymentMethod}
                   setPaymentMethod={setPaymentMethod}
-                  paymentForm={paymentForm}
-                  setPaymentForm={setPaymentForm}
                 />
                 )}
 

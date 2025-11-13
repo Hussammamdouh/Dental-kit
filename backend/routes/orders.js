@@ -26,7 +26,7 @@ router.post('/checkout', [
   auth,
   body('shippingAddress').isObject().withMessage('Shipping address is required'),
   body('billingAddress').isObject().withMessage('Billing address is required'),
-  body('paymentMethod').isIn(['stripe', 'paypal', 'cash_on_delivery', 'bank_transfer']).withMessage('Valid payment method is required'),
+  body('paymentMethod').isIn(['stripe', 'paypal', 'cash_on_delivery', 'bank_transfer', 'shakeout']).withMessage('Valid payment method is required'),
   body('notes').optional().trim(),
 ], validate, orderController.createOrder);
 

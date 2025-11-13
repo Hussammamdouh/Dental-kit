@@ -392,9 +392,12 @@
       "securePayment": "Secure, encrypted payment",
       "password": "Password",
       "creditCard": "Credit / Debit Card",
+      "creditDebitCard": "Credit/Debit Card",
       "paypal": "PayPal",
       "cashOnDelivery": "Cash on Delivery",
       "bankTransfer": "Bank Transfer",
+      "payWhenReceive": "Pay when you receive your order",
+      "gatewayRedirect": "You will be redirected to our secure payment gateway to complete your payment.",
       "paymentInfo": "Your card details are protected with industry-standard encryption.",
       "cardholderName": "Cardholder Name",
       "cardNumber": "Card Number",
@@ -459,10 +462,11 @@
       "mismatch": "Passwords do not match"
     }
   },
-  "profile": {
+    "profile": {
     "changesSaved": "Changes saved",
     "title": "My Profile",
     "subtitle": "Manage your account settings and preferences",
+    "cancel": "Cancel",
     "personalInfo": "Personal Information",
     "firstName": "First Name",
     "lastName": "Last Name",

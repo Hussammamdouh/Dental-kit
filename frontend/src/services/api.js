@@ -17,7 +17,10 @@ const inferBaseURL = () => {
     const isLocal = ['localhost', '127.0.0.1'].includes(window.location.hostname);
     if (isLocal) return 'http://localhost:5000/api';
   }
-  // Default to the correct backend URL for production
+  // Default to Vercel backend URL for production
+  // Set VITE_API_URL environment variable in Vercel to override this
+  // Example: https://your-backend-project.vercel.app/api
+  // Note: Update this default URL after deploying backend to Vercel
   return 'https://dental-website-backend-v2.fly.dev/api';
 };
 
@@ -387,6 +390,23 @@ export const endpoints = {
     cancel: (id) => `/orders/${id}/cancel`,
     track: (id) => `/orders/${id}/track`,
     invoice: (id) => `/orders/${id}/invoice`
+  },
+  
+  // Payments
+  payments: {
+    createInvoice: '/payments/invoice/create',
+    status: (orderId) => `/payments/status/${orderId}`,
+    deleteInvoice: (orderId) => `/payments/invoice/${orderId}`,
+    webhook: '/payments/webhook'
+  },
+  
+  // Payment Profiles
+  paymentProfiles: {
+    list: '/payment-profiles',
+    create: '/payment-profiles',
+    update: (profileId) => `/payment-profiles/${profileId}`,
+    delete: (profileId) => `/payment-profiles/${profileId}`,
+    setDefault: (profileId) => `/payment-profiles/${profileId}/default`
   },
   
   // Categories
