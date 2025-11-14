@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import Seo from '../components/seo/Seo';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useTheme } from '../contexts/ThemeContext';
@@ -14,6 +14,8 @@ import {
 import { StarIcon as StarIconSolid } from '@heroicons/react/24/solid';
 import Banner from '../components/common/Banner';
 import Button from '../components/ui/Button';
+import CarouselContainer from '../components/common/CarouselContainer';
+import HorizontalCarousel from '../components/common/HorizontalCarousel';
 import api from '../services/api';
 import { toast } from 'react-hot-toast';
 import { getFirstImageUrl } from '../utils/imageUtils';
@@ -28,9 +30,6 @@ const HomePage = () => {
 	const [wishlistSet, setWishlistSet] = useState(new Set());
 	const [categories, setCategories] = useState([]);
 	const [, setLoading] = useState(true);
-
-	const categoriesRef = useRef(null);
-	const featuredRef = useRef(null);
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -93,7 +92,7 @@ const HomePage = () => {
 	];
 
 	return (
-		<div className="relative z-10 min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-sky-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900" style={{ maxWidth: '100vw' }}>
+		<div className="relative z-10 min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-sky-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 overflow-x-hidden">
 			<Seo
 				title={t('seo.home.title', 'DentalKit - Premium Dental Supplies')}
 				description={t('seo.home.description', 'Discover cutting-edge dental equipment and supplies')}
@@ -132,80 +131,76 @@ const HomePage = () => {
 			</section>
 
 			{/* Categories */}
-			<section className="py-8 sm:py-12 lg:py-16 bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-gray-800" style={{ maxWidth: '100vw' }}>
-				<div className="container mx-auto px-4 max-w-xs sm:max-w-sm md:max-w-md lg:max-w-6xl xl:max-w-7xl" style={{ maxWidth: '1500px', maxWidth: '100vw' }}>
+			<section className="py-8 sm:py-12 lg:py-16 bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 overflow-hidden">
+				<CarouselContainer>
 					<div className="text-center mb-8 sm:mb-12">
 						<h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-3 sm:mb-4">{t('home.categories.title')}</h2>
 						<p className="text-base sm:text-lg lg:text-xl text-gray-600 dark:text-gray-300 px-4">{t('home.categories.subtitle')}</p>
 					</div>
-					<div className="w-full overflow-x-auto" style={{ maxWidth: '100vw', WebkitOverflowScrolling: 'touch', overscrollBehaviorX: 'contain' }}>
-						<div ref={categoriesRef} className="flex gap-3 sm:gap-4 md:gap-6 overflow-x-auto snap-x snap-mandatory pb-2 scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600" style={{ scrollbarWidth: 'thin', maxWidth: '100%', WebkitOverflowScrolling: 'touch' }}>
-							{categories.map((category) => {
-								const Icon = getCategoryIcon(category);
-								return (
-									<Link key={category._id || category.id} to={`/products?category=${category._id || category.id}`} className="group block snap-start w-[200px] sm:w-[240px] md:w-[280px] lg:w-[300px] min-w-[200px] sm:min-w-[240px] md:min-w-[280px] lg:min-w-[300px] max-w-[200px] sm:max-w-[240px] md:max-w-[280px] lg:max-w-[300px]">
-										<div className="bg-white dark:bg-gray-800 rounded-2xl p-4 sm:p-6 shadow-lg h-[240px] sm:h-[260px] flex flex-col">
-											<div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-sky-400 to-blue-600 rounded-xl flex items-center justify-center mb-3 sm:mb-4 shrink-0">
-												{Icon ? <Icon className="w-6 h-6 sm:w-7 sm:h-7 text-white" /> : <span className="text-xl font-bold text-white">{(category.name || '?').charAt(0).toUpperCase()}</span>}
-											</div>
-											<h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white mb-1 line-clamp-1">{category.name}</h3>
-											<p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 mb-3 sm:mb-4 line-clamp-2">{category.description || t('home.categories.defaultDescription')}</p>
-											<div className="mt-auto flex items-center text-blue-600 dark:text-blue-400 font-medium text-sm sm:text-base">
-												{t('home.categories.explore')}
-												<ArrowRightIcon className="w-4 h-4 ml-2" />
-											</div>
+					<HorizontalCarousel>
+						{categories.map((category) => {
+							const Icon = getCategoryIcon(category);
+							return (
+								<Link key={category._id || category.id} to={`/products?category=${category._id || category.id}`} className="group block snap-start w-[200px] sm:w-[240px] md:w-[280px] lg:w-[300px] min-w-[200px] sm:min-w-[240px] md:min-w-[280px] lg:min-w-[300px] max-w-[200px] sm:max-w-[240px] md:max-w-[280px] lg:max-w-[300px]">
+									<div className="bg-white dark:bg-gray-800 rounded-2xl p-4 sm:p-6 shadow-lg h-[240px] sm:h-[260px] flex flex-col">
+										<div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-sky-400 to-blue-600 rounded-xl flex items-center justify-center mb-3 sm:mb-4 shrink-0">
+											{Icon ? <Icon className="w-6 h-6 sm:w-7 sm:h-7 text-white" /> : <span className="text-xl font-bold text-white">{(category.name || '?').charAt(0).toUpperCase()}</span>}
 										</div>
-									</Link>
-								);
-							})}
-						</div>
-					</div>
-				</div>
+										<h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white mb-1 line-clamp-1">{category.name}</h3>
+										<p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 mb-3 sm:mb-4 line-clamp-2">{category.description || t('home.categories.defaultDescription')}</p>
+										<div className="mt-auto flex items-center text-blue-600 dark:text-blue-400 font-medium text-sm sm:text-base">
+											{t('home.categories.explore')}
+											<ArrowRightIcon className="w-4 h-4 ml-2" />
+										</div>
+									</div>
+								</Link>
+							);
+						})}
+					</HorizontalCarousel>
+				</CarouselContainer>
 			</section>
 
 			{/* Featured Products */}
-			<section className="py-8 sm:py-12 lg:py-16 bg-white dark:bg-gray-800" style={{ maxWidth: '100vw' }}>
-				<div className="container mx-auto px-4 max-w-xs sm:max-w-sm md:max-w-md lg:max-w-6xl xl:max-w-7xl" style={{ maxWidth: '1500px', maxWidth: '100vw' }}>
+			<section className="py-8 sm:py-12 lg:py-16 bg-white dark:bg-gray-800 overflow-hidden">
+				<CarouselContainer>
 					<div className="text-center mb-8 sm:mb-12">
 						<h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-3 sm:mb-4">{t('home.featured.title')}</h2>
 						<p className="text-base sm:text-lg lg:text-xl text-gray-600 dark:text-gray-300 px-4">{t('home.featured.subtitle')}</p>
 					</div>
-					<div className="w-full overflow-x-auto" style={{ maxWidth: '100vw', WebkitOverflowScrolling: 'touch', overscrollBehaviorX: 'contain' }}>
-						<div ref={featuredRef} className="flex gap-3 sm:gap-4 md:gap-6 overflow-x-auto snap-x snap-mandatory pb-2 scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600" style={{ scrollbarWidth: 'thin', maxWidth: '100%', WebkitOverflowScrolling: 'touch' }}>
-							{featuredProducts.map((product) => (
-								<div key={product.id || product._id} className="group snap-start w-[200px] sm:w-[240px] md:w-[280px] lg:w-[300px] min-w-[200px] sm:min-w-[240px] md:min-w-[280px] lg:min-w-[300px] max-w-[200px] sm:max-w-[240px] md:max-w-[280px] lg:max-w-[300px]">
-									<div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden h-[400px] sm:h-[420px] flex flex-col">
-										<div className="relative h-[200px] sm:h-[220px] overflow-hidden">
-											<img src={getFirstImageUrl(product.images)} alt={product.name} className="w-full h-full object-cover" />
-											{product.originalPrice && product.originalPrice > product.price && (
-												<div className="absolute top-4 left-4">
-													<span className="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium">-{Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}%</span>
-												</div>
-											)}
+					<HorizontalCarousel>
+						{featuredProducts.map((product) => (
+							<div key={product.id || product._id} className="group snap-start w-[200px] sm:w-[240px] md:w-[280px] lg:w-[300px] min-w-[200px] sm:min-w-[240px] md:min-w-[280px] lg:min-w-[300px] max-w-[200px] sm:max-w-[240px] md:max-w-[280px] lg:max-w-[300px]">
+								<div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden h-[400px] sm:h-[420px] flex flex-col">
+									<div className="relative h-[200px] sm:h-[220px] overflow-hidden">
+										<img src={getFirstImageUrl(product.images)} alt={product.name} className="w-full h-full object-cover" />
+										{product.originalPrice && product.originalPrice > product.price && (
+											<div className="absolute top-4 left-4">
+												<span className="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium">-{Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}%</span>
+											</div>
+										)}
+									</div>
+									<div className="p-4 sm:p-6 flex flex-col flex-grow">
+										<h3 className="text-sm sm:text-base font-semibold text-gray-900 dark:text-white mb-2 line-clamp-2 cursor-pointer" onClick={() => (window.location.href = `/products/${product.id || product._id}`)}>{product.name}</h3>
+										{product.brand && <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-2 sm:mb-3">{product.brand}</p>}
+										<div className="flex items-center mb-3">
+											<div className="flex items-center">
+												{[...Array(5)].map((_, i) => (
+													<StarIconSolid key={i} className={`w-4 h-4 ${i < (product.rating || 0) ? 'text-yellow-400' : 'text-gray-300'}`} />
+												))}
+											</div>
+											<span className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 ml-2">({product.reviewCount || 0})</span>
 										</div>
-										<div className="p-4 sm:p-6 flex flex-col flex-grow">
-											<h3 className="text-sm sm:text-base font-semibold text-gray-900 dark:text-white mb-2 line-clamp-2 cursor-pointer" onClick={() => (window.location.href = `/products/${product.id || product._id}`)}>{product.name}</h3>
-											{product.brand && <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-2 sm:mb-3">{product.brand}</p>}
-											<div className="flex items-center mb-3">
-												<div className="flex items-center">
-													{[...Array(5)].map((_, i) => (
-														<StarIconSolid key={i} className={`w-4 h-4 ${i < (product.rating || 0) ? 'text-yellow-400' : 'text-gray-300'}`} />
-													))}
-												</div>
-												<span className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 ml-2">({product.reviewCount || 0})</span>
-											</div>
-											<div className="mt-auto flex items-center space-x-2">
-												<span className="text-lg sm:text-xl font-bold text-blue-600 dark:text-blue-400">EGP {product.price?.toFixed(2)}</span>
-												{product.originalPrice && product.originalPrice > product.price && (
-													<span className="text-xs sm:text-sm line-through text-gray-400">EGP {product.originalPrice?.toFixed(2)}</span>
-												)}
-											</div>
+										<div className="mt-auto flex items-center space-x-2">
+											<span className="text-lg sm:text-xl font-bold text-blue-600 dark:text-blue-400">EGP {product.price?.toFixed(2)}</span>
+											{product.originalPrice && product.originalPrice > product.price && (
+												<span className="text-xs sm:text-sm line-through text-gray-400">EGP {product.originalPrice?.toFixed(2)}</span>
+											)}
 										</div>
 									</div>
 								</div>
-							))}
-						</div>
-					</div>
+							</div>
+						))}
+					</HorizontalCarousel>
 
 					<div className="text-center mt-6 sm:mt-8">
 						<Button size="lg" className="bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-700 hover:to-blue-700 text-white font-semibold px-6 sm:px-8 py-3 sm:py-4" onClick={() => (window.location.href = '/products')}>
@@ -213,7 +208,7 @@ const HomePage = () => {
 							<ArrowRightIcon className="w-5 h-5 ml-2" />
 						</Button>
 					</div>
-				</div>
+				</CarouselContainer>
 			</section>
 
 			{/* Testimonials */}
