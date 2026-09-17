@@ -1,43 +1,106 @@
 import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
+import { useTranslation } from '../../hooks/useTranslation';
 import { useLanguage } from '../../contexts/LanguageContext';
-import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+import { MagnifyingGlassIcon, XMarkIcon, SparklesIcon } from '@heroicons/react/24/outline';
 
-const SearchBar = ({ onSearch, placeholder, className = '' }) => {
+const SearchBar = ({ onSearch, onClose, placeholder, showQuickTags = true, className = '' }) => {
   const { t } = useTranslation('ecommerce');
   const { isRTL } = useLanguage();
+  const navigate = useNavigate();
   const [query, setQuery] = useState('');
+
+  const quickTags = [
+    'Typodont',
+    'Rubber Dam Kit',
+    'K-Files 25mm',
+    'Restorative Kit',
+    'Extraction Forceps',
+    'Wax Carver'
+  ];
+
+  const executeSearch = (searchTerm) => {
+    const term = searchTerm || query;
+    if (!term.trim()) return;
+    
+    if (onSearch) {
+      onSearch(term.trim());
+    } else {
+      navigate(`/products?search=${encodeURIComponent(term.trim())}`);
+    }
+    if (onClose) {
+      onClose();
+    }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (query.trim()) {
-      onSearch?.(query.trim());
-    }
+    executeSearch();
   };
 
-  const handleKeyPress = (e) => {
-    if (e.key === 'Enter') {
-      handleSubmit(e);
-    }
+  const handleTagClick = (tag) => {
+    setQuery(tag);
+    executeSearch(tag);
   };
 
   return (
-    <form onSubmit={handleSubmit} className={`relative ${className}`}>
-      <div className="relative">
-        <div className={`absolute inset-y-0 ${isRTL ? 'right-0' : 'left-0'} pl-3 pr-3 flex items-center pointer-events-none`}>
-          <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" />
+    <div className={`w-full ${className}`}>
+      <form onSubmit={handleSubmit} className="relative">
+        <div className="relative flex items-center">
+          <div className={`absolute ${isRTL ? 'right-4' : 'left-4'} flex items-center pointer-events-none text-teal-600 dark:text-teal-400`}>
+            <MagnifyingGlassIcon className="h-5 w-5" />
+          </div>
+          
+          <input
+            type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder={placeholder || t('nav.searchPlaceholder') || 'Search dental kits, instruments, typodonts...'}
+            autoFocus
+            className={`block w-full ${isRTL ? 'pr-12 pl-24' : 'pl-12 pr-24'} py-3.5 text-sm md:text-base rounded-2xl bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 border border-slate-200 dark:border-white/10 shadow-lg focus:outline-none focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500 transition-all duration-200`}
+          />
+
+          <div className={`absolute ${isRTL ? 'left-3' : 'right-3'} flex items-center gap-1`}>
+            {query && (
+              <button
+                type="button"
+                onClick={() => setQuery('')}
+                className="p-1 rounded-full text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/10 transition-colors"
+                aria-label="Clear search"
+              >
+                <XMarkIcon className="w-4 h-4" />
+              </button>
+            )}
+            <button
+              type="submit"
+              className="px-3.5 py-1.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white text-xs font-semibold shadow-sm transition-all hover:scale-105 active:scale-95"
+            >
+              {t('nav.search') || 'Search'}
+            </button>
+          </div>
         </div>
-        <input
-          type="text"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          onKeyPress={handleKeyPress}
-          placeholder={placeholder || t('search.placeholder')}
-          className={`block w-full ${isRTL ? 'pr-10' : 'pl-10'} py-2 px-3 border border-gray-300 dark:border-gray-600 rounded-md leading-5 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-400 dark:focus:border-blue-400`}
-        />
-      </div>
-    </form>
+      </form>
+
+      {showQuickTags && (
+        <div className="mt-3 flex items-center flex-wrap gap-2 pt-2 border-t border-slate-100 dark:border-white/5">
+          <span className="text-xs font-medium text-slate-400 dark:text-slate-500 flex items-center gap-1">
+            <SparklesIcon className="w-3.5 h-3.5 text-teal-500" />
+            {t('nav.quickSearch') || 'Popular:'}
+          </span>
+          {quickTags.map((tag) => (
+            <button
+              key={tag}
+              type="button"
+              onClick={() => handleTagClick(tag)}
+              className="text-xs px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-white/5 hover:bg-teal-50 dark:hover:bg-teal-500/10 text-slate-600 dark:text-slate-300 hover:text-teal-600 dark:hover:text-teal-400 border border-slate-200/60 dark:border-white/5 transition-all"
+            >
+              {tag}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
   );
 };
 
-export default SearchBar; 
+export default SearchBar;

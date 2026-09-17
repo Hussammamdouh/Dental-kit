@@ -8,6 +8,7 @@ import Header from './Header';
 import Footer from './Footer';
 import Sidebar from './Sidebar';
 import AdminLayout from './AdminLayout';
+import CursorGlow from '../common/CursorGlow';
 
 const Layout = ({ children, showHeader = true, showFooter = true, showSidebar = false }) => {
   const { isAuthenticated, userRole } = useAuth();
@@ -43,6 +44,7 @@ const Layout = ({ children, showHeader = true, showFooter = true, showSidebar = 
 
   return (
     <div className={`min-h-screen bg-gray-50 dark:bg-gray-900 ${isRTL ? 'rtl' : 'ltr'}`}>
+      <CursorGlow />
       <Seo url={canonical} />
       {showHeader && <Header />}
       

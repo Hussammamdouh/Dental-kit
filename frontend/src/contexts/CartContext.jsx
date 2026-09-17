@@ -1,7 +1,8 @@
-import React, { createContext, useContext, useReducer, useEffect } from 'react';
+import React, { createContext, useContext, useReducer, useEffect, useRef } from 'react';
 import { toast } from 'react-hot-toast';
 import Cookies from 'js-cookie';
 import api from '../services/api';
+import { getImageUrl } from '../utils/imageUtils';
 
 const CartContext = createContext();
 
@@ -45,54 +46,104 @@ const cartReducer = (state, action) => {
         lastUpdated: new Date().toISOString()
       };
     
-    case 'ADD_ITEM':
-      const existingItem = state.items.find(item => 
-        item.productId === action.payload.productId && 
-        item.variantId === action.payload.variantId
+    case 'ADD_ITEM': {
+      const pId = action.payload.productId || action.payload.id;
+      const vId = action.payload.variantId || 'default';
+      
+      const existingIndex = state.items.findIndex(item => 
+        (item.productId === pId || item.id === action.payload.id) && 
+        (item.variantId || 'default') === vId
       );
       
-      if (existingItem) {
-        const updatedItems = state.items.map(item =>
-          item.productId === action.payload.productId && item.variantId === action.payload.variantId
-            ? { ...item, quantity: item.quantity + action.payload.quantity }
+      let updatedItems;
+      if (existingIndex > -1) {
+        updatedItems = state.items.map((item, idx) =>
+          idx === existingIndex
+            ? { ...item, quantity: item.quantity + (action.payload.quantity || 1) }
             : item
         );
-        return {
-          ...state,
-          items: updatedItems,
-          lastUpdated: new Date().toISOString()
-        };
       } else {
-        return {
-          ...state,
-          items: [...state.items, action.payload],
-          lastUpdated: new Date().toISOString()
-        };
+        updatedItems = [...state.items, action.payload];
       }
-    
-    case 'UPDATE_ITEM_QUANTITY':
-      const updatedItems = state.items.map(item =>
-        item.id === action.payload.itemId
-          ? { ...item, quantity: action.payload.quantity }
-          : item
-      );
+
+      const subtotal = updatedItems.reduce((sum, item) => sum + (Number(item.price || 0) * (item.quantity || 1)), 0);
+      const tax = subtotal * 0.14;
+      const shipping = subtotal > 500 ? 0 : 50;
+      const discount = state.appliedCoupon ? subtotal * (Number(state.appliedCoupon.discountPercent || state.appliedCoupon.discountValue || 0) / 100) : 0;
+      const giftCardDiscount = state.appliedGiftCard ? Number(state.appliedGiftCard.balance || 0) : 0;
+      const total = Math.max(0, subtotal + tax + shipping - discount - giftCardDiscount);
+
       return {
         ...state,
         items: updatedItems,
+        subtotal,
+        tax,
+        shipping,
+        discount,
+        total,
+        totalItems: updatedItems.reduce((sum, item) => sum + (item.quantity || 1), 0),
         lastUpdated: new Date().toISOString()
       };
+    }
     
-    case 'REMOVE_ITEM':
+    case 'UPDATE_ITEM_QUANTITY': {
+      const updatedItems = state.items.map(item =>
+        item.id === action.payload.itemId
+          ? { ...item, quantity: Math.max(1, action.payload.quantity) }
+          : item
+      );
+      const subtotal = updatedItems.reduce((sum, item) => sum + (Number(item.price || 0) * (item.quantity || 1)), 0);
+      const tax = subtotal * 0.14;
+      const shipping = subtotal > 500 ? 0 : 50;
+      const discount = state.appliedCoupon ? subtotal * (Number(state.appliedCoupon.discountPercent || state.appliedCoupon.discountValue || 0) / 100) : 0;
+      const giftCardDiscount = state.appliedGiftCard ? Number(state.appliedGiftCard.balance || 0) : 0;
+      const total = Math.max(0, subtotal + tax + shipping - discount - giftCardDiscount);
+
       return {
         ...state,
-        items: state.items.filter(item => item.id !== action.payload),
+        items: updatedItems,
+        subtotal,
+        tax,
+        shipping,
+        discount,
+        total,
+        totalItems: updatedItems.reduce((sum, item) => sum + (item.quantity || 1), 0),
         lastUpdated: new Date().toISOString()
       };
+    }
+    
+    case 'REMOVE_ITEM': {
+      const updatedItems = state.items.filter(item => item.id !== action.payload);
+      const subtotal = updatedItems.reduce((sum, item) => sum + (Number(item.price || 0) * (item.quantity || 1)), 0);
+      const tax = subtotal * 0.14;
+      const shipping = subtotal > 500 ? 0 : 50;
+      const discount = state.appliedCoupon ? subtotal * (Number(state.appliedCoupon.discountPercent || state.appliedCoupon.discountValue || 0) / 100) : 0;
+      const giftCardDiscount = state.appliedGiftCard ? Number(state.appliedGiftCard.balance || 0) : 0;
+      const total = Math.max(0, subtotal + tax + shipping - discount - giftCardDiscount);
+
+      return {
+        ...state,
+        items: updatedItems,
+        subtotal,
+        tax,
+        shipping,
+        discount,
+        total,
+        totalItems: updatedItems.reduce((sum, item) => sum + (item.quantity || 1), 0),
+        lastUpdated: new Date().toISOString()
+      };
+    }
     
     case 'CLEAR_CART':
       return {
         ...state,
         items: [],
+        totalItems: 0,
+        subtotal: 0,
+        tax: 0,
+        shipping: 0,
+        discount: 0,
+        total: 0,
         appliedCoupon: null,
         appliedGiftCard: null,
         lastUpdated: new Date().toISOString()
@@ -300,64 +351,89 @@ export const CartProvider = ({ children }) => {
   // Note: Cart sync with backend is disabled since we're using localStorage-based cart management
   // If you need backend sync, implement the /cart/sync endpoint on the backend
 
-  // Race condition protection
-  const operationQueue = new Map();
+  // Race condition protection with ref
+  const operationQueueRef = useRef(new Set());
   
   const addToCart = async (product, quantity = 1, variantId = null) => {
-    const operationId = `${product._id || product.id}-${variantId || 'default'}`;
+    if (!product) {
+      toast.error('Product information is missing');
+      return { success: false, error: 'Product is missing' };
+    }
+
+    const pId = product._id || product.id;
+    if (!pId) {
+      toast.error('Invalid product ID');
+      return { success: false, error: 'Invalid product ID' };
+    }
+
+    const operationId = `${pId}-${variantId || 'default'}`;
     
     // Check if operation is already in progress
-    if (operationQueue.has(operationId)) {
-      toast.error('Operation in progress, please wait...');
-      return;
+    if (operationQueueRef.current.has(operationId)) {
+      return { success: false, error: 'In progress' };
     }
     
     try {
-      operationQueue.set(operationId, true);
+      operationQueueRef.current.add(operationId);
       dispatch({ type: 'SET_UPDATING', payload: true });
       
-      // Validate product data
-      if (!product || !(product._id || product.id)) {
-        throw new Error('Invalid product data');
-      }
+      const rawPrice = variantId && Array.isArray(product.variants) 
+        ? product.variants.find(v => v.id === variantId)?.price 
+        : (product.price !== undefined ? product.price : (product.priceAmount || 0));
       
-      const cartItem = {
-        id: `${product._id || product.id}-${variantId || 'default'}`,
-        productId: product._id || product.id,
-        variantId,
-        name: product.name,
-        price: variantId ? product.variants.find(v => v.id === variantId)?.price : product.price,
-        originalPrice: variantId ? product.variants.find(v => v.id === variantId)?.originalPrice : product.originalPrice,
-        quantity: Math.max(1, quantity), // Ensure quantity is at least 1
-        image: product.images?.[0],
-        category: product.category,
-        brand: product.brand,
-        vendor: product.vendor?._id || product.vendor,
-        sku: variantId ? product.variants.find(v => v.id === variantId)?.sku : product.sku,
-        weight: variantId ? product.variants.find(v => v.id === variantId)?.weight : product.weight,
-        dimensions: variantId ? product.variants.find(v => v.id === variantId)?.dimensions : product.dimensions,
-        inStock: variantId ? product.variants.find(v => v.id === variantId)?.inStock : (product.stock > 0),
-        maxQuantity: variantId ? product.variants.find(v => v.id === variantId)?.maxQuantity : product.stock
-      };
+      const price = Number(rawPrice) || 0;
+      
+      const rawOrigPrice = variantId && Array.isArray(product.variants) 
+        ? product.variants.find(v => v.id === variantId)?.originalPrice 
+        : product.originalPrice;
+      
+      const originalPrice = rawOrigPrice ? Number(rawOrigPrice) : undefined;
+      
+      const rawImg = product.images?.[0] || product.images || product.image || product.imageUrl;
+      const imageUrl = getImageUrl(rawImg);
 
-      // Validate cart item
-      if (!cartItem.price || cartItem.price <= 0) {
-        throw new Error('Invalid product price');
-      }
+      const inStock = product.stock !== undefined 
+        ? product.stock > 0 
+        : (product.inStock !== undefined ? Boolean(product.inStock) : true);
+
+      const maxQuantity = product.stock !== undefined && product.stock > 0 
+        ? product.stock 
+        : (product.quantity || 99);
+
+      const cartItem = {
+        id: `${pId}-${variantId || 'default'}`,
+        productId: pId,
+        variantId,
+        name: product.name || product.title || 'Dental Instrument',
+        price,
+        originalPrice,
+        quantity: Math.max(1, Number(quantity) || 1),
+        image: imageUrl,
+        category: product.category?.name || product.category || 'General',
+        brand: product.brand || 'DentalKit',
+        vendor: product.vendor?._id || product.vendorId || product.vendor || 'DentalKit',
+        sku: variantId && Array.isArray(product.variants) ? product.variants.find(v => v.id === variantId)?.sku : (product.sku || `DK-${pId.toString().slice(-6)}`),
+        weight: product.weight || 0.2,
+        dimensions: product.dimensions || null,
+        inStock,
+        maxQuantity
+      };
 
       dispatch({ type: 'ADD_ITEM', payload: cartItem });
       
       // Add to recently viewed
       dispatch({ type: 'ADD_TO_RECENTLY_VIEWED', payload: product });
       
-      toast.success(`${product.name} added to cart`);
+      toast.success(`${cartItem.name} added to cart!`);
+      return { success: true, item: cartItem };
       
     } catch (error) {
       toast.error(error.message || 'Failed to add item to cart');
       console.error('Add to cart error:', error);
+      return { success: false, error: error.message };
     } finally {
       dispatch({ type: 'SET_UPDATING', payload: false });
-      operationQueue.delete(operationId);
+      operationQueueRef.current.delete(operationId);
     }
   };
 
@@ -424,13 +500,36 @@ export const CartProvider = ({ children }) => {
     try {
       dispatch({ type: 'SET_UPDATING', payload: true });
       
-      const response = await api.post('/coupons/apply', { code: couponCode });
+      // Use validate endpoint instead of apply
+      // The actual application happens at order creation time
+      const response = await api.get(`/coupons/validate/${couponCode}`);
       const coupon = response.data;
       
-      dispatch({ type: 'APPLY_COUPON', payload: coupon });
+      // Calculate discount to show in cart
+      // Note: This is just for display, backend recalculates on order creation
+      const subtotal = state.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      let discountAmount = 0;
+      
+      if (coupon.discountType === 'percentage') {
+        discountAmount = (subtotal * coupon.discountValue) / 100;
+        if (coupon.maximumDiscountAmount) {
+          discountAmount = Math.min(discountAmount, coupon.maximumDiscountAmount);
+        }
+      } else if (coupon.discountType === 'fixed') {
+        discountAmount = Math.min(coupon.discountValue, subtotal);
+      }
+      
+      // Add calculated discount to coupon object for reducer
+      const couponWithDiscount = {
+        ...coupon,
+        discountAmount,
+        discountPercent: coupon.discountType === 'percentage' ? coupon.discountValue : 0
+      };
+      
+      dispatch({ type: 'APPLY_COUPON', payload: couponWithDiscount });
       toast.success(`Coupon "${couponCode}" applied successfully`);
       
-      return { success: true, coupon };
+      return { success: true, coupon: couponWithDiscount };
     } catch (error) {
       const message = error.response?.data?.message || 'Invalid coupon code';
       toast.error(message);

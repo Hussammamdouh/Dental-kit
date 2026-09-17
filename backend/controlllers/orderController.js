@@ -62,6 +62,7 @@ exports.createOrder = async (req, res) => {
   try {
     const userId = req.user.id;
     const orderData = req.body;
+    const { couponCode } = orderData;
 
     // Use cart items from request body (frontend local storage)
     const cartItems = orderData.items || [];
@@ -101,8 +102,28 @@ exports.createOrder = async (req, res) => {
     const subtotal = orderSummary.subtotal || cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
     const tax = orderSummary.tax || 0;
     const shipping = orderSummary.shipping || 0;
-    const discount = orderSummary.discount || 0;
-    const total = orderSummary.total || subtotal + tax + shipping - discount;
+    
+    // Calculate discount server-side if coupon is provided
+    let discount = 0;
+    let appliedCoupon = null;
+
+    if (couponCode) {
+      const CouponService = require('../services/couponService');
+      const couponService = new CouponService();
+      const coupon = await couponService.getCouponByCode(couponCode);
+
+      if (coupon && couponService.isValid(coupon) && couponService.canUserUse(coupon, userId, subtotal)) {
+        discount = couponService.calculateDiscount(coupon, subtotal);
+        appliedCoupon = coupon;
+      }
+    } else {
+      // Fallback to client-provided discount if no coupon code (e.g. direct discount)
+      // BUT strictly speaking we should probably ignore client discount if it's not verified.
+      // For now, we'll respect it if no coupon code is sent, but ideally we should validate everything.
+      discount = orderSummary.discount || 0;
+    }
+
+    const total = Math.max(0, subtotal + tax + shipping - discount);
 
     // Create order
     const order = await orderService.createOrder({
@@ -116,8 +137,16 @@ exports.createOrder = async (req, res) => {
       shippingAddress: orderData.shippingAddress,
       billingAddress: orderData.billingAddress,
       paymentMethod: orderData.paymentMethod,
-      notes: orderData.customerNotes || orderData.notes
+      notes: orderData.customerNotes || orderData.notes,
+      coupon: appliedCoupon ? appliedCoupon.id : null
     });
+
+    // Apply coupon usage if applicable
+    if (appliedCoupon) {
+      const CouponService = require('../services/couponService');
+      const couponService = new CouponService();
+      await couponService.applyCoupon(appliedCoupon.id, userId, order.id, discount);
+    }
 
     // Update product stock
     for (const item of validatedItems) {

@@ -1,4 +1,5 @@
 require('dotenv').config();
+// Trigger restart
 const app = require('./app');
 const connectDB = require('./config/db');
 const { createServer } = require('http');

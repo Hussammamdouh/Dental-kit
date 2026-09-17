@@ -72,6 +72,7 @@ import AdminCategoriesPage from './pages/admin/AdminCategoriesPage';
 import AdminVendorsPage from './pages/admin/AdminVendorsPage';
 import AdminReviewsPage from './pages/admin/AdminReviewsPage';
 import AdminCouponsPage from './pages/admin/AdminCouponsPage';
+import TestPage from './pages/admin/TestPage';
 import AdminGiftCardsPage from './pages/admin/AdminGiftCardsPage';
 import AdminPackagesPage from './pages/admin/AdminPackagesPage';
 import AdminAnalyticsPage from './pages/admin/AdminAnalyticsPage';
@@ -290,7 +291,9 @@ function App() {
                         
                         <Route path="/orders/:orderId" element={
                           <ProtectedRoute>
-                            <OrderConfirmationPage />
+                            <Layout>
+                              <OrderConfirmationPage />
+                            </Layout>
                           </ProtectedRoute>
                         } />
                         
@@ -381,6 +384,12 @@ function App() {
                         <Route path="/admin/coupons" element={
                           <AdminRoute>
                             <AdminCouponsPage />
+                          </AdminRoute>
+                        } />
+                        
+                        <Route path="/admin/test" element={
+                          <AdminRoute>
+                            <TestPage />
                           </AdminRoute>
                         } />
                         

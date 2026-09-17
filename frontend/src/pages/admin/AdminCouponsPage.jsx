@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import AdminLayout from '../../components/layout/AdminLayout';
 import { 
@@ -18,15 +18,19 @@ import {
   TagIcon,
   UsersIcon,
   ClockIcon,
-  ExclamationTriangleIcon
+  ExclamationTriangleIcon,
+  ChartBarIcon,
+  TicketIcon
 } from '@heroicons/react/24/outline';
 import { getAllCoupons, createCoupon, updateCoupon, deleteCoupon } from '../../services/adminApi';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
+import StatCard from '../../components/admin/StatCard';
 import { toast } from 'react-hot-toast';
 
 const AdminCouponsPage = () => {
+  console.log('AdminCouponsPage rendering');
   const { t } = useTranslation('admin');
   const [coupons, setCoupons] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -44,6 +48,9 @@ const AdminCouponsPage = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [editingCoupon, setEditingCoupon] = useState(null);
+  const [showFilters, setShowFilters] = useState(false);
+  
+  // Form state
   const [formData, setFormData] = useState({
     code: '',
     name: '',
@@ -92,18 +99,19 @@ const AdminCouponsPage = () => {
     }
   };
 
+  // Calculate stats
+  const stats = useMemo(() => {
+    const list = coupons || [];
+    const total = totalCoupons;
+    const active = list.filter(c => c.isActive).length;
+    const totalDiscountGiven = list.reduce((sum, c) => sum + (c.totalDiscountGiven || 0), 0);
+    const totalUses = list.reduce((sum, c) => sum + (c.usedCount || 0), 0);
+    
+    return { total, active, totalDiscountGiven, totalUses };
+  }, [coupons, totalCoupons]);
+
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
-    setCurrentPage(1);
-  };
-
-  const handleStatusFilter = (e) => {
-    setSelectedStatus(e.target.value);
-    setCurrentPage(1);
-  };
-
-  const handleTypeFilter = (e) => {
-    setSelectedType(e.target.value);
     setCurrentPage(1);
   };
 
@@ -268,10 +276,19 @@ const AdminCouponsPage = () => {
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
+  const clearFilters = () => {
+    setSearchTerm('');
+    setSelectedStatus('');
+    setSelectedType('');
+    setSortBy('createdAt');
+    setSortOrder('desc');
+    setCurrentPage(1);
+  };
+
   if (isLoading) {
     return (
       <AdminLayout>
-        <div className="flex items-center justify-center h-64">
+        <div className="flex items-center justify-center min-h-[calc(100vh-80px)]">
           <LoadingSpinner />
         </div>
       </AdminLayout>
@@ -281,14 +298,16 @@ const AdminCouponsPage = () => {
   if (error) {
     return (
       <AdminLayout>
-        <div className="text-center py-12">
-          <div className="text-red-600 text-lg font-medium mb-2">
-            {t('admin.coupons.errorLoading')}
+        <div className="flex items-center justify-center min-h-[calc(100vh-80px)]">
+          <div className="text-center max-w-md mx-auto">
+            <div className="text-red-600 text-lg font-medium mb-2">
+              {t('admin.coupons.errorLoading')}
+            </div>
+            <p className="text-gray-600 dark:text-gray-400 mb-4">{error}</p>
+            <Button onClick={fetchCoupons}>
+              {t('admin.coupons.retry')}
+            </Button>
           </div>
-          <p className="text-gray-600 dark:text-gray-400">{error}</p>
-          <Button onClick={fetchCoupons} className="mt-4">
-            {t('admin.coupons.retry')}
-          </Button>
         </div>
       </AdminLayout>
     );
@@ -296,35 +315,70 @@ const AdminCouponsPage = () => {
 
   return (
     <AdminLayout>
-      <div className="space-y-6">
+      <div className="pl-2 pr-4 py-6">
         {/* Page Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-              {t('admin.coupons.title')}
-            </h1>
-            <p className="text-gray-600 dark:text-gray-400 mt-1">
-              {t('admin.coupons.subtitle')}
-            </p>
-          </div>
-          <div className="flex gap-3">
-            <Button variant="outline" className="flex items-center gap-2">
-              <CreditCardIcon className="h-5 w-5" />
-              {t('admin.coupons.exportCSV')}
-            </Button>
-            <Button 
-              onClick={() => setShowCreateModal(true)}
-              className="flex items-center gap-2"
-            >
-              <PlusIcon className="h-5 w-5" />
-              {t('admin.coupons.addNew')}
-            </Button>
+        <div className="mb-6">
+          <div className="bg-gradient-to-r from-purple-500 via-indigo-500 to-purple-600 rounded-xl p-4 sm:p-6 text-white shadow-lg">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
+              <div className="flex-1">
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2">
+                  {t('admin.coupons.title')}
+                </h1>
+                <p className="text-purple-100 text-sm sm:text-base">
+                  {t('admin.coupons.subtitle')}
+                </p>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <Button 
+                  variant="outline" 
+                  className="flex items-center gap-2 bg-white/20 border-white/30 text-white hover:bg-white/30"
+                >
+                  <CreditCardIcon className="h-5 w-5" />
+                  {t('admin.coupons.exportCSV')}
+                </Button>
+                <Button 
+                  onClick={() => setShowCreateModal(true)}
+                  className="flex items-center gap-2 bg-white text-purple-600 hover:bg-gray-100"
+                >
+                  <PlusIcon className="h-5 w-5" />
+                  {t('admin.coupons.addNew')}
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
 
+        {/* Stats Cards */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <StatCard 
+            icon={TicketIcon} 
+            label={t('admin.coupons.totalCoupons')} 
+            value={stats.total} 
+            color="purple"
+          />
+          <StatCard 
+            icon={CheckIcon} 
+            label={t('admin.coupons.activeCoupons')} 
+            value={stats.active} 
+            color="green"
+          />
+          <StatCard 
+            icon={CurrencyDollarIcon} 
+            label={t('admin.coupons.totalDiscountGiven')} 
+            value={formatCurrency(stats.totalDiscountGiven)} 
+            color="blue"
+          />
+          <StatCard 
+            icon={ChartBarIcon} 
+            label={t('admin.coupons.totalUses')} 
+            value={stats.totalUses} 
+            color="indigo"
+          />
+        </div>
+
         {/* Filters and Search */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 lg:p-6 mb-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* Search */}
             <div className="relative">
               <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
@@ -340,8 +394,11 @@ const AdminCouponsPage = () => {
             {/* Status Filter */}
             <select
               value={selectedStatus}
-              onChange={handleStatusFilter}
-              className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+              onChange={(e) => {
+                setSelectedStatus(e.target.value);
+                setCurrentPage(1);
+              }}
+              className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white text-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
             >
               <option value="">{t('admin.coupons.allStatuses')}</option>
               <option value="active">{t('admin.coupons.active')}</option>
@@ -351,8 +408,11 @@ const AdminCouponsPage = () => {
             {/* Type Filter */}
             <select
               value={selectedType}
-              onChange={handleTypeFilter}
-              className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+              onChange={(e) => {
+                setSelectedType(e.target.value);
+                setCurrentPage(1);
+              }}
+              className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white text-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
             >
               <option value="">{t('admin.coupons.allTypes')}</option>
               <option value="public">{t('admin.coupons.public')}</option>
@@ -367,7 +427,7 @@ const AdminCouponsPage = () => {
                 setSortBy(field);
                 setSortOrder(order);
               }}
-              className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+              className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white text-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
             >
               <option value="createdAt-desc">{t('admin.coupons.sortNewest')}</option>
               <option value="createdAt-asc">{t('admin.coupons.sortOldest')}</option>
@@ -376,20 +436,29 @@ const AdminCouponsPage = () => {
               <option value="discountValue-desc">{t('admin.coupons.sortValueHigh')}</option>
               <option value="discountValue-asc">{t('admin.coupons.sortValueLow')}</option>
             </select>
-
-            {/* Results Count */}
-            <div className="flex items-center justify-end text-sm text-gray-600 dark:text-gray-400">
+          </div>
+          
+          <div className="mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div className="text-sm text-gray-600 dark:text-gray-400">
               {t('admin.coupons.showing')} {coupons.length} {t('admin.coupons.of')} {totalCoupons} {t('admin.coupons.coupons')}
             </div>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={clearFilters}
+              className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+            >
+              {t('admin.coupons.clearFilters')}
+            </Button>
           </div>
         </div>
 
         {/* Bulk Actions */}
         {selectedCoupons.length > 0 && (
-          <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+          <div className="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-xl p-4 mb-6">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
-                <span className="text-sm font-medium text-blue-900 dark:text-blue-100">
+                <span className="text-sm font-medium text-purple-900 dark:text-purple-100">
                   {selectedCoupons.length} {t('admin.coupons.selected')}
                 </span>
                 <div className="flex gap-2">
@@ -429,7 +498,7 @@ const AdminCouponsPage = () => {
         )}
 
         {/* Coupons Table */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
               <thead className="bg-gray-50 dark:bg-gray-700">
@@ -439,7 +508,7 @@ const AdminCouponsPage = () => {
                       type="checkbox"
                       checked={selectedCoupons.length === coupons.length && coupons.length > 0}
                       onChange={handleSelectAll}
-                      className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                      className="rounded border-gray-300 text-purple-600 focus:ring-purple-500"
                     />
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
@@ -464,20 +533,20 @@ const AdminCouponsPage = () => {
               </thead>
               <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                 {coupons.map((coupon) => (
-                  <tr key={coupon._id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                  <tr key={coupon._id} className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <input
                         type="checkbox"
                         checked={selectedCoupons.includes(coupon._id)}
                         onChange={() => handleSelectCoupon(coupon._id)}
-                        className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        className="rounded border-gray-300 text-purple-600 focus:ring-purple-500"
                       />
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         <div className="h-10 w-10 flex-shrink-0">
-                          <div className="h-10 w-10 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
-                            <CreditCardIcon className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+                          <div className="h-10 w-10 rounded-full bg-purple-100 dark:bg-purple-900 flex items-center justify-center">
+                            <TicketIcon className="h-6 w-6 text-purple-600 dark:text-purple-400" />
                           </div>
                         </div>
                         <div className="ml-4">
@@ -606,7 +675,7 @@ const AdminCouponsPage = () => {
                         onClick={() => paginate(page)}
                         className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
                           currentPage === page
-                            ? 'z-10 bg-blue-50 border-blue-500 text-blue-600'
+                            ? 'z-10 bg-purple-50 border-purple-500 text-purple-600'
                             : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
                         }`}
                       >

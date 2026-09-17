@@ -1,15 +1,16 @@
 import React from 'react';
-import { useTranslation } from '../../hooks/useTranslation';
-import { useNavigate } from 'react-router-dom';
+import { useLanguage } from '../../contexts/LanguageContext';
+import { Link } from 'react-router-dom';
 import {
   TrashIcon,
   PlusIcon,
   MinusIcon,
-  ExclamationTriangleIcon,
+  HeartIcon,
+  ShieldCheckIcon,
+  CheckCircleIcon,
   TagIcon,
   SparklesIcon
 } from '@heroicons/react/24/outline';
-import LoadingSpinner from '../ui/LoadingSpinner';
 import { getImageUrl } from '../../utils/imageUtils';
 
 const CartItem = ({ 
@@ -18,160 +19,137 @@ const CartItem = ({
   onRemoveItem, 
   updatingItem 
 }) => {
-  const { t } = useTranslation('ecommerce');
-  const navigate = useNavigate();
+  const { currentLanguage } = useLanguage();
+  const isAr = currentLanguage === 'ar';
 
   const formatPrice = (price) => {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat(isAr ? 'ar-EG' : 'en-US', {
       style: 'currency',
       currency: 'EGP',
-    }).format(price);
+      maximumFractionDigits: 0
+    }).format(price || 0);
   };
 
-  const getStockStatus = (item) => {
-    if (!item.inStock) {
-      return { status: 'outOfStock', message: t('cart.stock.outOfStock') };
-    }
-    if (item.quantity > (item.maxQuantity || 99)) {
-      return { 
-        status: 'insufficientStock', 
-        message: t('cart.stock.insufficientStock', { maxQuantity: item.maxQuantity || 99 }) 
-      };
-    }
-    return { status: 'inStock', message: null };
-  };
+  const discountPercentage = item.originalPrice && item.originalPrice > item.price
+    ? Math.round(((item.originalPrice - item.price) / item.originalPrice) * 100)
+    : 0;
 
-  const getDiscountPercentage = (originalPrice, currentPrice) => {
-    if (!originalPrice || originalPrice <= currentPrice) return 0;
-    return Math.round(((originalPrice - currentPrice) / originalPrice) * 100);
-  };
-
-  const stockStatus = getStockStatus(item);
-  const discountPercentage = getDiscountPercentage(item.originalPrice, item.price);
+  const isUpdating = updatingItem === item.id;
+  const itemTotalPrice = (Number(item.price) || 0) * (Number(item.quantity) || 1);
 
   return (
-    <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8 shadow-xl hover:shadow-2xl transition-all duration-300 border border-white/20 dark:border-gray-700/20 hover:-translate-y-1">
-      <div className="flex flex-col lg:flex-row lg:items-start space-y-4 sm:space-y-6 lg:space-y-0 lg:space-x-6 lg:space-x-8">
+    <div className="group relative bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 p-4 sm:p-5 shadow-sm hover:shadow-md transition-all duration-200">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-5">
+        
         {/* Product Image */}
-        <div className="flex-shrink-0 relative">
-          <div className="w-20 h-20 sm:w-24 sm:h-24 lg:w-32 lg:h-32 bg-gray-100 dark:bg-gray-700 rounded-xl sm:rounded-2xl overflow-hidden shadow-lg">
-            <img
-              src={getImageUrl(item.image)}
-              alt={item.name}
-              className="w-full h-full object-cover"
-            />
+        <div className="relative w-20 h-20 sm:w-24 sm:h-24 bg-slate-100 dark:bg-slate-800/80 rounded-xl p-2.5 overflow-hidden flex-shrink-0 flex items-center justify-center border border-slate-200/60 dark:border-slate-700/60">
+          <img
+            src={getImageUrl(item.image)}
+            alt={item.name}
+            className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
+          />
+          {discountPercentage > 0 && (
+            <span className="absolute top-1.5 left-1.5 px-1.5 py-0.5 rounded-md text-[9px] font-extrabold bg-rose-500 text-white shadow-sm">
+              -{discountPercentage}%
+            </span>
+          )}
+        </div>
+
+        {/* Product Details & Specs */}
+        <div className="flex-1 min-w-0 space-y-1.5">
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-[10px] font-mono uppercase tracking-wider font-bold text-teal-600 dark:text-teal-400">
+              {item.brand || 'DentalKit'} • {item.category || 'Clinical'}
+            </span>
+            
+            <span className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+              <CheckCircleIcon className="w-3.5 h-3.5" />
+              {isAr ? 'متوفر للتسليم بالكلية' : 'Campus In Stock'}
+            </span>
           </div>
-          
-          {/* Product Badges */}
-          <div className="absolute -top-1 sm:-top-2 -left-1 sm:-left-2 flex flex-col space-y-1">
-            {item.isOnSale && discountPercentage > 0 && (
-              <div className="bg-red-500 text-white text-xs font-bold px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full flex items-center">
-                <TagIcon className="h-2.5 w-2.5 sm:h-3 sm:w-3 mr-0.5 sm:mr-1" />
-                {t('cart.badges.sale', { percentage: discountPercentage })}
-              </div>
-            )}
-            {item.isNew && (
-              <div className="bg-green-500 text-white text-xs font-bold px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full flex items-center">
-                <SparklesIcon className="h-2.5 w-2.5 sm:h-3 sm:w-3 mr-0.5 sm:mr-1" />
-                {t('cart.badges.new')}
-              </div>
+
+          <Link
+            to={`/products/${item.productId || item.id}`}
+            className="text-sm sm:text-base font-bold text-slate-900 dark:text-white hover:text-teal-600 dark:hover:text-teal-400 transition-colors line-clamp-2"
+          >
+            {item.name}
+          </Link>
+
+          {/* Micro Clinical Spec Pill */}
+          <div className="flex items-center gap-2 pt-0.5 text-[10px] text-slate-500 dark:text-slate-400 font-mono">
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 border border-slate-200/60 dark:border-slate-700/60">
+              <ShieldCheckIcon className="w-3 h-3 text-teal-500" />
+              AISI 420 • 134°C Autoclave
+            </span>
+            {item.sku && (
+              <span className="hidden sm:inline-block">REF: {item.sku}</span>
             )}
           </div>
         </div>
-        
-        {/* Product Details */}
-        <div className="flex-1 min-w-0">
-          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start space-y-3 sm:space-y-4 sm:space-y-0">
-            <div className="flex-1">
-              <h3 
-                className="text-base sm:text-lg lg:text-xl font-semibold text-gray-900 dark:text-white mb-1 sm:mb-2 hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer line-clamp-2"
-                onClick={() => navigate(`/products/${item.productId}`)}
-              >
-                {item.name}
-              </h3>
-              <p className="text-xs sm:text-sm lg:text-base text-gray-600 dark:text-gray-400 mb-2 sm:mb-3">
-                {item.brand || t('cart.vendor')}
-              </p>
-              <div className="flex flex-col sm:flex-row sm:items-center space-y-1 sm:space-y-0 sm:space-x-4">
-                <span className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 dark:text-white">
-                  {formatPrice(item.price)}
-                </span>
-                {item.originalPrice && item.originalPrice > item.price && (
-                  <span className="text-sm sm:text-lg lg:text-xl text-gray-500 line-through">
-                    {formatPrice(item.originalPrice)}
-                  </span>
-                )}
-              </div>
+
+        {/* Quantity Controls & Price */}
+        <div className="flex sm:flex-col items-center sm:items-end justify-between w-full sm:w-auto pt-3 sm:pt-0 border-t sm:border-t-0 border-slate-100 dark:border-slate-800 gap-3">
+          
+          {/* Price */}
+          <div className="text-left sm:text-right">
+            <div className="text-base sm:text-lg font-black text-slate-900 dark:text-white">
+              {formatPrice(itemTotalPrice)}
             </div>
-            
-            {/* Remove Button */}
+            {item.quantity > 1 && (
+              <div className="text-[11px] text-slate-400 font-mono">
+                {formatPrice(item.price)} {isAr ? 'للقطعة' : 'each'}
+              </div>
+            )}
+          </div>
+
+          {/* Quantity Controls & Trash Button */}
+          <div className="flex items-center gap-2">
+            <div className="flex items-center rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700/80 p-1">
+              <button
+                type="button"
+                onClick={() => onQuantityChange(item.id, (item.quantity || 1) - 1)}
+                disabled={item.quantity <= 1 || isUpdating}
+                className="w-7 h-7 rounded-lg flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-700 disabled:opacity-40 transition-colors cursor-pointer"
+                title={isAr ? 'تقليل الكمية' : 'Decrease quantity'}
+              >
+                <MinusIcon className="w-3.5 h-3.5" />
+              </button>
+              
+              <span className="w-8 text-center text-xs font-bold text-slate-900 dark:text-white font-mono">
+                {isUpdating ? (
+                  <div className="w-3 h-3 border-2 border-teal-500 border-t-transparent rounded-full animate-spin mx-auto" />
+                ) : (
+                  item.quantity
+                )}
+              </span>
+
+              <button
+                type="button"
+                onClick={() => onQuantityChange(item.id, (item.quantity || 1) + 1)}
+                disabled={isUpdating || item.quantity >= (item.maxQuantity || 99)}
+                className="w-7 h-7 rounded-lg flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-700 disabled:opacity-40 transition-colors cursor-pointer"
+                title={isAr ? 'زيادة الكمية' : 'Increase quantity'}
+              >
+                <PlusIcon className="w-3.5 h-3.5" />
+              </button>
+            </div>
+
+            {/* Remove Trash Button */}
             <button
+              type="button"
               onClick={() => onRemoveItem(item.id)}
-              className="text-gray-400 hover:text-red-500 dark:hover:text-red-400 p-1.5 sm:p-2 rounded-full hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors self-start"
-              aria-label={t('cart.error.removeItem')}
+              className="p-2 rounded-xl text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors cursor-pointer"
+              title={isAr ? 'حذف من الحقيبة' : 'Remove from tray'}
             >
-              <TrashIcon className="h-4 w-4 sm:h-5 sm:w-5" />
+              <TrashIcon className="w-4 h-4" />
             </button>
           </div>
-          
-          {/* Stock Status */}
-          {stockStatus.message && (
-            <div className={`mt-2 sm:mt-3 px-2 sm:px-3 lg:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl text-xs sm:text-sm font-medium ${
-              stockStatus.status === 'outOfStock' 
-                ? 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-200'
-                : 'bg-orange-100 text-orange-800 dark:bg-orange-900/20 dark:text-orange-200'
-            }`}>
-              <ExclamationTriangleIcon className="h-3 w-3 sm:h-4 sm:w-4 inline mr-1 sm:mr-2" />
-              {stockStatus.message}
-            </div>
-          )}
-          
-          {/* Quantity Controls */}
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mt-4 sm:mt-6 space-y-3 sm:space-y-0">
-            <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
-              <label className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300">
-                {t('cart.quantity')}:
-              </label>
-              <div className="flex items-center border-2 border-gray-300 dark:border-gray-600 rounded-lg sm:rounded-xl overflow-hidden">
-                <button
-                  onClick={() => onQuantityChange(item.id, item.quantity - 1)}
-                  disabled={item.quantity <= 1 || updatingItem === item.id}
-                  className="px-2 sm:px-3 lg:px-4 py-1.5 sm:py-2 text-gray-600 hover:text-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                  aria-label="Decrease quantity"
-                >
-                  <MinusIcon className="h-3 w-3 sm:h-4 sm:w-4" />
-                </button>
-                <span className="px-3 sm:px-4 lg:px-6 py-1.5 sm:py-2 text-sm sm:text-base lg:text-lg font-semibold text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-700 min-w-[2rem] sm:min-w-[3rem] text-center">
-                  {updatingItem === item.id ? (
-                    <LoadingSpinner size="sm" />
-                  ) : (
-                    item.quantity
-                  )}
-                </span>
-                <button
-                  onClick={() => onQuantityChange(item.id, item.quantity + 1)}
-                  disabled={item.quantity >= (item.maxQuantity || 99) || updatingItem === item.id}
-                  className="px-2 sm:px-3 lg:px-4 py-1.5 sm:py-2 text-gray-600 hover:text-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                  aria-label="Increase quantity"
-                >
-                  <PlusIcon className="h-3 w-3 sm:h-4 sm:w-4" />
-                </button>
-              </div>
-            </div>
-            
-            <div className="text-right">
-              <div className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 dark:text-white">
-                {formatPrice(item.price * item.quantity)}
-              </div>
-              <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
-                {formatPrice(item.price)} {t('cart.quantity').toLowerCase()}
-              </div>
-            </div>
-          </div>
+
         </div>
+
       </div>
     </div>
   );
 };
 
-export default CartItem; 
+export default CartItem;

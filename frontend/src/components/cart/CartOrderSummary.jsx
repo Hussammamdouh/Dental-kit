@@ -1,175 +1,218 @@
 import React, { useState } from 'react';
-import { useTranslation } from '../../hooks/useTranslation';
+import { useLanguage } from '../../contexts/LanguageContext';
 import {
   CheckCircleIcon,
   XMarkIcon,
   LockClosedIcon,
-  ShieldCheckIcon
+  ShieldCheckIcon,
+  SparklesIcon,
+  ArrowRightIcon,
+  TagIcon
 } from '@heroicons/react/24/outline';
-import Button from '../ui/Button';
-import LoadingSpinner from '../ui/LoadingSpinner';
+import { toast } from 'react-hot-toast';
+
+const POPULAR_PROMOS = [
+  { code: 'CAMPUS15', labelEn: '15% Faculty Cohort Discount', labelAr: 'خصم الكلية ١٥٪ للدفعة' },
+  { code: 'DENTAL10', labelEn: '10% First Order Welcome Pass', labelAr: 'خصم ١٠٪ للطلب الأول' }
+];
 
 const CartOrderSummary = ({
-  subtotal,
-  tax,
-  shipping,
-  discount,
-  total,
+  subtotal = 0,
+  tax = 0,
+  shipping = 0,
+  discount = 0,
+  total = 0,
   appliedCoupon,
   onApplyCoupon,
   onRemoveCoupon,
   onProceedToCheckout,
   disabled = false
 }) => {
-  const { t } = useTranslation('ecommerce');
+  const { currentLanguage, isRTL } = useLanguage();
+  const isAr = currentLanguage === 'ar';
   const [promoCode, setPromoCode] = useState('');
   const [applyingPromo, setApplyingPromo] = useState(false);
 
   const formatPrice = (price) => {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat(isAr ? 'ar-EG' : 'en-US', {
       style: 'currency',
       currency: 'EGP',
-    }).format(price);
+      maximumFractionDigits: 0
+    }).format(price || 0);
   };
 
-  const handleApplyPromoCode = async () => {
-    if (!promoCode.trim()) return;
+  const handleApplyPromoCode = async (codeToApply) => {
+    const targetCode = (codeToApply || promoCode).trim();
+    if (!targetCode) return;
     
     try {
       setApplyingPromo(true);
-      await onApplyCoupon(promoCode);
+      await onApplyCoupon(targetCode);
       setPromoCode('');
     } catch {
-      // Error is already handled in CartContext
+      // Handled in CartContext
     } finally {
       setApplyingPromo(false);
     }
   };
 
-  const handleRemovePromoCode = () => {
-    onRemoveCoupon();
-    setPromoCode('');
-  };
-
   return (
-    <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8 shadow-xl border border-white/20 dark:border-gray-700/20 sticky top-8">
-      <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 dark:text-white mb-4 sm:mb-6">
-        {t('cart.orderSummary')}
-      </h2>
+    <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 sm:p-6 shadow-md space-y-6">
       
-      <div className="space-y-3 sm:space-y-4 mb-4 sm:mb-6">
-        <div className="flex justify-between items-center py-1.5 sm:py-2">
-          <span className="text-xs sm:text-sm lg:text-base text-gray-600 dark:text-gray-300">
-            {t('cart.subtotal')}
-          </span>
-          <span className="text-sm sm:text-base lg:text-lg font-semibold text-gray-900 dark:text-white">
+      {/* Header */}
+      <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
+        <h2 className="text-lg font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+          <SparklesIcon className="w-5 h-5 text-teal-500" />
+          <span>{isAr ? 'ملخص حساب الحقيبة' : 'Order & Tray Summary'}</span>
+        </h2>
+        <span className="text-xs font-mono font-bold text-teal-600 dark:text-teal-400 bg-teal-50 dark:bg-teal-950/50 px-2 py-0.5 rounded-md border border-teal-500/20">
+          EGP CURRENCY
+        </span>
+      </div>
+
+      {/* Cost Breakdown */}
+      <div className="space-y-3 text-xs">
+        <div className="flex justify-between items-center text-slate-600 dark:text-slate-400">
+          <span>{isAr ? 'إجمالي قيمة الأدوات (Subtotal)' : 'Tray Subtotal'}</span>
+          <span className="font-bold text-slate-900 dark:text-white font-mono text-sm">
             {formatPrice(subtotal)}
           </span>
         </div>
-        
-        <div className="flex justify-between items-center py-1.5 sm:py-2">
-          <span className="text-xs sm:text-sm lg:text-base text-gray-600 dark:text-gray-300">
-            {t('cart.shipping')}
-          </span>
-          <span className="text-sm sm:text-base lg:text-lg font-semibold text-green-600 dark:text-green-400">
-            {shipping === 0 ? t('cart.free') : formatPrice(shipping)}
+
+        <div className="flex justify-between items-center text-slate-600 dark:text-slate-400">
+          <div className="flex items-center gap-1">
+            <span>{isAr ? 'التوصيل لخزائن الكلية (Campus Delivery)' : 'Campus Locker Delivery'}</span>
+          </div>
+          <span className={`font-bold font-mono ${shipping === 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-900 dark:text-white'}`}>
+            {shipping === 0 ? (isAr ? 'مجاني (Free)' : 'FREE') : formatPrice(shipping)}
           </span>
         </div>
-        
-        <div className="flex justify-between items-center py-1.5 sm:py-2">
-          <span className="text-xs sm:text-sm lg:text-base text-gray-600 dark:text-gray-300">
-            {t('cart.estimatedTax')}
-          </span>
-          <span className="text-sm sm:text-base lg:text-lg font-semibold text-gray-900 dark:text-white">
+
+        <div className="flex justify-between items-center text-slate-600 dark:text-slate-400">
+          <span>{isAr ? 'ضريبة القيمة المضافة التقديرية (14% VAT)' : 'Estimated VAT (14%)'}</span>
+          <span className="font-bold text-slate-900 dark:text-white font-mono">
             {formatPrice(tax)}
           </span>
         </div>
-        
+
         {appliedCoupon && (
-          <div className="flex justify-between items-center py-1.5 sm:py-2 text-green-600 dark:text-green-400">
-            <span className="text-xs sm:text-sm lg:text-base">{t('cart.discount')}</span>
-            <span className="text-sm sm:text-base lg:text-lg font-semibold">-{formatPrice(discount)}</span>
+          <div className="flex justify-between items-center text-emerald-600 dark:text-emerald-400 font-bold pt-1">
+            <span className="flex items-center gap-1">
+              <TagIcon className="w-3.5 h-3.5" />
+              <span>{isAr ? 'خصم الكود المطبق' : 'Coupon Discount'}</span>
+            </span>
+            <span className="font-mono">-{formatPrice(discount)}</span>
           </div>
         )}
       </div>
-      
-      {/* Promo Code Section */}
-      <div className="mb-4 sm:mb-6 lg:mb-8">
-        <div className="flex space-x-2 sm:space-x-3">
+
+      {/* Promo Code Input & Quick Tags */}
+      <div className="pt-3 border-t border-slate-100 dark:border-slate-800 space-y-3">
+        <label className="block text-xs font-bold text-slate-700 dark:text-slate-300">
+          {isAr ? 'كود خصم الدفعة الجامعية أو القسيمة' : 'Promo / Campus Batch Code'}
+        </label>
+        
+        <div className="flex gap-2">
           <input
             type="text"
             value={promoCode}
-            onChange={(e) => setPromoCode(e.target.value)}
-            placeholder="DENTALPROMO20"
-            className="flex-1 px-3 sm:px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white text-xs sm:text-sm"
+            onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
+            placeholder={isAr ? 'مثال: CAMPUS15' : 'e.g. CAMPUS15'}
+            className="flex-1 px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 font-mono uppercase"
             disabled={applyingPromo}
           />
-          <Button
-            onClick={handleApplyPromoCode}
+          <button
+            type="button"
+            onClick={() => handleApplyPromoCode()}
             disabled={!promoCode.trim() || applyingPromo}
-            size="sm"
+            className="px-4 py-2.5 bg-teal-600 hover:bg-teal-700 disabled:opacity-50 text-white text-xs font-bold rounded-xl shadow-sm transition-colors cursor-pointer shrink-0"
           >
             {applyingPromo ? (
-              <LoadingSpinner size="sm" />
+              <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
             ) : (
-              t('cart.apply')
+              (isAr ? 'تطبيق' : 'Apply')
             )}
-          </Button>
+          </button>
         </div>
-        
+
+        {/* Applied Coupon Banner */}
         {appliedCoupon && (
-          <div className="mt-3 sm:mt-4 p-3 sm:p-4 bg-green-50 dark:bg-green-900/20 rounded-lg sm:rounded-xl border border-green-200 dark:border-green-800">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <CheckCircleIcon className="h-4 w-4 sm:h-5 sm:w-5 text-green-600" />
-                <span className="text-xs sm:text-sm font-medium text-green-800 dark:text-green-200">
-                  {t('cart.promoCodeAppliedSuccess')} (-{formatPrice(discount)})
-                </span>
-              </div>
-              <button
-                onClick={handleRemovePromoCode}
-                className="text-green-600 hover:text-green-800 dark:text-green-400 dark:hover:text-green-200 p-1 rounded-full hover:bg-green-100 dark:hover:bg-green-900/40 transition-colors"
-                aria-label="Remove promo code"
-              >
-                <XMarkIcon className="h-3 w-3 sm:h-4 sm:w-4" />
-              </button>
+          <div className="p-3 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 rounded-xl flex items-center justify-between text-xs text-emerald-800 dark:text-emerald-200">
+            <div className="flex items-center gap-2">
+              <CheckCircleIcon className="w-4 h-4 text-emerald-600 dark:text-emerald-400 flex-shrink-0" />
+              <span className="font-bold font-mono">{appliedCoupon.code || 'COUPON'}</span>
+              <span>(-{formatPrice(discount)})</span>
+            </div>
+            <button
+              type="button"
+              onClick={onRemoveCoupon}
+              className="text-emerald-600 hover:text-emerald-800 dark:hover:text-emerald-300 p-1 cursor-pointer"
+              title={isAr ? 'إلغاء الكود' : 'Remove code'}
+            >
+              <XMarkIcon className="w-4 h-4" />
+            </button>
+          </div>
+        )}
+
+        {/* Quick Clickable Promos */}
+        {!appliedCoupon && (
+          <div className="space-y-1.5 pt-1">
+            <span className="text-[10px] text-slate-400 uppercase font-mono block">
+              {isAr ? 'أكواد متاحة لفرقتك:' : 'Available Campus Codes:'}
+            </span>
+            <div className="flex flex-wrap gap-1.5">
+              {POPULAR_PROMOS.map((pr) => (
+                <button
+                  key={pr.code}
+                  type="button"
+                  onClick={() => handleApplyPromoCode(pr.code)}
+                  className="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-teal-50 dark:hover:bg-teal-950/60 border border-slate-200/60 dark:border-slate-700/60 text-[10px] font-bold text-slate-700 dark:text-slate-300 hover:text-teal-600 dark:hover:text-teal-400 transition-colors flex items-center gap-1 cursor-pointer"
+                >
+                  <TagIcon className="w-3 h-3 text-teal-500" />
+                  <span className="font-mono">{pr.code}</span>
+                  <span className="opacity-70 font-normal">({isAr ? pr.labelAr : pr.labelEn})</span>
+                </button>
+              ))}
             </div>
           </div>
         )}
       </div>
-      
-      {/* Total */}
-      <div className="border-t-2 border-gray-200 dark:border-gray-700 pt-4 sm:pt-6 mb-4 sm:mb-6 lg:mb-8">
-        <div className="flex justify-between items-center">
-          <span className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 dark:text-white">
-            {t('cart.total')}
+
+      {/* Grand Total */}
+      <div className="pt-4 border-t-2 border-slate-200 dark:border-slate-800 flex items-center justify-between">
+        <div>
+          <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 block">
+            {isAr ? 'المبلغ الإجمالي المستحق' : 'Total Investment'}
           </span>
-          <span className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white">
-            {formatPrice(total)}
+          <span className="text-xs text-teal-600 dark:text-teal-400 font-medium">
+            {isAr ? 'شامل الضريبة والشحن' : 'Inc. VAT & Delivery'}
           </span>
         </div>
+        <div className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white font-mono">
+          {formatPrice(total)}
+        </div>
       </div>
-      
-      {/* Checkout Button */}
-      <Button
+
+      {/* Proceed to Checkout CTA */}
+      <button
+        type="button"
         onClick={onProceedToCheckout}
         disabled={disabled}
-        className="w-full mb-4 sm:mb-6 py-2.5 sm:py-3 lg:py-4 text-sm sm:text-base lg:text-lg font-semibold"
-        size="lg"
+        className="w-full py-4 px-6 rounded-2xl bg-teal-600 hover:bg-teal-500 disabled:opacity-50 text-white font-extrabold text-sm sm:text-base shadow-xl shadow-teal-600/30 transition-all flex items-center justify-center gap-2 cursor-pointer"
       >
-        {t('cart.proceedToCheckout')}
-      </Button>
-      
-      {/* Delivery Information */}
-      <div className="flex items-center space-x-2 sm:space-x-3 text-xs sm:text-sm text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-700 p-3 sm:p-4 rounded-lg sm:rounded-xl">
-        <div className="flex items-center space-x-1 sm:space-x-2">
-          <LockClosedIcon className="h-3 w-3 sm:h-4 sm:w-4" />
-          <ShieldCheckIcon className="h-3 w-3 sm:h-4 sm:w-4" />
-        </div>
-        <span>{t('cart.estimatedDelivery')}: Aug 2-4</span>
+        <LockClosedIcon className="w-5 h-5" />
+        <span>{isAr ? 'متابعة الدفع وتأكيد الحجز' : 'Proceed to University Checkout'}</span>
+        <ArrowRightIcon className={`w-4 h-4 ${isRTL ? 'rotate-180' : ''}`} />
+      </button>
+
+      {/* Safety & Encryption Guarantee */}
+      <div className="p-3 bg-slate-50 dark:bg-slate-950/50 rounded-xl border border-slate-100 dark:border-slate-800 text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-2 justify-center">
+        <ShieldCheckIcon className="w-4 h-4 text-teal-500 flex-shrink-0" />
+        <span>{isAr ? 'دفع آمن ومعتمد بنسبة 100% بتشفير SSL 256-Bit' : '100% Encrypted & Syndicate Approved Checkout'}</span>
       </div>
+
     </div>
   );
 };
 
-export default CartOrderSummary; 
+export default CartOrderSummary;

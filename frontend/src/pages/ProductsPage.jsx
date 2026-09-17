@@ -1,47 +1,59 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import { useSearchParams, Link, useNavigate } from 'react-router-dom';
 import Seo from '../components/seo/Seo';
 import { useTheme } from '../contexts/ThemeContext';
 import { useTranslation } from '../hooks/useTranslation';
-import { Link, useNavigate } from 'react-router-dom';
-import AnimatedSection from '../components/animations/AnimatedSection';
+import { useLanguage } from '../contexts/LanguageContext';
+import { useCart } from '../contexts/CartContext';
+import ecommerceService from '../services/ecommerceService';
+import api from '../services/api';
+import { toast } from 'react-hot-toast';
+import { getFirstImageUrl } from '../utils/imageUtils';
+import LoadingSpinner from '../components/ui/LoadingSpinner';
+
+// Clinical Niche Components
+import ProductQuickViewModal from '../components/products/ProductQuickViewModal';
+import ProductCompareTray from '../components/products/ProductCompareTray';
+import FacultyCourseTabs from '../components/products/FacultyCourseTabs';
+import SemesterBatchBanner from '../components/products/SemesterBatchBanner';
+
 import {
   MagnifyingGlassIcon,
   FunnelIcon,
   HeartIcon,
   ShoppingCartIcon,
   XMarkIcon,
-  StarIcon,
-  SparklesIcon,
-  FireIcon,
-  TagIcon,
-  AdjustmentsHorizontalIcon,
-  ViewColumnsIcon,
-  ListBulletIcon,
+  Squares2X2Icon,
+  Bars3BottomLeftIcon,
   ChevronDownIcon,
-  CubeIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  SparklesIcon,
   ShieldCheckIcon,
-  TruckIcon,
-  UserGroupIcon
+  AcademicCapIcon,
+  TagIcon,
+  CheckCircleIcon,
+  AdjustmentsHorizontalIcon,
+  ArrowPathIcon,
+  EyeIcon,
+  ScaleIcon,
+  BeakerIcon,
+  WrenchScrewdriverIcon
 } from '@heroicons/react/24/outline';
-import { HeartIcon as HeartIconSolid, StarIcon as StarIconSolid } from '@heroicons/react/24/solid';
-import LoadingSpinner from '../components/ui/LoadingSpinner';
-import Button from '../components/ui/Button';
-import Input from '../components/ui/Input';
-import { useCart } from '../contexts/CartContext';
-import ecommerceService from '../services/ecommerceService';
-import api, { endpoints } from '../services/api';
-import { toast } from 'react-hot-toast';
-import { useLanguage } from '../contexts/LanguageContext';
-import { getImageUrl } from '../utils/imageUtils';
+import {
+  HeartIcon as HeartIconSolid,
+  StarIcon as StarIconSolid
+} from '@heroicons/react/24/solid';
 
 const ProductsPage = () => {
   const { t } = useTranslation('ecommerce');
-  const { t: tSeo } = useTranslation('ecommerce');
   const { addToCart } = useCart();
-  const { currentLanguage } = useLanguage();
+  const { currentLanguage, isRTL } = useLanguage();
   const { isDark } = useTheme();
-  
-  // State for products and data
+  const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
+
+  // Catalog State
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [brands, setBrands] = useState([]);
@@ -51,950 +63,1144 @@ const ProductsPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
-  // State for filters
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategories, setSelectedCategories] = useState([]);
-  const [selectedBrands, setSelectedBrands] = useState([]);
+  // Filters State
+  const [searchTerm, setSearchTerm] = useState(searchParams.get('search') || searchParams.get('q') || '');
+  const [selectedCategory, setSelectedCategory] = useState(searchParams.get('category') || 'all');
+  const [selectedAcademicStage, setSelectedAcademicStage] = useState(searchParams.get('stage') || 'all');
+  const [selectedMetallurgy, setSelectedMetallurgy] = useState('all');
+  const [selectedCert, setSelectedCert] = useState('all');
   const [priceRange, setPriceRange] = useState({ min: '', max: '' });
   const [availability, setAvailability] = useState('all');
-  const [sortBy, setSortBy] = useState('popularity');
+  const [sortBy, setSortBy] = useState(searchParams.get('sort') || 'popularity');
   const [viewMode, setViewMode] = useState('grid');
-  const [showFilters, setShowFilters] = useState(false); // New state for filter toggle
-  // Rating filter state (unused for now but kept for future implementation)
-  const [ratingFilter, setRatingFilter] = useState(0);
-  const [searchHistory, setSearchHistory] = useState([]);
-  const [showSearchSuggestions, setShowSearchSuggestions] = useState(false);
+  const [showMobileFilters, setShowMobileFilters] = useState(false);
 
-  // State for UI
-  const [wishlistItems, setWishlistItems] = useState(new Set());
-  // Load wishlist state on mount
+  // Clinical Interactive Features State
+  const [wishlistSet, setWishlistSet] = useState(new Set());
+  const [addingToCartId, setAddingToCartId] = useState(null);
+  const [quickViewProduct, setQuickViewProduct] = useState(null);
+  const [isQuickViewOpen, setIsQuickViewOpen] = useState(false);
+  const [compareItems, setCompareItems] = useState([]);
+
+  // Popular search recommendations
+  const popularTags = [
+    'Typodont',
+    'Rubber Dam Kit',
+    'K-Files 25mm',
+    'Restorative Set',
+    'Extraction Forceps #150',
+    'Wax Carver PK Thomas',
+    'Cryer Elevators'
+  ];
+
+  // Metallurgy Options
+  const metallurgyOptions = [
+    { id: 'all', label: 'All Metallurgy Alloys' },
+    { id: 'aisi420', label: 'German AISI 420 Surgical Steel (HRC 54-58)' },
+    { id: 'tinGold', label: 'TiN Nano-Gold Non-Stick Coating' },
+    { id: 'tungsten', label: 'Tungsten Carbide Reinforced Inserts' },
+    { id: 'diamond', label: 'Electroplated Diamond Grit' }
+  ];
+
+  // Certification Standards
+  const certOptions = [
+    { id: 'all', label: 'All Certifications' },
+    { id: 'autoclave134', label: '134°C Class B Autoclavable' },
+    { id: 'iso13485', label: 'ISO 13485 Medical Device Certified' },
+    { id: 'ce', label: 'CE Surgical Standard' }
+  ];
+
+  // Fetch Wishlist on Mount
   useEffect(() => {
     const loadWishlist = async () => {
       try {
         const response = await api.get('/wishlist');
-        const items = response.data.items || response.data.wishlist?.items || [];
-        const ids = new Set(items.map((it) => it.productId));
-        setWishlistItems(ids);
+        const items = response.data?.items || response.data?.wishlist?.items || [];
+        setWishlistSet(new Set(items.map((it) => it.productId || it._id)));
       } catch (_) {
-        // ignore silently to avoid UX noise on products listing
+        // Silently ignore
       }
     };
     loadWishlist();
   }, []);
 
-  const [addingToCart, setAddingToCart] = useState(null);
-  const [initialLoadComplete, setInitialLoadComplete] = useState(false);
+  // Sync state when URL searchParams change
+  useEffect(() => {
+    const urlCategory = searchParams.get('category');
+    if (urlCategory) setSelectedCategory(urlCategory);
 
+    const urlSearch = searchParams.get('search') || searchParams.get('q');
+    if (urlSearch) setSearchTerm(urlSearch);
 
-  // Memoized filter parameters to prevent unnecessary re-renders
-  const filterParams = useMemo(() => ({
-    page: currentPage,
-    limit: 12,
-    search: searchTerm || undefined,
-    category: selectedCategories.length > 0 ? selectedCategories.join(',') : undefined,
-    brand: selectedBrands.length > 0 ? selectedBrands.join(',') : undefined,
-    minPrice: priceRange.min || undefined,
-    maxPrice: priceRange.max || undefined,
-    inStock: availability === 'inStock' ? true : availability === 'outOfStock' ? false : undefined,
-    sortBy: sortBy !== 'popularity' ? sortBy.split('-')[0] : undefined,
-    sortOrder: sortBy !== 'popularity' ? sortBy.split('-')[1] : undefined
-  }), [currentPage, searchTerm, selectedCategories, selectedBrands, priceRange, availability, sortBy]);
+    const urlSort = searchParams.get('sort');
+    if (urlSort) setSortBy(urlSort);
 
-  // Fetch products with filters using e-commerce service
-  const fetchProducts = useCallback(async (forceRefresh = false) => {
-    // Prevent multiple simultaneous requests
-    if (isLoading && !forceRefresh) {
-      return;
-    }
+    const urlStage = searchParams.get('stage');
+    if (urlStage) setSelectedAcademicStage(urlStage);
+  }, [searchParams]);
 
+  // Fetch Categories & Brands on Mount
+  useEffect(() => {
+    const loadMeta = async () => {
+      try {
+        const [catRes, brandRes] = await Promise.all([
+          ecommerceService.getCategories().catch(() => ({ categories: [] })),
+          ecommerceService.getBrands().catch(() => ({ brands: [] }))
+        ]);
+        setCategories(catRes.categories || []);
+        setBrands(brandRes.brands || []);
+      } catch (err) {
+        console.error('Failed to load filter metadata:', err);
+      }
+    };
+    loadMeta();
+  }, []);
+
+  // Fetch Products
+  const fetchProducts = useCallback(async () => {
     try {
       setIsLoading(true);
       setError(null);
 
-      // Clean up filter params (remove undefined values)
+      const params = {
+        page: currentPage,
+        limit: 12,
+        search: searchTerm || undefined,
+        category: selectedCategory !== 'all' ? selectedCategory : undefined,
+        minPrice: priceRange.min || undefined,
+        maxPrice: priceRange.max || undefined,
+        inStock: availability === 'inStock' ? true : undefined,
+        sortBy: sortBy === 'discount' ? 'discount' : sortBy !== 'popularity' ? sortBy.split('-')[0] : undefined,
+        sortOrder: sortBy !== 'popularity' && sortBy !== 'discount' ? sortBy.split('-')[1] : undefined
+      };
+
       const cleanParams = Object.fromEntries(
-        Object.entries(filterParams).filter(([_, value]) => value !== undefined)
+        Object.entries(params).filter(([_, v]) => v !== undefined)
       );
 
-      const result = await ecommerceService.getProducts({
-        ...cleanParams,
-        forceRefresh
-      });
-      
-      // Only update state if we got valid data
-      if (result && (result.products || result.total !== undefined)) {
-        const normalizedProducts = (result.products || []).map((p) => ({
-          ...p,
-          inStock: typeof p.stock === 'number' ? p.stock > 0 : Boolean(p.inStock)
-        }));
-        setProducts(normalizedProducts);
-        setTotalProducts(result.total || 0);
-        setTotalPages(result.totalPages || 1);
+      const result = await ecommerceService.getProducts(cleanParams);
+
+      if (result && result.products) {
+        let list = result.products;
+
+        // Apply local academic stage filter if selected
+        if (selectedAcademicStage !== 'all') {
+          list = list.filter((p) => {
+            const name = (p.name || '').toLowerCase();
+            const desc = (p.description || '').toLowerCase();
+            const cat = (p.category?.name || p.category?.slug || '').toLowerCase();
+            if (selectedAcademicStage === 'pre-clinical') {
+              return name.includes('typodont') || name.includes('wax') || name.includes('carver') || name.includes('model') || cat.includes('pre-clinical') || desc.includes('pre-clinical');
+            }
+            if (selectedAcademicStage === 'operative') {
+              return name.includes('dam') || name.includes('endo') || name.includes('file') || name.includes('composite') || name.includes('matrix') || cat.includes('restorative');
+            }
+            if (selectedAcademicStage === 'surgery') {
+              return name.includes('forceps') || name.includes('elevator') || name.includes('perio') || name.includes('scaler') || name.includes('suture') || cat.includes('surgery');
+            }
+            if (selectedAcademicStage === 'bundles') {
+              return name.includes('kit') || name.includes('set') || name.includes('bundle') || name.includes('box');
+            }
+            return true;
+          });
+        }
+
+        setProducts(list);
+        setTotalProducts(result.total || result.totalProducts || list.length);
+        setTotalPages(result.totalPages || Math.ceil((result.total || list.length) / 12) || 1);
+      } else {
+        setProducts([]);
+        setTotalProducts(0);
       }
-    } catch (error) {
-      console.error('❌ Error fetching products:', error);
-      setError(error.message);
-      toast.error(t('products.error.fetch'));
+    } catch (err) {
+      console.error('Error fetching products:', err);
+      setError(err.message || 'Failed to load products');
     } finally {
       setIsLoading(false);
     }
-  }, [filterParams, t, isLoading]);
+  }, [currentPage, searchTerm, selectedCategory, selectedAcademicStage, priceRange, availability, sortBy]);
 
-  // Fetch categories and brands on mount (only once)
   useEffect(() => {
-    let isMounted = true;
-    
-    const loadInitialData = async () => {
-      try {
-        // Only load if we don't have data yet
-        if (categories.length > 0 && brands.length > 0) {
-          return;
-        }
+    fetchProducts();
+  }, [fetchProducts]);
 
-        const [categoriesResult, brandsResult] = await Promise.allSettled([
-          ecommerceService.getCategories(),
-          api.get(endpoints.products.brands, { params: { _ts: Date.now() }, headers: { 'Cache-Control': 'no-cache' } })
-        ]);
-
-        if (isMounted) {
-          if (categoriesResult.status === 'fulfilled') {
-            const categoriesData = categoriesResult.value.categories || [];
-            setCategories(categoriesData);
-          }
-
-          if (brandsResult.status === 'fulfilled') {
-            const brandsData = brandsResult.value.data?.brands || brandsResult.value.brands || [];
-            setBrands(brandsData.map((name) => ({ id: name, name })));
-          }
-          
-          setInitialLoadComplete(true);
-        }
-      } catch (error) {
-        console.error('❌ Error loading initial data:', error);
-      }
-    };
-
-    loadInitialData();
-
-    return () => {
-      isMounted = false;
-    };
-  }, []); // Empty dependency array - only run once
-
-  // Fetch products when filters change (debounced)
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      fetchProducts();
-    }, 300); // 300ms debounce
-
-    return () => clearTimeout(timeoutId);
-  }, [filterParams]); // Only depend on filterParams
-
-  // Separate effect for initial products load (only once)
-  useEffect(() => {
-    if (initialLoadComplete && products.length === 0) {
-      fetchProducts(true); // Force refresh for initial load
-    }
-  }, [initialLoadComplete]); // Only depend on initialLoadComplete
-
-  // Remove preload - let the specific data loading handle it
-
-  // Handle search with debouncing (memoized)
-  const handleSearch = useCallback((value) => {
-    setSearchTerm(value);
-    setCurrentPage(1); // Reset to first page on search
-  }, []);
-
-  // Handle category selection
-  const handleCategoryChange = useCallback((categoryId) => {
-    setSelectedCategories(prev => {
-      if (prev.includes(categoryId)) {
-        return prev.filter(id => id !== categoryId);
-      } else {
-        return [...prev, categoryId];
-      }
-    });
-    setCurrentPage(1);
-  }, []);
-
-  // Handle brand selection
-  const handleBrandChange = useCallback((brandId) => {
-    setSelectedBrands(prev => {
-      if (prev.includes(brandId)) {
-        return prev.filter(id => id !== brandId);
-      } else {
-        return [...prev, brandId];
-      }
-    });
-    setCurrentPage(1);
-  }, []);
-
-  // Handle price range change
-  const handlePriceRangeChange = useCallback((field, value) => {
-    setPriceRange(prev => ({ ...prev, [field]: value }));
-    setCurrentPage(1);
-  }, []);
-
-  // Handle availability change
-  const handleAvailabilityChange = useCallback((value) => {
-    setAvailability(value);
-    setCurrentPage(1);
-  }, []);
-
-  // Handle sort change
-  const handleSortChange = useCallback((value) => {
-    setSortBy(value);
-    setCurrentPage(1);
-  }, []);
-
-  // Handle page change
-  const handlePageChange = useCallback((page) => {
-    setCurrentPage(page);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, []);
-
-  // Handle add to cart
-  const handleAddToCart = useCallback(async (product, quantity = 1) => {
-    if (addingToCart === product.id) return;
-
+  // Handle Add to Cart
+  const handleAddToCart = async (product) => {
     try {
-      setAddingToCart(product.id);
-      await addToCart(product, quantity);
-      toast.success(`${product.name} added to cart`);
-    } catch (error) {
-      console.error('❌ Error adding to cart:', error);
-      toast.error('Failed to add to cart');
+      const pId = product.id || product._id;
+      setAddingToCartId(pId);
+      await addToCart(product, 1);
+    } catch (err) {
+      console.error('Add to cart error:', err);
     } finally {
-      setAddingToCart(null);
+      setAddingToCartId(null);
     }
-  }, [addToCart, addingToCart]);
+  };
 
-  // Handle add to wishlist
-  const handleToggleWishlist = useCallback(async (productId) => {
+  // Handle Wishlist Toggle
+  const handleToggleWishlist = async (productId) => {
     try {
-      setWishlistItems(prev => {
-        const newSet = new Set(prev);
-        if (newSet.has(productId)) {
-          newSet.delete(productId);
-          ecommerceService.removeFromWishlist(productId);
-        } else {
-          newSet.add(productId);
-          ecommerceService.addToWishlist(productId);
-        }
-        return newSet;
+      const { data } = await api.post('/wishlist/toggle', { productId });
+      setWishlistSet((prev) => {
+        const next = new Set(prev);
+        if (data?.inWishlist) next.add(productId);
+        else next.delete(productId);
+        return next;
       });
-    } catch (error) {
-      console.error('❌ Error toggling wishlist:', error);
+      toast.success(data?.action === 'added' ? 'Added to wishlist' : 'Removed from wishlist');
+    } catch (err) {
       toast.error('Failed to update wishlist');
     }
-  }, []);
+  };
 
-  // Clear all filters
-  const clearFilters = useCallback(() => {
-    setSelectedCategories([]);
-    setSelectedBrands([]);
+  // Handle Quick View Modal Open
+  const handleOpenQuickView = (product) => {
+    setQuickViewProduct(product);
+    setIsQuickViewOpen(true);
+  };
+
+  // Handle Compare Toggle (max 4)
+  const handleToggleCompare = (product) => {
+    const pId = product.id || product._id;
+    const exists = compareItems.some((item) => (item.id || item._id) === pId);
+
+    if (exists) {
+      setCompareItems((prev) => prev.filter((item) => (item.id || item._id) !== pId));
+      toast.success(`Removed ${product.name} from comparison tray`);
+    } else {
+      if (compareItems.length >= 4) {
+        toast.error('Comparison tray is limited to 4 instruments at once');
+        return;
+      }
+      setCompareItems((prev) => [...prev, product]);
+      toast.success(`Added ${product.name} to comparison tray`);
+    }
+  };
+
+  const handleRemoveCompareItem = (productId) => {
+    setCompareItems((prev) => prev.filter((item) => (item.id || item._id) !== productId));
+  };
+
+  const handleClearCompareAll = () => {
+    setCompareItems([]);
+    toast.success('Cleared comparison tray');
+  };
+
+  // Clear All Filters
+  const handleClearAllFilters = () => {
+    setSearchTerm('');
+    setSelectedCategory('all');
+    setSelectedAcademicStage('all');
+    setSelectedMetallurgy('all');
+    setSelectedCert('all');
     setPriceRange({ min: '', max: '' });
     setAvailability('all');
     setSortBy('popularity');
     setCurrentPage(1);
-  }, []);
+    setSearchParams({});
+  };
 
-  // Get search suggestions
-  const getSearchSuggestions = useCallback(async (query) => {
-    if (query.length < 2) {
-      setShowSearchSuggestions(false);
-      return;
-    }
-
-    try {
-      const result = await ecommerceService.getSearchSuggestions(query);
-      setSearchHistory(result.suggestions || []);
-      setShowSearchSuggestions(true);
-    } catch (error) {
-      console.error('❌ Error getting search suggestions:', error);
-    }
-  }, []);
-
-  // Format price (memoized)
-  const formatPrice = useCallback((price) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'EGP',
-    }).format(price);
-  }, []);
-
-  // Get discount percentage (memoized)
-  const getDiscountPercentage = useCallback((product) => {
-    if (!product.originalPrice || product.originalPrice <= product.price) return 0;
-    return Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100);
-  }, []);
-
-  // Loading state
-  if (isLoading && products.length === 0) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-sky-50 via-blue-50 to-sky-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center">
-        <div className="text-center">
-          <LoadingSpinner size="lg" className="mx-auto mb-4" />
-          <p className="text-gray-600 dark:text-gray-300">Loading products...</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Error state
-  if (error && products.length === 0) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-sky-50 via-blue-50 to-sky-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center">
-        <div className="text-center">
-          <div className="text-red-500 text-6xl mb-4">❌</div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-            Failed to load products
-          </h2>
-          <p className="text-gray-600 dark:text-gray-400 mb-4">{error}</p>
-          <Button onClick={() => fetchProducts(true)}>
-            Try Again
-          </Button>
-        </div>
-      </div>
-    );
-  }
+  // Check active filter count
+  const activeFiltersCount = useMemo(() => {
+    let count = 0;
+    if (searchTerm) count++;
+    if (selectedCategory !== 'all') count++;
+    if (selectedAcademicStage !== 'all') count++;
+    if (selectedMetallurgy !== 'all') count++;
+    if (selectedCert !== 'all') count++;
+    if (priceRange.min || priceRange.max) count++;
+    if (availability !== 'all') count++;
+    if (sortBy !== 'popularity') count++;
+    return count;
+  }, [searchTerm, selectedCategory, selectedAcademicStage, selectedMetallurgy, selectedCert, priceRange, availability, sortBy]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-sky-50 via-blue-50 to-sky-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white transition-colors duration-300 pb-28">
       <Seo
-        title={tSeo('seo.products.title', 'Products')}
-        description={tSeo('seo.products.description', 'Browse our premium dental products')}
+        title="Dental Equipment, Kits & Metallurgy Catalog - DentalKit"
+        description="Browse university-approved dental student kits, pre-clinical typodonts, and German-grade surgical instruments."
         type="website"
         locale={currentLanguage === 'ar' ? 'ar_SA' : 'en_US'}
-        themeColor={isDark ? '#0B1220' : '#FFFFFF'}
+        themeColor="#00b1db"
       />
-      
-      {/* Header Section */}
-      <AnimatedSection animation="fadeInDown" delay={0}>
-        <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-xl shadow-lg border-b border-white/20 dark:border-gray-700/50">
-          <div className="container mx-auto px-4 py-8">
-            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-6 lg:space-y-0">
-              <div>
-                <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-2">
-                  {t('products.title')}
-                </h1>
-                <p className="text-gray-600 dark:text-gray-400 text-lg">
-                  {totalProducts} {t('products.available')}
-                </p>
-              </div>
 
-              {/* Search Bar */}
-              <div className="relative w-full lg:w-96">
-                <div className="relative">
-                  <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-blue-600 dark:text-blue-400" />
-                  <Input
-                    type="text"
-                    placeholder={t('products.search.placeholder')}
-                    value={searchTerm}
-                    onChange={(e) => handleSearch(e.target.value)}
-                    onFocus={() => getSearchSuggestions(searchTerm)}
-                    className="pl-10 pr-4 w-full bg-white/50 dark:bg-gray-700/50 backdrop-blur-sm border-blue-200 dark:border-blue-800 focus:border-blue-500 dark:focus:border-blue-400"
-                  />
-                </div>
+      {/* 1. Header & Live Search Hub */}
+      <div className="bg-gradient-to-b from-teal-950/40 via-slate-900 to-slate-950 text-white border-b border-slate-800 pt-8 pb-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(#00b1db_1px,transparent_1px)] [background-size:24px_24px] opacity-[0.03] pointer-events-none" />
+        
+        <div className="container mx-auto max-w-6xl relative z-10">
+          <div className="text-center max-w-3xl mx-auto space-y-4">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-teal-500/10 border border-teal-500/25 text-teal-300 text-xs font-bold shadow-inner">
+              <AcademicCapIcon className="w-4 h-4 text-teal-400" />
+              <span>{t('products.title') || 'Clinical Dental Equipment & Syllabus Storefront'}</span>
+            </div>
 
-                {/* Search Suggestions */}
-                {showSearchSuggestions && searchHistory.length > 0 && (
-                  <div className="absolute top-full left-0 right-0 bg-white/95 dark:bg-gray-800/95 backdrop-blur-xl border border-blue-200 dark:border-blue-800 rounded-xl shadow-xl z-10 mt-1">
-                    {searchHistory.map((suggestion, index) => (
-                      <button
-                        key={index}
-                        onClick={() => {
-                          handleSearch(suggestion);
-                          setShowSearchSuggestions(false);
-                        }}
-                        className="w-full text-left px-4 py-3 hover:bg-blue-50 dark:hover:bg-blue-900/20 text-gray-700 dark:text-gray-300 transition-colors"
-                      >
-                        {suggestion}
-                      </button>
-                    ))}
-                  </div>
+            <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-white">
+              Student Toolkits & Medical Instruments
+            </h1>
+
+            <p className="text-sm sm:text-base text-slate-300 max-w-2xl mx-auto leading-relaxed">
+              Explore professor-verified clinical kits, 32-tooth typodonts, and German AISI 420 instruments with direct university campus delivery.
+            </p>
+
+            {/* Live Search Input */}
+            <div className="pt-2 max-w-2xl mx-auto">
+              <div className="relative flex items-center">
+                <MagnifyingGlassIcon className={`absolute ${isRTL ? 'right-4' : 'left-4'} w-5 h-5 text-teal-400 pointer-events-none`} />
+                <input
+                  type="text"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  placeholder={t('products.search.placeholder') || 'Search instruments, typodonts, forceps, rubber dam, K-files...'}
+                  className={`w-full ${isRTL ? 'pr-12 pl-24' : 'pl-12 pr-24'} py-3.5 text-sm sm:text-base rounded-2xl bg-slate-900 text-white placeholder-slate-400 border border-slate-700/80 shadow-2xl focus:outline-none focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500 transition-all`}
+                />
+                {searchTerm && (
+                  <button
+                    type="button"
+                    onClick={() => setSearchTerm('')}
+                    className={`absolute ${isRTL ? 'left-3' : 'right-3'} p-1.5 rounded-full text-slate-400 hover:text-white hover:bg-slate-800 transition-colors`}
+                  >
+                    <XMarkIcon className="w-4 h-4" />
+                  </button>
                 )}
               </div>
+
+              {/* Popular Tags */}
+              <div className="mt-3 flex items-center justify-center flex-wrap gap-2 text-xs">
+                <span className="text-slate-400 font-medium">Popular:</span>
+                {popularTags.map((tag) => (
+                  <button
+                    key={tag}
+                    type="button"
+                    onClick={() => setSearchTerm(tag)}
+                    className="px-2.5 py-1 rounded-lg bg-slate-800/80 hover:bg-teal-500/20 text-slate-300 hover:text-teal-300 border border-slate-700/60 hover:border-teal-500/30 transition-all"
+                  >
+                    {tag}
+                  </button>
+                ))}
+              </div>
             </div>
+
           </div>
         </div>
-      </AnimatedSection>
+      </div>
 
-      <div className="container mx-auto px-4 py-8">
-        {/* Mobile Filter Toggle Button */}
-        <div className="lg:hidden mb-6">
-          <Button
-            onClick={() => setShowFilters(!showFilters)}
-            className="w-full bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-700 hover:to-blue-700 text-white font-semibold py-3 rounded-xl transition-all duration-200 flex items-center justify-center"
-          >
-            <FunnelIcon className="h-5 w-5 mr-2" />
-            {showFilters ? t('products.filters.hide') : t('products.filters.show')}
-          </Button>
+      {/* 2. Main Container with Course Tabs & Batch Deal */}
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-8">
+        
+        {/* Semester Batch Discount Bar */}
+        <SemesterBatchBanner />
+
+        {/* Academic Stage / Course Level Requirement Tabs */}
+        <FacultyCourseTabs
+          selectedStage={selectedAcademicStage}
+          onSelectStage={(stage) => setSelectedAcademicStage(stage)}
+        />
+
+        {/* Top Control Bar: Total Count, Active Filters & View Toggles */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 mb-6 border-b border-slate-200/80 dark:border-slate-800">
+          
+          {/* Left: Mobile Filter Button & Results Count */}
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => setShowMobileFilters(true)}
+              className="lg:hidden flex items-center gap-2 px-4 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white text-xs font-bold shadow-md shadow-teal-600/20 transition-all"
+            >
+              <FunnelIcon className="w-4 h-4" />
+              <span>Filters {activeFiltersCount > 0 ? `(${activeFiltersCount})` : ''}</span>
+            </button>
+
+            <span className="text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400">
+              Showing <strong className="text-slate-900 dark:text-white">{totalProducts}</strong> verified dental instruments
+            </span>
+          </div>
+
+          {/* Right: Sort & View Mode Toggle */}
+          <div className="flex items-center justify-between md:justify-end gap-3 sm:gap-4">
+            
+            {/* Sort Dropdown */}
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-medium text-slate-500 dark:text-slate-400 hidden sm:inline">
+                {t('products.filters.sortBy') || 'Sort by'}:
+              </span>
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500/50 cursor-pointer"
+              >
+                <option value="popularity">Most Popular</option>
+                <option value="discount">Highest Student Discount</option>
+                <option value="price-asc">Price: Low to High</option>
+                <option value="price-desc">Price: High to Low</option>
+                <option value="rating">Top Customer Rated</option>
+              </select>
+            </div>
+
+            {/* View Mode Switcher */}
+            <div className="flex items-center p-1 rounded-xl bg-slate-200/80 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+              <button
+                type="button"
+                onClick={() => setViewMode('grid')}
+                className={`p-1.5 rounded-lg transition-all ${
+                  viewMode === 'grid'
+                    ? 'bg-white dark:bg-slate-800 text-teal-600 dark:text-teal-400 shadow-sm'
+                    : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+                }`}
+                aria-label="Grid View"
+                title="Grid View"
+              >
+                <Squares2X2Icon className="w-4 h-4" />
+              </button>
+              <button
+                type="button"
+                onClick={() => setViewMode('list')}
+                className={`p-1.5 rounded-lg transition-all ${
+                  viewMode === 'list'
+                    ? 'bg-white dark:bg-slate-800 text-teal-600 dark:text-teal-400 shadow-sm'
+                    : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+                }`}
+                aria-label="List View"
+                title="List View"
+              >
+                <Bars3BottomLeftIcon className="w-4 h-4" />
+              </button>
+            </div>
+
+          </div>
+
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          {/* Filters Sidebar */}
-          <AnimatedSection 
-            animation="fadeInLeft" 
-            delay={100} 
-            className={`lg:col-span-1 ${showFilters ? 'block' : 'hidden lg:block'}`}
-          >
-            <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-xl rounded-2xl shadow-xl border border-white/20 dark:border-gray-700/50 p-6 sticky top-8">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center">
-                  <FunnelIcon className="w-5 h-5 mr-2 text-blue-600 dark:text-blue-400" />
-                  {t('products.filters.title')}
-                </h3>
+        {/* Active Filter Badges Bar */}
+        {activeFiltersCount > 0 && (
+          <div className="flex items-center flex-wrap gap-2 mb-6 p-3 rounded-2xl bg-slate-100 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800">
+            <span className="text-xs font-bold text-slate-500 dark:text-slate-400">Active Filters:</span>
+            
+            {searchTerm && (
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium bg-teal-500/10 text-teal-700 dark:text-teal-300 border border-teal-500/20">
+                Search: "{searchTerm}"
+                <XMarkIcon className="w-3.5 h-3.5 cursor-pointer" onClick={() => setSearchTerm('')} />
+              </span>
+            )}
+
+            {selectedCategory !== 'all' && (
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium bg-teal-500/10 text-teal-700 dark:text-teal-300 border border-teal-500/20">
+                Category: {selectedCategory}
+                <XMarkIcon className="w-3.5 h-3.5 cursor-pointer" onClick={() => setSelectedCategory('all')} />
+              </span>
+            )}
+
+            {selectedAcademicStage !== 'all' && (
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium bg-teal-500/10 text-teal-700 dark:text-teal-300 border border-teal-500/20">
+                Stage: {selectedAcademicStage}
+                <XMarkIcon className="w-3.5 h-3.5 cursor-pointer" onClick={() => setSelectedAcademicStage('all')} />
+              </span>
+            )}
+
+            {selectedMetallurgy !== 'all' && (
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium bg-teal-500/10 text-teal-700 dark:text-teal-300 border border-teal-500/20">
+                Alloy: {selectedMetallurgy}
+                <XMarkIcon className="w-3.5 h-3.5 cursor-pointer" onClick={() => setSelectedMetallurgy('all')} />
+              </span>
+            )}
+
+            {availability !== 'all' && (
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium bg-teal-500/10 text-teal-700 dark:text-teal-300 border border-teal-500/20">
+                In Stock Only
+                <XMarkIcon className="w-3.5 h-3.5 cursor-pointer" onClick={() => setAvailability('all')} />
+              </span>
+            )}
+
+            <button
+              type="button"
+              onClick={handleClearAllFilters}
+              className="text-xs font-bold text-red-500 hover:text-red-600 underline ml-auto cursor-pointer"
+            >
+              Clear All ({activeFiltersCount})
+            </button>
+          </div>
+        )}
+
+        {/* 3. Main Grid Layout (Multi-Facet Sidebar + Products) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          
+          {/* Desktop Filter Sidebar (3 cols on lg) */}
+          <aside className="hidden lg:block lg:col-span-3 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-6 sticky top-24 shadow-sm space-y-6">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+              <h3 className="text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white flex items-center gap-2">
+                <FunnelIcon className="w-4 h-4 text-teal-500" />
+                <span>Clinical Filters</span>
+              </h3>
+              {activeFiltersCount > 0 && (
                 <button
-                  onClick={clearFilters}
-                  className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors font-medium"
+                  type="button"
+                  onClick={handleClearAllFilters}
+                  className="text-xs font-semibold text-teal-600 dark:text-teal-400 hover:underline cursor-pointer"
                 >
-                  {t('products.filters.clear')}
+                  Reset
                 </button>
-              </div>
-
-              {/* Categories Filter */}
-              <div className="mb-6">
-                <h4 className="font-semibold text-gray-900 dark:text-white mb-3 text-sm uppercase tracking-wide">
-                  {t('products.filters.categories')}
-                </h4>
-                <div className="space-y-3">
-                  {categories.map((category) => (
-                    <label key={category.id} className="flex items-center group cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={selectedCategories.includes(category.id)}
-                        onChange={() => handleCategoryChange(category.id)}
-                        className="rounded border-gray-300 text-blue-600 focus:ring-blue-500 focus:ring-2"
-                      />
-                      <span className="ml-3 text-sm text-gray-700 dark:text-gray-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                        {currentLanguage === 'ar' && category.nameAr ? category.nameAr : category.name}
-                      </span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-
-              {/* Brands Filter */}
-              <div className="mb-6">
-                <h4 className="font-semibold text-gray-900 dark:text-white mb-3 text-sm uppercase tracking-wide">
-                  {t('products.filters.brands')}
-                </h4>
-                <div className="space-y-3">
-                  {brands.map((brand) => (
-                    <label key={brand.id} className="flex items-center group cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={selectedBrands.includes(brand.id)}
-                        onChange={() => handleBrandChange(brand.id)}
-                        className="rounded border-gray-300 text-blue-600 focus:ring-blue-500 focus:ring-2"
-                      />
-                      <span className="ml-3 text-sm text-gray-700 dark:text-gray-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                        {currentLanguage === 'ar' && brand.nameAr ? brand.nameAr : brand.name}
-                      </span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-
-              {/* Price Range Filter */}
-              <div className="mb-6">
-                <h4 className="font-semibold text-gray-900 dark:text-white mb-3 text-sm uppercase tracking-wide">
-                  {t('products.filters.priceRange')}
-                </h4>
-                <div className="grid grid-cols-2 gap-3">
-                  <Input
-                    type="number"
-                    placeholder="Min"
-                    value={priceRange.min}
-                    onChange={(e) => handlePriceRangeChange('min', e.target.value)}
-                    className="text-sm bg-white/50 dark:bg-gray-700/50 backdrop-blur-sm"
-                  />
-                  <Input
-                    type="number"
-                    placeholder="Max"
-                    value={priceRange.max}
-                    onChange={(e) => handlePriceRangeChange('max', e.target.value)}
-                    className="text-sm bg-white/50 dark:bg-gray-700/50 backdrop-blur-sm"
-                  />
-                </div>
-              </div>
-
-              {/* Availability Filter */}
-              <div className="mb-6">
-                <h4 className="font-semibold text-gray-900 dark:text-white mb-3 text-sm uppercase tracking-wide">
-                  {t('products.filters.availability')}
-                </h4>
-                <select
-                  value={availability}
-                  onChange={(e) => handleAvailabilityChange(e.target.value)}
-                  className="w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700/50 dark:text-white bg-white/50 backdrop-blur-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                >
-                  <option value="all">{t('products.filters.all')}</option>
-                  <option value="inStock">{t('products.filters.inStock')}</option>
-                  <option value="outOfStock">{t('products.filters.outOfStock')}</option>
-                </select>
-              </div>
-
-              {/* Sort Filter */}
-              <div className="mb-6">
-                <h4 className="font-semibold text-gray-900 dark:text-white mb-3 text-sm uppercase tracking-wide">
-                  {t('products.filters.sortBy')}
-                </h4>
-                <select
-                  value={sortBy}
-                  onChange={(e) => handleSortChange(e.target.value)}
-                  className="w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700/50 dark:text-white bg-white/50 backdrop-blur-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                >
-                  <option value="popularity">{t('products.filters.popularity')}</option>
-                  <option value="price-asc">{t('products.filters.priceLowToHigh')}</option>
-                  <option value="price-desc">{t('products.filters.priceHighToLow')}</option>
-                  <option value="createdAt-desc">{t('products.filters.newest')}</option>
-                  <option value="rating-desc">{t('products.filters.rating')}</option>
-                </select>
-              </div>
+              )}
             </div>
-          </AnimatedSection>
 
-          {/* Products Grid */}
-          <AnimatedSection animation="fadeInRight" delay={200} className="lg:col-span-3">
-            {/* View Mode Toggle */}
-            <div className="flex items-center justify-between mb-8">
-              <div className="flex items-center space-x-2">
-                <button
-                  onClick={() => setViewMode('grid')}
-                  className={`p-3 rounded-xl transition-all duration-200 ${
-                    viewMode === 'grid'
-                      ? 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400 shadow-lg'
-                      : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-white/50 dark:hover:bg-gray-700/50'
-                  }`}
-                >
-                  <ViewColumnsIcon className="h-5 w-5" />
-                </button>
-                <button
-                  onClick={() => setViewMode('list')}
-                  className={`p-3 rounded-xl transition-all duration-200 ${
-                    viewMode === 'list'
-                      ? 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400 shadow-lg'
-                      : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-white/50 dark:hover:bg-gray-700/50'
-                  }`}
-                >
-                  <ListBulletIcon className="h-5 w-5" />
-                </button>
-              </div>
+            {/* Department / Category Filter */}
+            <div className="space-y-3">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                Department Specialty
+              </h4>
+              <div className="space-y-1.5 max-h-48 overflow-y-auto pr-1 text-xs sm:text-sm">
+                <label className="flex items-center gap-2.5 p-1.5 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="category"
+                    checked={selectedCategory === 'all'}
+                    onChange={() => setSelectedCategory('all')}
+                    className="text-teal-600 focus:ring-teal-500"
+                  />
+                  <span className={selectedCategory === 'all' ? 'font-bold text-teal-600 dark:text-teal-400' : 'text-slate-700 dark:text-slate-300'}>
+                    All Departments
+                  </span>
+                </label>
 
-              <div className="text-sm text-gray-600 dark:text-gray-400 bg-white/50 dark:bg-gray-700/50 backdrop-blur-sm px-4 py-2 rounded-xl">
-                {t('products.showing', { 
-                  from: (currentPage - 1) * 12 + 1, 
-                  to: Math.min(currentPage * 12, totalProducts), 
-                  total: totalProducts 
+                {categories.map((cat) => {
+                  const catId = cat.id || cat._id || cat.slug || cat.name;
+                  const isChecked = selectedCategory === catId || selectedCategory === cat.slug;
+                  return (
+                    <label key={catId} className="flex items-center gap-2.5 p-1.5 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="category"
+                        checked={isChecked}
+                        onChange={() => setSelectedCategory(cat.slug || catId)}
+                        className="text-teal-600 focus:ring-teal-500"
+                      />
+                      <span className={isChecked ? 'font-bold text-teal-600 dark:text-teal-400' : 'text-slate-700 dark:text-slate-300'}>
+                        {cat.name}
+                      </span>
+                    </label>
+                  );
                 })}
               </div>
             </div>
 
-            {/* Products Grid/List */}
-            {isLoading ? (
-              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 sm:gap-6">
-                {[...Array(6)].map((_, index) => (
-                  <div key={index} className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-xl rounded-2xl shadow-lg border border-white/20 dark:border-gray-700/50 p-4 sm:p-6 animate-pulse h-80 sm:h-96">
-                    <div className="bg-gray-200 dark:bg-gray-700 h-32 sm:h-48 rounded-xl mb-4"></div>
-                    <div className="space-y-3">
-                      <div className="bg-gray-200 dark:bg-gray-700 h-4 rounded-lg"></div>
-                      <div className="bg-gray-200 dark:bg-gray-700 h-4 rounded-lg w-3/4"></div>
-                    </div>
-                  </div>
+            {/* Metallurgy & Alloy Filter */}
+            <div className="pt-4 border-t border-slate-100 dark:border-slate-800 space-y-3">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+                <WrenchScrewdriverIcon className="w-3.5 h-3.5 text-teal-500" />
+                <span>Steel Alloy / Metallurgy</span>
+              </h4>
+              <div className="space-y-1 text-xs">
+                {metallurgyOptions.map((opt) => (
+                  <label key={opt.id} className="flex items-center gap-2 p-1 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="metallurgy"
+                      checked={selectedMetallurgy === opt.id}
+                      onChange={() => setSelectedMetallurgy(opt.id)}
+                      className="text-teal-600 focus:ring-teal-500"
+                    />
+                    <span className={selectedMetallurgy === opt.id ? 'font-bold text-teal-600 dark:text-teal-400' : 'text-slate-600 dark:text-slate-400'}>
+                      {opt.label}
+                    </span>
+                  </label>
                 ))}
               </div>
-            ) : (
-              <>
-                {viewMode === 'grid' ? (
-                  <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 sm:gap-6">
-                    {products.map((product, index) => (
-                      <AnimatedSection key={product.id} animation="fadeInUp" delay={index * 100}>
-                        <ProductCard
-                          product={product}
-                          onAddToCart={handleAddToCart}
-                          onToggleWishlist={handleToggleWishlist}
-                          addingToCart={addingToCart === product.id}
-                          isInWishlist={wishlistItems.has(product.id)}
-                          formatPrice={formatPrice}
-                          getDiscountPercentage={getDiscountPercentage}
-                          currentLanguage={currentLanguage}
-                        />
-                      </AnimatedSection>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    {products.map((product, index) => (
-                      <AnimatedSection key={product.id} animation="fadeInUp" delay={index * 50}>
-                        <ProductListItem
-                          product={product}
-                          onAddToCart={handleAddToCart}
-                          onToggleWishlist={handleToggleWishlist}
-                          addingToCart={addingToCart === product.id}
-                          isInWishlist={wishlistItems.has(product.id)}
-                          formatPrice={formatPrice}
-                          getDiscountPercentage={getDiscountPercentage}
-                          currentLanguage={currentLanguage}
-                        />
-                      </AnimatedSection>
-                    ))}
-                  </div>
-                )}
+            </div>
 
-                {/* Pagination */}
-                {totalPages > 1 && (
-                  <AnimatedSection animation="fadeInUp" delay={300} className="mt-12">
-                    <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-xl px-4 py-3 flex items-center justify-between border-t border-gray-200 dark:border-gray-700 sm:px-6 rounded-xl shadow-sm">
-                      <div className="flex-1 flex justify-between sm:hidden">
-                        <button
-                          onClick={() => handlePageChange(currentPage - 1)}
-                          disabled={currentPage === 1}
-                          className="relative inline-flex items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-700 dark:text-white dark:border-gray-600"
-                        >
-                          {t('products.pagination.previous')}
-                        </button>
-                        <div className="flex items-center">
-                          <span className="text-sm text-gray-700 dark:text-gray-300">
-                            {currentPage} / {totalPages}
+            {/* Price Range Filter */}
+            <div className="pt-4 border-t border-slate-100 dark:border-slate-800 space-y-3">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                Price Range (EGP)
+              </h4>
+              <div className="flex items-center gap-2">
+                <input
+                  type="number"
+                  placeholder="Min"
+                  value={priceRange.min}
+                  onChange={(e) => setPriceRange({ ...priceRange, min: e.target.value })}
+                  className="w-full px-3 py-2 rounded-xl text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-1 focus:ring-teal-500"
+                />
+                <span className="text-slate-400 text-xs">-</span>
+                <input
+                  type="number"
+                  placeholder="Max"
+                  value={priceRange.max}
+                  onChange={(e) => setPriceRange({ ...priceRange, max: e.target.value })}
+                  className="w-full px-3 py-2 rounded-xl text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-1 focus:ring-teal-500"
+                />
+              </div>
+
+              {/* Quick presets */}
+              <div className="grid grid-cols-2 gap-1.5 pt-1">
+                {[
+                  { label: '< 500', min: '', max: '500' },
+                  { label: '500 - 1.5k', min: '500', max: '1500' },
+                  { label: '1.5k - 3k', min: '1500', max: '3000' },
+                  { label: '3,000+', min: '3000', max: '' },
+                ].map((preset, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => setPriceRange({ min: preset.min, max: preset.max })}
+                    className="text-[11px] py-1.5 px-2 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-teal-50 dark:hover:bg-teal-500/10 text-slate-700 dark:text-slate-300 hover:text-teal-600 dark:hover:text-teal-400 transition-colors text-center cursor-pointer"
+                  >
+                    {preset.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Availability Filter */}
+            <div className="pt-4 border-t border-slate-100 dark:border-slate-800 space-y-2">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                Campus Delivery & Stock
+              </h4>
+              <label className="flex items-center gap-2.5 text-xs text-slate-700 dark:text-slate-300 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={availability === 'inStock'}
+                  onChange={(e) => setAvailability(e.target.checked ? 'inStock' : 'all')}
+                  className="rounded text-teal-600 focus:ring-teal-500"
+                />
+                <span>In Stock for Fast Delivery</span>
+              </label>
+            </div>
+
+          </aside>
+
+          {/* Products Grid / List Display (9 cols on lg) */}
+          <main className="lg:col-span-9">
+            
+            {isLoading ? (
+              <div className="py-24 text-center">
+                <LoadingSpinner size="lg" className="mx-auto mb-4" />
+                <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">
+                  Loading dental instruments & clinical kits...
+                </p>
+              </div>
+            ) : error ? (
+              <div className="p-8 rounded-3xl bg-white dark:bg-slate-900 border border-red-500/20 text-center space-y-4 shadow-sm">
+                <p className="text-red-500 font-bold">{error}</p>
+                <button
+                  onClick={fetchProducts}
+                  className="px-5 py-2 rounded-xl bg-teal-600 text-white text-xs font-bold hover:bg-teal-500 transition-all cursor-pointer"
+                >
+                  Retry Loading
+                </button>
+              </div>
+            ) : products.length === 0 ? (
+              <div className="p-12 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 text-center space-y-4 shadow-sm">
+                <AcademicCapIcon className="w-12 h-12 text-slate-400 mx-auto" />
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+                  No matching dental instruments found
+                </h3>
+                <p className="text-sm text-slate-500 dark:text-slate-400 max-w-md mx-auto">
+                  Try adjusting your search terms, changing the academic stage tab, or resetting active filters.
+                </p>
+                <button
+                  type="button"
+                  onClick={handleClearAllFilters}
+                  className="px-6 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white text-xs font-bold shadow-md shadow-teal-600/20 transition-all cursor-pointer"
+                >
+                  Clear All Filters
+                </button>
+              </div>
+            ) : viewMode === 'grid' ? (
+              /* Grid View (3 Cols on lg) */
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+                {products.map((product) => {
+                  const pId = product.id || product._id;
+                  const inWishlist = wishlistSet.has(pId);
+                  const isCompared = compareItems.some((it) => (it.id || it._id) === pId);
+                  const discountPct = product.originalPrice && product.originalPrice > product.price
+                    ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
+                    : null;
+
+                  return (
+                    <div
+                      key={pId}
+                      className="group relative rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 hover:border-teal-500/40 shadow-sm hover:shadow-xl hover:shadow-teal-500/10 transition-all duration-300 flex flex-col justify-between overflow-hidden"
+                    >
+                      {/* Thumbnail Container */}
+                      <div className="relative aspect-[4/3] bg-slate-100 dark:bg-slate-800/60 p-6 flex items-center justify-center overflow-hidden">
+                        <img
+                          src={getFirstImageUrl(product.images)}
+                          alt={product.name}
+                          className="w-full h-full object-contain transform group-hover:scale-105 transition-transform duration-500"
+                        />
+
+                        {/* Top Action Badges */}
+                        <div className="absolute top-3 right-3 flex items-center gap-1.5 z-10">
+                          {/* Quick View Button */}
+                          <button
+                            type="button"
+                            onClick={() => handleOpenQuickView(product)}
+                            className="p-2 rounded-xl bg-white/90 dark:bg-slate-900/90 text-slate-500 hover:text-teal-600 dark:hover:text-teal-400 border border-slate-200/60 dark:border-slate-700/60 shadow-sm backdrop-blur-md transition-all opacity-0 group-hover:opacity-100"
+                            title="Inspect CAD Specs"
+                          >
+                            <EyeIcon className="w-4 h-4" />
+                          </button>
+
+                          {/* Wishlist Button */}
+                          <button
+                            type="button"
+                            onClick={() => handleToggleWishlist(pId)}
+                            className="p-2 rounded-xl bg-white/90 dark:bg-slate-900/90 text-slate-400 hover:text-rose-500 border border-slate-200/60 dark:border-slate-700/60 shadow-sm backdrop-blur-md transition-all"
+                            aria-label="Toggle wishlist"
+                          >
+                            {inWishlist ? (
+                              <HeartIconSolid className="w-4 h-4 text-rose-500" />
+                            ) : (
+                              <HeartIcon className="w-4 h-4" />
+                            )}
+                          </button>
+                        </div>
+
+                        {/* Discount Badge */}
+                        {discountPct && (
+                          <span className="absolute top-3 left-3 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-rose-500 text-white shadow-md shadow-rose-500/20">
+                            -{discountPct}%
                           </span>
-                        </div>
-                        <button
-                          onClick={() => handlePageChange(currentPage + 1)}
-                          disabled={currentPage === totalPages}
-                          className="relative inline-flex items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-700 dark:text-white dark:border-gray-600"
-                        >
-                          {t('products.pagination.next')}
-                        </button>
+                        )}
+
+                        {/* Micro Metallurgy Spec Tag */}
+                        <span className="absolute bottom-2.5 left-2.5 px-2 py-0.5 rounded-md text-[9px] font-bold bg-slate-900/80 text-teal-300 border border-teal-500/25 backdrop-blur-sm">
+                          AISI 420 • 134°C Autoclave
+                        </span>
                       </div>
-                      <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+
+                      {/* Content */}
+                      <div className="p-5 flex-1 flex flex-col justify-between">
                         <div>
-                          <p className="text-sm text-gray-700 dark:text-gray-300">
-                            Showing <span className="font-medium">{(currentPage - 1) * 12 + 1}</span> to <span className="font-medium">{Math.min(currentPage * 12, totalProducts)}</span> of <span className="font-medium">{totalProducts}</span> results
-                          </p>
-                        </div>
-                        <div>
-                          <nav className="relative z-0 inline-flex rounded-lg shadow-sm -space-x-px" aria-label="Pagination">
-                            <button
-                              onClick={() => handlePageChange(currentPage - 1)}
-                              disabled={currentPage === 1}
-                              className="relative inline-flex items-center px-4 py-2 rounded-l-lg border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-700 dark:text-white dark:border-gray-600"
-                            >
-                              {t('products.pagination.previous')}
-                            </button>
-                            
-                            {/* Current Page Info */}
-                            <div className="relative inline-flex items-center px-4 py-2 border-t border-b border-gray-300 bg-white text-sm font-medium text-gray-700 dark:bg-gray-700 dark:text-white dark:border-gray-600">
-                              {currentPage} / {totalPages}
+                          <div className="flex items-center justify-between text-[11px] text-teal-600 dark:text-teal-400 font-bold uppercase tracking-wider mb-1.5">
+                            <span>{product.brand || 'Student Edition'}</span>
+                            <div className="flex items-center gap-1 text-amber-500">
+                              <StarIconSolid className="w-3.5 h-3.5" />
+                              <span className="text-slate-700 dark:text-slate-300 font-semibold">{product.rating || '4.9'}</span>
                             </div>
-                            
-                            <button
-                              onClick={() => handlePageChange(currentPage + 1)}
-                              disabled={currentPage === totalPages}
-                              className="relative inline-flex items-center px-4 py-2 rounded-r-lg border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-700 dark:text-white dark:border-gray-600"
-                            >
-                              {t('products.pagination.next')}
-                            </button>
-                          </nav>
+                          </div>
+
+                          <Link
+                            to={`/products/${pId}`}
+                            className="text-sm font-bold text-slate-900 dark:text-white line-clamp-2 hover:text-teal-600 dark:hover:text-teal-400 transition-colors leading-snug mb-3"
+                          >
+                            {product.name}
+                          </Link>
+                        </div>
+
+                        {/* Quick Spec Tags */}
+                        <div className="flex items-center gap-1.5 mb-3 flex-wrap text-[10px] font-semibold text-slate-500 dark:text-slate-400">
+                          <span className="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800">
+                            54-58 HRC
+                          </span>
+                          <span className="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800">
+                            ISO 13485
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => handleToggleCompare(product)}
+                            className={`ml-auto px-2 py-0.5 rounded-md text-[10px] font-bold transition-colors flex items-center gap-1 cursor-pointer ${
+                              isCompared
+                                ? 'bg-teal-500 text-slate-950'
+                                : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-teal-600'
+                            }`}
+                          >
+                            <ScaleIcon className="w-3 h-3" />
+                            <span>{isCompared ? 'Comparing' : 'Compare'}</span>
+                          </button>
+                        </div>
+
+                        {/* Price & Action */}
+                        <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-2 mt-auto">
+                          <div>
+                            <div className="text-lg font-black text-slate-900 dark:text-white">
+                              <span className="text-xs font-bold text-teal-600 dark:text-teal-400 mr-1">EGP</span>
+                              {product.price?.toLocaleString()}
+                            </div>
+                            {product.originalPrice && product.originalPrice > product.price && (
+                              <span className="text-[11px] line-through text-slate-400">
+                                EGP {product.originalPrice?.toLocaleString()}
+                              </span>
+                            )}
+                          </div>
+
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              handleAddToCart(product);
+                            }}
+                            disabled={addingToCartId === pId || (product.stock !== undefined && product.stock === 0 && !product.inStock)}
+                            className="p-2.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white shadow-md shadow-teal-600/20 transition-all hover:scale-105 active:scale-95 disabled:opacity-50 cursor-pointer flex items-center justify-center min-w-[38px] min-h-[38px]"
+                            aria-label="Add to cart"
+                          >
+                            {addingToCartId === pId ? (
+                              <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                            ) : (
+                              <ShoppingCartIcon className="w-4 h-4" />
+                            )}
+                          </button>
                         </div>
                       </div>
                     </div>
-                  </AnimatedSection>
-                )}
-              </>
+                  );
+                })}
+              </div>
+            ) : (
+              /* List View (1 Col Row) */
+              <div className="space-y-4">
+                {products.map((product) => {
+                  const pId = product.id || product._id;
+                  const inWishlist = wishlistSet.has(pId);
+                  const isCompared = compareItems.some((it) => (it.id || it._id) === pId);
+                  const discountPct = product.originalPrice && product.originalPrice > product.price
+                    ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
+                    : null;
+
+                  return (
+                    <div
+                      key={pId}
+                      className="group rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 hover:border-teal-500/40 p-4 sm:p-5 shadow-sm hover:shadow-lg transition-all flex flex-col sm:flex-row items-center gap-6"
+                    >
+                      <div className="relative w-full sm:w-44 aspect-[4/3] rounded-2xl bg-slate-100 dark:bg-slate-800/60 p-4 flex items-center justify-center shrink-0">
+                        <img
+                          src={getFirstImageUrl(product.images)}
+                          alt={product.name}
+                          className="w-full h-full object-contain"
+                        />
+                        {discountPct && (
+                          <span className="absolute top-2 left-2 px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-rose-500 text-white">
+                            -{discountPct}%
+                          </span>
+                        )}
+                        <span className="absolute bottom-2 left-2 px-2 py-0.5 rounded text-[9px] font-bold bg-slate-900/80 text-teal-300 border border-teal-500/30">
+                          AISI 420 Steel
+                        </span>
+                      </div>
+
+                      <div className="flex-1 space-y-2 text-center sm:text-left">
+                        <div className="flex items-center justify-center sm:justify-between">
+                          <span className="text-xs font-bold text-teal-600 dark:text-teal-400 uppercase tracking-wider">
+                            {product.brand || 'Student Edition'}
+                          </span>
+                          <div className="flex items-center gap-1 text-amber-500 text-xs">
+                            <StarIconSolid className="w-3.5 h-3.5" />
+                            <span className="font-semibold text-slate-700 dark:text-slate-300">{product.rating || '4.9'}</span>
+                          </div>
+                        </div>
+
+                        <Link
+                          to={`/products/${pId}`}
+                          className="text-base font-bold text-slate-900 dark:text-white hover:text-teal-600 dark:hover:text-teal-400 transition-colors block"
+                        >
+                          {product.name}
+                        </Link>
+
+                        <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2">
+                          {product.description || 'German-spec precision dental instrument engineered for clinical exams.'}
+                        </p>
+
+                        <div className="flex items-center gap-3 pt-1 text-xs">
+                          <button
+                            type="button"
+                            onClick={() => handleOpenQuickView(product)}
+                            className="text-teal-600 dark:text-teal-400 font-bold hover:underline flex items-center gap-1 cursor-pointer"
+                          >
+                            <EyeIcon className="w-3.5 h-3.5" />
+                            <span>Quick Inspect Specs</span>
+                          </button>
+                          <span className="text-slate-300 dark:text-slate-700">•</span>
+                          <button
+                            type="button"
+                            onClick={() => handleToggleCompare(product)}
+                            className={`font-semibold hover:underline flex items-center gap-1 cursor-pointer ${
+                              isCompared ? 'text-teal-500 font-bold' : 'text-slate-500'
+                            }`}
+                          >
+                            <ScaleIcon className="w-3.5 h-3.5" />
+                            <span>{isCompared ? 'In Compare Tray' : 'Add to Compare'}</span>
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="sm:border-l sm:border-slate-100 sm:dark:border-slate-800 sm:pl-6 flex sm:flex-col items-center justify-between gap-4 shrink-0 w-full sm:w-auto">
+                        <div className="text-center sm:text-right">
+                          <div className="text-xl font-black text-slate-900 dark:text-white">
+                            <span className="text-xs font-bold text-teal-600 dark:text-teal-400 mr-1">EGP</span>
+                            {product.price?.toLocaleString()}
+                          </div>
+                          {product.originalPrice && product.originalPrice > product.price && (
+                            <span className="text-xs line-through text-slate-400">
+                              EGP {product.originalPrice?.toLocaleString()}
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => handleToggleWishlist(pId)}
+                            className="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-400 hover:text-rose-500 transition-colors cursor-pointer"
+                          >
+                            {inWishlist ? <HeartIconSolid className="w-4 h-4 text-rose-500" /> : <HeartIcon className="w-4 h-4" />}
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              handleAddToCart(product);
+                            }}
+                            disabled={addingToCartId === pId || (product.stock !== undefined && product.stock === 0 && !product.inStock)}
+                            className="px-4 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white text-xs font-bold shadow-md shadow-teal-600/20 transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50 min-h-[38px]"
+                          >
+                            {addingToCartId === pId ? (
+                              <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                            ) : (
+                              <ShoppingCartIcon className="w-4 h-4" />
+                            )}
+                            <span>{addingToCartId === pId ? 'Adding...' : 'Add'}</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             )}
-          </AnimatedSection>
+
+            {/* Smart Truncated Pagination */}
+            {totalPages > 1 && (
+              <div className="mt-12 pt-8 border-t border-slate-200/80 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+                
+                {/* Left: Page count summary */}
+                <div className="text-xs font-semibold text-slate-500 dark:text-slate-400 order-2 sm:order-1">
+                  Showing page <strong className="text-slate-900 dark:text-white">{currentPage}</strong> of{' '}
+                  <strong className="text-slate-900 dark:text-white">{totalPages}</strong> ({totalProducts} instruments)
+                </div>
+
+                {/* Center / Right: Truncated Pagination Controls */}
+                <div className="flex items-center gap-1.5 order-1 sm:order-2 flex-wrap justify-center">
+                  {/* Previous Button */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setCurrentPage((prev) => Math.max(1, prev - 1));
+                      window.scrollTo({ top: 300, behavior: 'smooth' });
+                    }}
+                    disabled={currentPage === 1}
+                    className="flex items-center gap-1 px-3 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-700 dark:text-slate-300 disabled:opacity-30 hover:bg-slate-50 dark:hover:bg-slate-800 hover:border-teal-500/40 transition-all cursor-pointer disabled:cursor-not-allowed"
+                    aria-label="Previous Page"
+                  >
+                    <ChevronLeftIcon className={`w-3.5 h-3.5 ${isRTL ? 'rotate-180' : ''}`} />
+                    <span className="hidden sm:inline">Prev</span>
+                  </button>
+
+                  {/* Page Numbers with Ellipses */}
+                  {(() => {
+                    const pages = [];
+                    if (totalPages <= 7) {
+                      for (let i = 1; i <= totalPages; i++) pages.push(i);
+                    } else if (currentPage <= 4) {
+                      pages.push(1, 2, 3, 4, 5, '...', totalPages);
+                    } else if (currentPage >= totalPages - 3) {
+                      pages.push(1, '...', totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages);
+                    } else {
+                      pages.push(1, '...', currentPage - 1, currentPage, currentPage + 1, '...', totalPages);
+                    }
+
+                    return pages.map((page, idx) => {
+                      if (page === '...') {
+                        return (
+                          <span
+                            key={`ellipsis-${idx}`}
+                            className="w-9 h-9 flex items-center justify-center text-xs font-bold text-slate-400 select-none"
+                          >
+                            •••
+                          </span>
+                        );
+                      }
+
+                      const isCurrent = page === currentPage;
+                      return (
+                        <button
+                          key={page}
+                          type="button"
+                          onClick={() => {
+                            setCurrentPage(page);
+                            window.scrollTo({ top: 300, behavior: 'smooth' });
+                          }}
+                          className={`w-9 h-9 rounded-xl text-xs font-black transition-all cursor-pointer ${
+                            isCurrent
+                              ? 'bg-teal-600 text-white shadow-md shadow-teal-600/30 scale-105'
+                              : 'bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:border-teal-500/40'
+                          }`}
+                        >
+                          {page}
+                        </button>
+                      );
+                    });
+                  })()}
+
+                  {/* Next Button */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setCurrentPage((prev) => Math.min(totalPages, prev + 1));
+                      window.scrollTo({ top: 300, behavior: 'smooth' });
+                    }}
+                    disabled={currentPage === totalPages}
+                    className="flex items-center gap-1 px-3 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-700 dark:text-slate-300 disabled:opacity-30 hover:bg-slate-50 dark:hover:bg-slate-800 hover:border-teal-500/40 transition-all cursor-pointer disabled:cursor-not-allowed"
+                    aria-label="Next Page"
+                  >
+                    <span className="hidden sm:inline">Next</span>
+                    <ChevronRightIcon className={`w-3.5 h-3.5 ${isRTL ? 'rotate-180' : ''}`} />
+                  </button>
+                </div>
+
+              </div>
+            )}
+
+          </main>
+
         </div>
+
       </div>
-    </div>
-  );
-};
 
-// Product Card Component
-const ProductCard = ({ 
-  product, 
-  onAddToCart, 
-  onToggleWishlist, 
-  addingToCart, 
-  isInWishlist,
-  formatPrice,
-  getDiscountPercentage,
-  currentLanguage
-}) => {
-  const { t } = useTranslation('ecommerce');
-  const navigate = useNavigate();
-  const displayName = currentLanguage === 'ar' && product.nameAr ? product.nameAr : product.name;
-  const images = Array.isArray(product.images) && product.images.length > 0 ? product.images : [product.images?.[0]];
-  const [index, setIndex] = useState(0);
-  const [hovered, setHovered] = useState(false);
+      {/* 4. Interactive Quick View Modal */}
+      <ProductQuickViewModal
+        product={quickViewProduct}
+        isOpen={isQuickViewOpen}
+        onClose={() => setIsQuickViewOpen(false)}
+        inWishlist={quickViewProduct ? wishlistSet.has(quickViewProduct.id || quickViewProduct._id) : false}
+        onToggleWishlist={handleToggleWishlist}
+      />
 
-  useEffect(() => {
-    if (!images || images.length <= 1) return;
-    if (hovered) return;
-    const id = setInterval(() => {
-      setIndex((prev) => (prev + 1) % images.length);
-    }, 3000);
-    return () => clearInterval(id);
-  }, [images, hovered]);
+      {/* 5. Sticky Floating Compare Tray & Matrix */}
+      <ProductCompareTray
+        compareItems={compareItems}
+        onRemoveItem={handleRemoveCompareItem}
+        onClearAll={handleClearCompareAll}
+      />
 
-  const handleCardClick = () => {
-    navigate(`/products/${product.id}`);
-  };
-
-  const handleImageClick = (e) => {
-    e.stopPropagation();
-    navigate(`/products/${product.id}`);
-  };
-
-  const handleWishlistClick = (e) => {
-    e.stopPropagation();
-    onToggleWishlist(product.id);
-  };
-
-  const handleAddToCartClick = (e) => {
-    e.stopPropagation();
-    onAddToCart(product);
-  };
-
-  return (
-    <div 
-      className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-xl rounded-2xl shadow-lg border border-white/20 dark:border-gray-700/50 overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:scale-105 cursor-pointer flex flex-col min-h-[320px] sm:min-h-[400px]"
-      onClick={handleCardClick}
-    >
-      {/* Product Image */}
-      <div className="relative flex-shrink-0" onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}>
-        <img
-          src={getImageUrl(images[index] || images[0])}
-          alt={displayName}
-          className="w-full h-32 sm:h-48 object-cover cursor-pointer"
-          onClick={handleImageClick}
-        />
-        
-        {/* Product Badges */}
-        <div className="absolute top-3 left-3 flex flex-col space-y-2">
-          {product.isOnSale && getDiscountPercentage(product) > 0 && (
-            <span className="bg-gradient-to-r from-red-500 to-pink-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
-              -{getDiscountPercentage(product)}%
-            </span>
-          )}
-          {product.isNew && (
-            <span className="bg-gradient-to-r from-green-500 to-emerald-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
-              NEW
-            </span>
-          )}
-          {product.isFeatured && (
-            <span className="bg-gradient-to-r from-orange-500 to-red-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
-              FEATURED
-            </span>
-          )}
-        </div>
-
-        {/* Wishlist Button */}
-        <button
-          onClick={handleWishlistClick}
-          className="absolute top-3 right-3 p-2 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-full shadow-lg hover:bg-white dark:hover:bg-gray-800 transition-all duration-200"
-        >
-          {isInWishlist ? (
-            <HeartIconSolid className="h-5 w-5 text-red-500" />
-          ) : (
-            <HeartIcon className="h-5 w-5 text-gray-400 hover:text-red-500 transition-colors" />
-          )}
-        </button>
-      </div>
-
-      {/* Product Info */}
-      <div className="p-4 sm:p-6 flex flex-col flex-grow min-h-0">
-        <h3 className="font-semibold text-gray-900 dark:text-white mb-2 sm:mb-3 line-clamp-2 text-sm sm:text-lg min-h-[2.5rem] sm:min-h-[3rem]">
-          {displayName}
-        </h3>
-        
-        {/* Rating */}
-        <div className="flex items-center mb-2 sm:mb-3">
-          <div className="flex items-center">
-            {[...Array(5)].map((_, i) => (
-              <StarIconSolid
-                key={i}
-                className={`h-3 w-3 sm:h-4 sm:w-4 ${
-                  i < Math.floor(product.averageRating || 0)
-                    ? 'text-yellow-400'
-                    : 'text-gray-300'
-                }`}
-              />
-            ))}
-          </div>
-          <span className="text-xs text-gray-500 dark:text-gray-400 ml-1 sm:ml-2">
-            ({product.totalReviews || 0})
-          </span>
-        </div>
-
-        {/* Price */}
-        <div className="flex items-center space-x-2 mb-3 sm:mb-4">
-          <span className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">
-            {formatPrice(product.price)}
-          </span>
-          {product.originalPrice && product.originalPrice > product.price && (
-            <span className="text-sm text-gray-500 dark:text-gray-400 line-through">
-              {formatPrice(product.originalPrice)}
-            </span>
-          )}
-        </div>
-
-        {/* Add to Cart Button */}
-        <Button
-          onClick={handleAddToCartClick}
-          disabled={addingToCart || !product.inStock}
-          className="w-full bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-700 hover:to-blue-700 text-white font-semibold py-2 sm:py-3 rounded-xl transition-all duration-200 transform hover:scale-105 disabled:transform-none disabled:opacity-50 text-sm sm:text-base mt-auto"
-          loading={addingToCart}
-        >
-          {addingToCart ? (
-            <LoadingSpinner size="sm" />
-          ) : !product.inStock ? (
-            t('products.outOfStock')
-          ) : (
-            <>
-              <ShoppingCartIcon className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-              {t('products.addToCart')}
-            </>
-          )}
-        </Button>
-      </div>
-    </div>
-  );
-};
-
-// Product List Item Component
-const ProductListItem = ({ 
-  product, 
-  onAddToCart, 
-  onToggleWishlist, 
-  addingToCart, 
-  isInWishlist,
-  formatPrice,
-  getDiscountPercentage,
-  currentLanguage
-}) => {
-  const { t } = useTranslation('ecommerce');
-  const navigate = useNavigate();
-  const displayName = currentLanguage === 'ar' && product.nameAr ? product.nameAr : product.name;
-  const images = Array.isArray(product.images) && product.images.length > 0 ? product.images : [product.images?.[0]];
-  const [index, setIndex] = useState(0);
-  const [hovered, setHovered] = useState(false);
-
-  useEffect(() => {
-    if (!images || images.length <= 1) return;
-    if (hovered) return;
-    const id = setInterval(() => {
-      setIndex((prev) => (prev + 1) % images.length);
-    }, 3000);
-    return () => clearInterval(id);
-  }, [images, hovered]);
-
-  const handleCardClick = () => {
-    navigate(`/products/${product.id}`);
-  };
-
-  const handleImageClick = (e) => {
-    e.stopPropagation();
-    navigate(`/products/${product.id}`);
-  };
-
-  const handleWishlistClick = (e) => {
-    e.stopPropagation();
-    onToggleWishlist(product.id);
-  };
-
-  const handleAddToCartClick = (e) => {
-    e.stopPropagation();
-    onAddToCart(product);
-  };
-
-  return (
-    <div 
-      className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-xl rounded-2xl shadow-lg border border-white/20 dark:border-gray-700/50 p-6 hover:shadow-xl transition-all duration-300 cursor-pointer"
-      onClick={handleCardClick}
-    >
-      <div className="flex space-x-6">
-        {/* Product Image */}
-        <div className="relative flex-shrink-0" onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}>
-          <img
-            src={getImageUrl(images[index] || images[0])}
-            alt={displayName}
-            className="w-32 h-32 object-cover rounded-xl cursor-pointer"
-            onClick={handleImageClick}
+      {/* 6. Mobile Slide-Over Filter Drawer */}
+      {showMobileFilters && (
+        <div className="fixed inset-0 z-50 lg:hidden animate-in fade-in duration-200">
+          <div
+            className="absolute inset-0 bg-slate-950/70 backdrop-blur-sm"
+            onClick={() => setShowMobileFilters(false)}
           />
-          
-          {/* Wishlist Button */}
-          <button
-            onClick={handleWishlistClick}
-            className="absolute -top-2 -right-2 p-2 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-full shadow-lg hover:bg-white dark:hover:bg-gray-800 transition-all duration-200"
-          >
-            {isInWishlist ? (
-              <HeartIconSolid className="h-4 w-4 text-red-500" />
-            ) : (
-              <HeartIcon className="h-4 w-4 text-gray-400 hover:text-red-500 transition-colors" />
-            )}
-          </button>
-        </div>
 
-        {/* Product Info */}
-        <div className="flex-1 min-w-0">
-          <h3 className="font-semibold text-gray-900 dark:text-white mb-3 text-xl">
-            {displayName}
-          </h3>
-          
-          {/* Rating */}
-          <div className="flex items-center mb-3">
-            <div className="flex items-center">
-              {[...Array(5)].map((_, i) => (
-                <StarIconSolid
-                  key={i}
-                  className={`h-4 w-4 ${
-                    i < Math.floor(product.averageRating || 0)
-                      ? 'text-yellow-400'
-                      : 'text-gray-300'
-                  }`}
-                />
-              ))}
+          <div className={`absolute top-0 ${isRTL ? 'left-0' : 'right-0'} h-full w-[320px] max-w-[85vw] bg-white dark:bg-slate-900 border-l border-slate-200 dark:border-slate-800 p-6 flex flex-col justify-between z-10 overflow-y-auto animate-in slide-in-from-right duration-300`}>
+            <div className="space-y-6">
+              <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+                <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                  <FunnelIcon className="w-5 h-5 text-teal-500" />
+                  <span>Clinical Filters</span>
+                </h3>
+                <button
+                  type="button"
+                  onClick={() => setShowMobileFilters(false)}
+                  className="p-1.5 rounded-xl text-slate-400 hover:text-white cursor-pointer"
+                >
+                  <XMarkIcon className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Department Categories in Drawer */}
+              <div className="space-y-2">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500">Department Specialty</h4>
+                <div className="space-y-1 max-h-48 overflow-y-auto">
+                  <label className="flex items-center gap-2 p-1.5 text-xs text-slate-700 dark:text-slate-300 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="m-cat"
+                      checked={selectedCategory === 'all'}
+                      onChange={() => setSelectedCategory('all')}
+                      className="text-teal-600"
+                    />
+                    <span>All Departments</span>
+                  </label>
+                  {categories.map((cat) => {
+                    const catId = cat.id || cat._id || cat.slug || cat.name;
+                    return (
+                      <label key={catId} className="flex items-center gap-2 p-1.5 text-xs text-slate-700 dark:text-slate-300 cursor-pointer">
+                        <input
+                          type="radio"
+                          name="m-cat"
+                          checked={selectedCategory === cat.slug || selectedCategory === catId}
+                          onChange={() => setSelectedCategory(cat.slug || catId)}
+                          className="text-teal-600"
+                        />
+                        <span>{cat.name}</span>
+                      </label>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Metallurgy in Drawer */}
+              <div className="space-y-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500">Alloy & Metallurgy</h4>
+                <div className="space-y-1">
+                  {metallurgyOptions.map((opt) => (
+                    <label key={opt.id} className="flex items-center gap-2 p-1 text-xs text-slate-700 dark:text-slate-300 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="m-metal"
+                        checked={selectedMetallurgy === opt.id}
+                        onChange={() => setSelectedMetallurgy(opt.id)}
+                        className="text-teal-600"
+                      />
+                      <span>{opt.label}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              {/* Price Range */}
+              <div className="space-y-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500">Price (EGP)</h4>
+                <div className="flex gap-2">
+                  <input
+                    type="number"
+                    placeholder="Min"
+                    value={priceRange.min}
+                    onChange={(e) => setPriceRange({ ...priceRange, min: e.target.value })}
+                    className="w-full p-2 rounded-xl text-xs bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"
+                  />
+                  <input
+                    type="number"
+                    placeholder="Max"
+                    value={priceRange.max}
+                    onChange={(e) => setPriceRange({ ...priceRange, max: e.target.value })}
+                    className="w-full p-2 rounded-xl text-xs bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"
+                  />
+                </div>
+              </div>
             </div>
-            <span className="text-sm text-gray-500 dark:text-gray-400 ml-2">
-              ({product.totalReviews || 0})
-            </span>
-          </div>
 
-          {/* Price */}
-          <div className="flex items-center space-x-2 mb-4">
-            <span className="text-2xl font-bold text-gray-900 dark:text-white">
-              {formatPrice(product.price)}
-            </span>
-            {product.originalPrice && product.originalPrice > product.price && (
-              <span className="text-lg text-gray-500 dark:text-gray-400 line-through">
-                {formatPrice(product.originalPrice)}
-              </span>
-            )}
+            <div className="pt-4 border-t border-slate-100 dark:border-slate-800 space-y-2">
+              <button
+                type="button"
+                onClick={() => setShowMobileFilters(false)}
+                className="w-full py-3 rounded-xl bg-teal-600 text-white font-bold text-xs cursor-pointer"
+              >
+                Apply Filters
+              </button>
+              <button
+                type="button"
+                onClick={handleClearAllFilters}
+                className="w-full py-2 rounded-xl text-slate-500 text-xs font-semibold cursor-pointer"
+              >
+                Reset All
+              </button>
+            </div>
           </div>
-
-          {/* Add to Cart Button */}
-          <Button
-            onClick={handleAddToCartClick}
-            disabled={addingToCart || !product.inStock}
-            size="lg"
-            loading={addingToCart}
-            className="bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-700 hover:to-blue-700 text-white font-semibold px-8 py-3 rounded-xl transition-all duration-200 transform hover:scale-105 disabled:transform-none disabled:opacity-50"
-          >
-            {addingToCart ? (
-              <LoadingSpinner size="sm" />
-            ) : !product.inStock ? (
-              t('products.outOfStock')
-            ) : (
-              <>
-                <ShoppingCartIcon className="h-4 w-4 mr-2" />
-                {t('products.addToCart')}
-              </>
-            )}
-          </Button>
         </div>
-      </div>
+      )}
+
     </div>
   );
 };

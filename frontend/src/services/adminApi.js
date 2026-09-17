@@ -121,12 +121,12 @@ export const createProduct = async (productData) => {
     // If there are image files, create FormData for file upload
     if (productData.imageFiles && productData.imageFiles.length > 0) {
       const formData = new FormData();
-      
+
       // Append image files
       productData.imageFiles.forEach(file => {
         formData.append('images', file);
       });
-      
+
       // Append other product data
       Object.keys(productData).forEach(key => {
         if (key !== 'imageFiles' && productData[key] !== null && productData[key] !== undefined) {
@@ -139,7 +139,7 @@ export const createProduct = async (productData) => {
           }
         }
       });
-      
+
       const response = await api.post('/products', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -161,12 +161,12 @@ export const updateProduct = async (productId, productData) => {
     // If there are image files, create FormData for file upload
     if (productData.imageFiles && productData.imageFiles.length > 0) {
       const formData = new FormData();
-      
+
       // Append image files
       productData.imageFiles.forEach(file => {
         formData.append('images', file);
       });
-      
+
       // Append other product data
       Object.keys(productData).forEach(key => {
         if (key !== 'imageFiles' && productData[key] !== null && productData[key] !== undefined) {
@@ -179,7 +179,7 @@ export const updateProduct = async (productId, productData) => {
           }
         }
       });
-      
+
       const response = await api.put(`/products/${productId}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -375,17 +375,17 @@ export const createVendor = async (vendorData) => {
     // If there's a logoFile, create FormData for file upload
     if (vendorData.logoFile) {
       const formData = new FormData();
-      
+
       // Append the logo file
       formData.append('image', vendorData.logoFile);
-      
+
       // Append other vendor data
       Object.keys(vendorData).forEach(key => {
         if (key !== 'logoFile' && vendorData[key] !== null && vendorData[key] !== undefined) {
           formData.append(key, vendorData[key]);
         }
       });
-      
+
       const response = await api.post('/vendors', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -407,17 +407,17 @@ export const updateVendor = async (vendorId, vendorData) => {
     // If there's a logoFile, create FormData for file upload
     if (vendorData.logoFile) {
       const formData = new FormData();
-      
+
       // Append the logo file
       formData.append('image', vendorData.logoFile);
-      
+
       // Append other vendor data
       Object.keys(vendorData).forEach(key => {
         if (key !== 'logoFile' && vendorData[key] !== null && vendorData[key] !== undefined) {
           formData.append(key, vendorData[key]);
         }
       });
-      
+
       const response = await api.put(`/vendors/${vendorId}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -554,10 +554,10 @@ export const deletePackage = async (id) => {
   }
 };
 
-// Coupon Management
+// Coupon Management - Updated to use correct backend endpoints
 export const getAllCoupons = async (params = {}) => {
   try {
-    const response = await api.get('/coupons/admin/all', { params });
+    const response = await api.get('/coupons', { params });
     return response.data;
   } catch (error) {
     throw new Error(error.response?.data?.message || 'Failed to fetch coupons');
@@ -566,7 +566,7 @@ export const getAllCoupons = async (params = {}) => {
 
 export const createCoupon = async (couponData) => {
   try {
-    const response = await api.post('/coupons/admin/create', couponData);
+    const response = await api.post('/coupons', couponData);
     return response.data;
   } catch (error) {
     throw new Error(error.response?.data?.message || 'Failed to create coupon');
@@ -575,7 +575,7 @@ export const createCoupon = async (couponData) => {
 
 export const updateCoupon = async (couponId, couponData) => {
   try {
-    const response = await api.put(`/coupons/admin/${couponId}`, couponData);
+    const response = await api.put(`/coupons/${couponId}`, couponData);
     return response.data;
   } catch (error) {
     throw new Error(error.response?.data?.message || 'Failed to update coupon');
@@ -584,7 +584,7 @@ export const updateCoupon = async (couponId, couponData) => {
 
 export const deleteCoupon = async (couponId) => {
   try {
-    const response = await api.delete(`/coupons/admin/${couponId}`);
+    const response = await api.delete(`/coupons/${couponId}`);
     return response.data;
   } catch (error) {
     throw new Error(error.response?.data?.message || 'Failed to delete coupon');
@@ -593,7 +593,7 @@ export const deleteCoupon = async (couponId) => {
 
 export const toggleCouponStatus = async (couponId) => {
   try {
-    const response = await api.patch(`/coupons/admin/${couponId}/toggle`);
+    const response = await api.patch(`/coupons/${couponId}/toggle`);
     return response.data;
   } catch (error) {
     throw new Error(error.response?.data?.message || 'Failed to toggle coupon status');
@@ -602,7 +602,7 @@ export const toggleCouponStatus = async (couponId) => {
 
 export const getCouponStats = async (params = {}) => {
   try {
-    const response = await api.get('/coupons/admin/stats', { params });
+    const response = await api.get('/coupons/stats', { params });
     return response.data;
   } catch (error) {
     throw new Error(error.response?.data?.message || 'Failed to fetch coupon stats');
@@ -611,7 +611,7 @@ export const getCouponStats = async (params = {}) => {
 
 export const generateCouponCode = async (params = {}) => {
   try {
-    const response = await api.post('/coupons/admin/generate-code', params);
+    const response = await api.post('/coupons/generate-code', params);
     return response.data;
   } catch (error) {
     throw new Error(error.response?.data?.message || 'Failed to generate coupon code');

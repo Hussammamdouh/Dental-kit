@@ -68,8 +68,11 @@ const AdminProductsPage = () => {
     vendor: '',
     sku: '',
     brand: '',
-    isActive: true
+    isActive: true,
+    images: [],
+    imageFiles: []
   });
+  const [imagesPreview, setImagesPreview] = useState([]);
   const [categories, setCategories] = useState([]);
   const [vendors, setVendors] = useState([]);
 
@@ -328,6 +331,17 @@ const AdminProductsPage = () => {
     try {
       await bulkProductOperations('update', [productId], { isActive: !currentStatus });
       toast.success(t('products.statusUpdateSuccess'));
+      
+      // Update the product in the local state immediately
+      setProducts(prevProducts => 
+        prevProducts.map(p => 
+          p && p.id === productId 
+            ? { ...p, isActive: !currentStatus }
+            : p
+        )
+      );
+      
+      // Refetch to ensure consistency
       fetchProductsQuotaFriendly();
     } catch {
       toast.error(t('products.statusUpdateError'));
@@ -366,13 +380,17 @@ const AdminProductsPage = () => {
       vendor: '',
       sku: '',
       brand: '',
-      isActive: true
+      isActive: true,
+      images: [],
+      imageFiles: []
     });
+    setImagesPreview([]);
     setShowAddModal(true);
   };
 
   const handleEditProduct = (product) => {
     setSelectedProduct(product);
+    const existingImages = product.images || [];
     setFormData({
       name: product.name || '',
       nameAr: product.nameAr || '',
@@ -383,8 +401,11 @@ const AdminProductsPage = () => {
       vendor: product.vendorId || '',
       sku: product.sku || '',
       brand: product.brand || '',
-      isActive: product.isActive
+      isActive: product.isActive,
+      images: existingImages,
+      imageFiles: []
     });
+    setImagesPreview(existingImages);
     setShowEditModal(true);
   };
 
@@ -414,6 +435,16 @@ const AdminProductsPage = () => {
         vendorId: formData.vendor || undefined,
       };
 
+      // Add image files if any
+      if (formData.imageFiles && formData.imageFiles.length > 0) {
+        formattedData.imageFiles = formData.imageFiles;
+      }
+
+      // For edit mode, include existing images that weren't removed
+      if (showEditModal && formData.images && formData.images.length > 0) {
+        formattedData.images = formData.images.filter(img => img && img.url && !img.url.startsWith('data:'));
+      }
+
       if (showAddModal) {
         await createProduct(formattedData);
         toast.success(t('products.productCreatedSuccess'));
@@ -424,8 +455,10 @@ const AdminProductsPage = () => {
       setShowAddModal(false);
       setShowEditModal(false);
       setSelectedProduct(null);
+      setImagesPreview([]);
       fetchProductsQuotaFriendly();
-    } catch {
+    } catch (error) {
+      console.error('Error submitting form:', error);
       toast.error(showAddModal ? t('products.createProductError') : t('products.updateProductError'));
     }
   };
@@ -443,11 +476,68 @@ const AdminProductsPage = () => {
   };
 
   const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value
-    }));
+    const { name, value, type, checked, files } = e.target;
+    
+    if (type === 'file' && files) {
+      const fileArray = Array.from(files);
+      const previews = [];
+      
+      fileArray.forEach((file) => {
+        if (file.type.startsWith('image/')) {
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            previews.push({ url: event.target.result, public_id: `preview-${Date.now()}-${Math.random()}` });
+            if (previews.length === fileArray.length) {
+              const newImages = [...imagesPreview, ...previews];
+              setImagesPreview(newImages);
+              setFormData(prev => ({
+                ...prev,
+                imageFiles: [...(prev.imageFiles || []), ...fileArray],
+                images: newImages
+              }));
+            }
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [name]: type === 'checkbox' ? checked : value
+      }));
+    }
+  };
+
+  const handleRemoveImage = (index) => {
+    const imageToRemove = imagesPreview[index];
+    const isNewFile = imageToRemove && imageToRemove.url && imageToRemove.url.startsWith('data:');
+    
+    const newImages = imagesPreview.filter((_, i) => i !== index);
+    setImagesPreview(newImages);
+    
+    // Count how many new files (preview images) are before this index
+    let newFileIndex = -1;
+    if (isNewFile) {
+      let count = 0;
+      for (let i = 0; i < index; i++) {
+        if (imagesPreview[i] && imagesPreview[i].url && imagesPreview[i].url.startsWith('data:')) {
+          count++;
+        }
+      }
+      newFileIndex = count;
+    }
+    
+    setFormData(prev => {
+      const newImageFiles = isNewFile && newFileIndex >= 0
+        ? prev.imageFiles.filter((_, i) => i !== newFileIndex)
+        : prev.imageFiles;
+      
+      return {
+        ...prev,
+        images: newImages,
+        imageFiles: newImageFiles
+      };
+    });
   };
 
   const closeModals = () => {
@@ -456,6 +546,7 @@ const AdminProductsPage = () => {
     setShowViewModal(false);
     setShowDeleteModal(false);
     setSelectedProduct(null);
+    setImagesPreview([]);
   };
 
   // Quick stats
@@ -1000,6 +1091,41 @@ const AdminProductsPage = () => {
                     </div>
                   </div>
                   
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                      {t('products.images', 'Images')}
+                    </label>
+                    <input
+                      type="file"
+                      multiple
+                      accept="image/*"
+                      onChange={handleInputChange}
+                      className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 dark:file:bg-blue-900/20 dark:file:text-blue-300"
+                    />
+                    {imagesPreview.length > 0 && (
+                      <div className="mt-3 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
+                        {imagesPreview.map((img, idx) => (
+                          <div key={idx} className="relative group rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700">
+                            <div className="aspect-square w-full">
+                              <img 
+                                src={img.url || img} 
+                                alt={`product-${idx}`} 
+                                className="w-full h-full object-cover" 
+                              />
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveImage(idx)}
+                              className="absolute top-1 right-1 bg-black/70 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity"
+                            >
+                              {t('products.remove', 'Remove')}
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  
                   <div className="flex items-center">
                     <input
                       type="checkbox"
@@ -1192,6 +1318,41 @@ const AdminProductsPage = () => {
                         className="w-full"
                       />
                     </div>
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                      {t('products.images', 'Images')}
+                    </label>
+                    <input
+                      type="file"
+                      multiple
+                      accept="image/*"
+                      onChange={handleInputChange}
+                      className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 dark:file:bg-blue-900/20 dark:file:text-blue-300"
+                    />
+                    {imagesPreview.length > 0 && (
+                      <div className="mt-3 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
+                        {imagesPreview.map((img, idx) => (
+                          <div key={idx} className="relative group rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700">
+                            <div className="aspect-square w-full">
+                              <img 
+                                src={img.url || img} 
+                                alt={`product-${idx}`} 
+                                className="w-full h-full object-cover" 
+                              />
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveImage(idx)}
+                              className="absolute top-1 right-1 bg-black/70 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity"
+                            >
+                              {t('products.remove', 'Remove')}
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                   
                   <div className="flex items-center">

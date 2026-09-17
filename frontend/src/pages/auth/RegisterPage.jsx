@@ -9,46 +9,35 @@ import { useTheme } from '../../contexts/ThemeContext';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useSecurity } from '../../hooks/useSecurity';
 import Seo from '../../components/seo/Seo';
-import Button from '../../components/ui/Button';
-import Input from '../../components/ui/Input';
-import Select from '../../components/ui/Select';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
 import PasswordStrengthIndicator from '../../components/auth/PasswordStrengthIndicator';
-import SecurityCheckIndicator from '../../components/auth/SecurityCheckIndicator';
-import AnimatedSection from '../../components/animations/AnimatedSection';
-import { buildAuthSeo } from '../../utils/seo';
-import { getLogoPath as getThemeLogoPath } from '../../utils/themeAssets';
 import { COUNTRIES, GOVERNORATES } from '../../utils/locations';
 import { calculatePasswordStrength } from '../../utils/passwordStrength';
-import { 
-  EyeIcon, 
-  EyeSlashIcon, 
-  UserPlusIcon,
+import { toast } from 'react-hot-toast';
+import {
+  EyeIcon,
+  EyeSlashIcon,
   UserIcon,
   EnvelopeIcon,
   PhoneIcon,
-  BuildingOfficeIcon,
   AcademicCapIcon,
   LockClosedIcon,
   ShieldCheckIcon,
-  HeartIcon,
-  StarIcon,
-  TruckIcon,
-  UserGroupIcon,
-  GlobeAltIcon,
   CheckCircleIcon,
-  ExclamationTriangleIcon
+  ExclamationTriangleIcon,
+  BuildingLibraryIcon,
+  MapPinIcon,
+  TruckIcon,
+  SparklesIcon,
+  ArrowRightIcon,
+  KeyIcon
 } from '@heroicons/react/24/outline';
-import { StarIcon as StarIconSolid } from '@heroicons/react/24/solid';
-import { toast } from 'react-hot-toast';
-// removed unused sanitizeEmail and sanitizeString imports
 
 const RegisterPage = () => {
   const { t } = useTranslation('auth');
-  const { t: tSeo } = useTranslation('ecommerce');
   const { register: registerUser } = useAuth();
   const { isDark } = useTheme();
-  const { currentLanguage } = useLanguage();
+  const { currentLanguage, isRTL } = useLanguage();
   const navigate = useNavigate();
 
   // Security hook
@@ -62,84 +51,66 @@ const RegisterPage = () => {
     canProceed,
     sanitizeInput
   } = useSecurity({
-    maxAttempts: 3,
-    lockoutDuration: 10 * 60 * 1000, // 10 minutes
-    rateLimitWindow: 60 * 1000, // 1 minute
-    maxRequestsPerWindow: 5
+    maxAttempts: 4,
+    lockoutDuration: 10 * 60 * 1000,
+    rateLimitWindow: 60 * 1000,
+    maxRequestsPerWindow: 6
   });
 
   // Local state
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [securityCheck, setSecurityCheck] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState({ score: 0, feedback: [] });
 
-  // Validation schema with enhanced security
+  // Dental Faculties in Egypt
+  const universityOptions = [
+    'Cairo University (Kasr Al-Ainy)',
+    'Ain Shams University',
+    'Mansoura University',
+    'Alexandria University',
+    'Badr University in Cairo (BUC)',
+    'Misr University for Science & Technology (MUST)',
+    'Future University in Egypt (FUE)',
+    'Misr International University (MIU)',
+    'Al-Azhar University',
+    'Tanta University',
+    'Zagazig University',
+    'Pharos University Alexandria (PUA)',
+    'Other International / Private Faculty'
+  ];
+
+  // BDS Academic Years
+  const academicYears = [
+    '1st Year BDS (Pre-Clinical / Dental Anatomy)',
+    '2nd Year BDS (Pre-Clinical Phantom & Carving)',
+    '3rd Year BDS (Operative Dentistry & Endodontics)',
+    '4th Year BDS (Oral Surgery & Clinical Hospital)',
+    '5th Year BDS (Graduation Candidate)',
+    'Dental Resident / Intern Doctor',
+    'Postgraduate / Master Student',
+    'Practicing Dentist / Clinic Owner'
+  ];
+
+  // Validation schema
   const schema = useMemo(() => yup.object().shape({
-    email: yup
-      .string()
-      .required(t('validation.email.required'))
-      .email(t('validation.email.invalid'))
-      .max(254, t('validation.email.tooLong'))
-      .trim(),
-    firstName: yup
-      .string()
-      .required(t('validation.firstName.required'))
-      .min(2, t('validation.firstName.min'))
-      .max(50, t('validation.firstName.max'))
-      .trim(),
-    lastName: yup
-      .string()
-      .required(t('validation.lastName.required'))
-      .min(2, t('validation.lastName.min'))
-      .max(50, t('validation.lastName.max'))
-      .trim(),
-    phone: yup
-      .string()
-      .required(t('validation.phone.required'))
-      .matches(/^[+]?[\d\s\-()]+$/, t('validation.phone.invalid'))
-      .trim(),
-    company: yup
-      .string()
-      .optional()
-      .max(100, t('validation.company.max'))
-      .trim(),
-    university: yup
-      .string()
-      .optional()
-      .max(100, t('validation.university.max'))
-      .trim(),
-    country: yup
-      .string()
-      .required(t('validation.country.required'))
-      .oneOf(['EG', 'SA'], t('validation.country.invalid')),
-    governorate: yup
-      .string()
-      .required(t('validation.governorate.required'))
-      .trim(),
-    password: yup
-      .string()
-      .required(t('validation.password.required'))
-      .min(8, t('validation.password.min'))
-      .max(128, t('validation.password.tooLong'))
-      .matches(/[a-z]/, t('validation.password.lowercase'))
-      .matches(/[A-Z]/, t('validation.password.uppercase'))
-      .matches(/[0-9]/, t('validation.password.number'))
-      .matches(/[^A-Za-z0-9]/, t('validation.password.symbol')),
-    confirmPassword: yup
-      .string()
-      .required(t('validation.confirmPassword.required'))
-      .oneOf([yup.ref('password'), null], t('validation.confirmPassword.match')),
-    consentGiven: yup
-      .boolean()
-      .oneOf([true], t('validation.consent.required'))
+    firstName: yup.string().required(t('validation.firstName.required') || 'First name is required').min(2).max(50).trim(),
+    lastName: yup.string().required(t('validation.lastName.required') || 'Last name is required').min(2).max(50).trim(),
+    email: yup.string().required(t('validation.email.required') || 'Email is required').email(t('validation.email.invalid') || 'Invalid email format').max(254).trim(),
+    phone: yup.string().required(t('validation.phone.required') || 'Phone number is required').matches(/^[+]?[\d\s\-()]+$/, 'Invalid phone number format').trim(),
+    university: yup.string().required('Please select your dental faculty').trim(),
+    academicYear: yup.string().required('Please select your academic stage').trim(),
+    governorate: yup.string().required(t('validation.governorate.required') || 'Governorate is required').trim(),
+    password: yup.string().required(t('validation.password.required') || 'Password is required').min(8, 'Minimum 8 characters').max(128),
+    confirmPassword: yup.string().required('Please confirm your password').oneOf([yup.ref('password'), null], 'Passwords do not match'),
+    consentGiven: yup.boolean().oneOf([true], 'You must accept the terms of service')
   }), [t]);
 
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid, isDirty },
+    setValue,
+    formState: { errors, isValid },
     setError,
     clearErrors,
     watch
@@ -147,64 +118,30 @@ const RegisterPage = () => {
     resolver: yupResolver(schema),
     mode: 'onChange',
     defaultValues: {
-      email: '',
       firstName: '',
       lastName: '',
+      email: '',
       phone: '',
-      company: '',
-      university: '',
-      country: 'EG',
-      governorate: '',
+      university: 'Cairo University (Kasr Al-Ainy)',
+      academicYear: '3rd Year BDS (Operative Dentistry & Endodontics)',
+      governorate: 'Cairo',
       password: '',
       confirmPassword: '',
       consentGiven: false
     }
   });
 
-  // Watch form values for security checks
-  const watchedValues = watch();
-
-  // Ensure stable reference to performSecurityCheck to avoid infinite loops
-  const performSecurityCheckRef = useRef(performSecurityCheck);
-  useEffect(() => {
-    performSecurityCheckRef.current = performSecurityCheck;
-  }, [performSecurityCheck]);
-
-  // Security check effect (debounced) - depends only on primitive values
-  const emailValue = watchedValues.email;
-  const formPasswordValue = watchedValues.password;
-  useEffect(() => {
-    if (isDirty && emailValue && formPasswordValue) {
-      const timer = setTimeout(async () => {
-        const securityResult = await performSecurityCheckRef.current({
-          ...watchedValues,
-          email: emailValue,
-          password: formPasswordValue
-        });
-        setSecurityCheck(securityResult.passed);
-      }, 500);
-      return () => clearTimeout(timer);
-    }
-  }, [isDirty, emailValue, formPasswordValue, watchedValues]);
-
-  // Password strength calculation - isolate translation access
-  const tRef = useRef(t);
-  useEffect(() => { tRef.current = t; }, [t]);
-
-  const passwordValue = watchedValues.password;
+  const passwordValue = watch('password');
 
   useEffect(() => {
-    const password = passwordValue;
-    if (!password) {
+    if (!passwordValue) {
       setPasswordStrength({ score: 0, feedback: [] });
       return;
     }
-    const { score, feedback } = calculatePasswordStrength(password);
-    const translate = tRef.current;
-    setPasswordStrength({ score, feedback: feedback.map((k) => translate(k)) });
+    const { score, feedback } = calculatePasswordStrength(passwordValue);
+    setPasswordStrength({ score, feedback });
   }, [passwordValue]);
 
-  // Enhanced form submission with security measures
   const onSubmit = useCallback(async (data) => {
     if (isSubmitting || securityLocked || !canProceed) return;
 
@@ -212,566 +149,380 @@ const RegisterPage = () => {
     clearErrors();
 
     try {
-      // Additional client-side security checks
-      if (!data.email || !data.password || !data.confirmPassword) {
-        throw new Error(t('validation.allFieldsRequired'));
-      }
-
-      // Sanitize input
       const sanitizedData = {
-        email: sanitizeInput(data.email, 'email'),
-        password: sanitizeInput(data.password, 'password'),
         firstName: sanitizeInput(data.firstName, 'text'),
         lastName: sanitizeInput(data.lastName, 'text'),
+        email: sanitizeInput(data.email, 'email'),
         phone: sanitizeInput(data.phone, 'phone'),
-        company: sanitizeInput(data.company, 'text'),
         university: sanitizeInput(data.university, 'text'),
-        country: data.country,
+        company: sanitizeInput(data.academicYear, 'text'),
+        country: 'EG',
         governorate: sanitizeInput(data.governorate, 'text'),
+        password: sanitizeInput(data.password, 'password'),
         consentGiven: data.consentGiven
       };
-
-      // Validate sanitized input
-      const emailValidation = validateInput(sanitizedData.email, {
-        required: true,
-        pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-      });
-
-      const passwordValidation = validateInput(sanitizedData.password, {
-        required: true,
-        minLength: 8
-      });
-
-      if (!emailValidation.isValid) {
-        setError('email', { type: 'manual', message: emailValidation.error });
-        throw new Error(emailValidation.error);
-      }
-
-      if (!passwordValidation.isValid) {
-        setError('password', { type: 'manual', message: passwordValidation.error });
-        throw new Error(passwordValidation.error);
-      }
 
       const result = await registerUser(sanitizedData);
       if (result?.success) {
         resetAttempts();
-        toast.success(t('register.success'));
+        toast.success(t('register.success') || 'University account created successfully!');
         navigate('/verify-email-sent', { state: { email: sanitizedData.email } });
-        return;
       } else {
-        // Known failure path, show message and remain on page
         if (result?.status === 409) {
-          setError('email', { type: 'manual', message: t('register.emailAlreadyExists') });
+          setError('email', { type: 'manual', message: 'Email address is already registered' });
+          toast.error('This email is already registered');
+        } else {
+          toast.error(result?.error || 'Registration failed');
         }
-        return;
       }
     } catch (error) {
       console.error('Registration error:', error);
-      
-      // Record failed attempt
       recordFailedAttempt();
-      
-      // Handle specific error cases with proper user feedback
-      if (error.response?.status === 409) {
-        setError('email', { 
-          type: 'manual', 
-          message: t('auth.register.emailAlreadyExists')
-        });
-        toast.error(t('register.emailAlreadyExists'));
-      } else if (error.response?.status === 429) {
-        toast.error(t('register.rateLimitExceeded'));
-      } else if (error.response?.status === 500) {
-        toast.error(t('register.serverError'));
-      } else {
-        // Generic error handling
-        toast.error(t('register.genericError'));
-      }
+      toast.error(error.response?.data?.message || 'Registration failed. Please check your information.');
     } finally {
       setIsSubmitting(false);
     }
-  }, [
-    registerUser,
-    navigate,
-    isSubmitting,
-    securityLocked,
-    canProceed,
-    setError,
-    clearErrors,
-    t,
-    sanitizeInput,
-    validateInput,
-    recordFailedAttempt,
-    resetAttempts
-  ]);
-
-  // Countries and governorates data with translations
-  const countries = COUNTRIES.map((c) => ({ code: c.code, name: t(`countries.${c.code}`) }));
-
-  const governorates = GOVERNORATES;
-
-  // Get logo path based on theme
-  const getLogoPath = () => getThemeLogoPath(isDark);
-
-  // Account lockout check
-  const isAccountLocked = securityLocked;
-  const lockoutTime = securityLockoutUntil;
-
-  // Format lockout time
-  const formatLockoutTime = (time) => {
-    const minutes = Math.ceil((time - Date.now()) / (1000 * 60));
-    return minutes > 0 ? minutes : 0;
-  };
-
-  // Accessibility: submit on Enter is handled natively by the form
+  }, [registerUser, navigate, isSubmitting, securityLocked, canProceed, setError, clearErrors, sanitizeInput, recordFailedAttempt, resetAttempts, t]);
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900 overflow-x-hidden">
-      <Seo {...buildAuthSeo({ tSeo, kind: 'register', isDark, currentLanguage })} />
-      
-      <div className="min-h-screen flex items-center justify-center px-3 sm:px-4 py-4">
-        <div className="relative w-full max-w-6xl">
-          <div className="absolute -inset-2 bg-gradient-to-br from-sky-400/25 via-sky-500/15 to-blue-600/15 rounded-[24px] blur-xl" aria-hidden="true"></div>
-          <div className="relative bg-white dark:bg-gray-900 rounded-[24px] shadow-xl ring-1 ring-black/5 overflow-hidden flex">
-        {/* Left Section - Branding & Features */}
-        <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-sky-400 via-sky-500 to-blue-600">
-            <div className="absolute inset-0 bg-black/20"></div>
-            
-            {/* Animated Background Elements */}
-            <div className="absolute top-20 left-10 w-72 h-72 bg-white/10 rounded-full blur-3xl animate-pulse"></div>
-            <div className="absolute bottom-20 right-10 w-96 h-96 bg-sky-300/30 rounded-full blur-3xl animate-pulse delay-1000"></div>
-            <div className="absolute top-1/2 left-1/4 w-64 h-64 bg-blue-500/20 rounded-full blur-2xl animate-pulse delay-500"></div>
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white flex items-center justify-center p-4 sm:p-6 lg:p-8 transition-colors duration-300">
+      <Seo
+        title="Create Student University Account - DentalKit"
+        description="Register for your DentalKit student portal to access syllabus-approved BDS toolkits, campus cohort discounts, and 134°C autoclave warranty registration."
+        type="website"
+        locale={currentLanguage === 'ar' ? 'ar_SA' : 'en_US'}
+        themeColor="#00b1db"
+      />
+
+      <div className="w-full max-w-6xl rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-2xl overflow-hidden grid grid-cols-1 lg:grid-cols-12 relative my-6">
+        
+        {/* Left Pane: Branding & Student Perks (5 cols on lg) */}
+        <div className="lg:col-span-5 bg-gradient-to-br from-teal-950 via-slate-900 to-slate-950 text-white p-8 sm:p-10 flex flex-col justify-between relative overflow-hidden border-b lg:border-b-0 lg:border-r border-slate-800">
+          <div className="absolute inset-0 bg-[radial-gradient(#00b1db_1px,transparent_1px)] [background-size:20px_20px] opacity-10 pointer-events-none" />
+
+          <div className="relative z-10 space-y-6">
+            <Link to="/" className="inline-flex items-center gap-3 group">
+              <div className="w-11 h-11 rounded-2xl bg-teal-500/20 border border-teal-500/40 flex items-center justify-center text-teal-400 shadow-inner group-hover:scale-105 transition-transform">
+                <AcademicCapIcon className="w-6 h-6 text-teal-400" />
+              </div>
+              <div>
+                <span className="text-lg font-black text-white block tracking-tight">DentalKit</span>
+                <span className="text-[10px] font-bold text-teal-400 uppercase tracking-wider block">University Student Registration</span>
+              </div>
+            </Link>
+
+            <div className="space-y-2">
+              <h2 className="text-2xl sm:text-3xl font-black text-white leading-tight">
+                Join 15,000+ Dental Students Across Egypt
+              </h2>
+              <p className="text-xs text-slate-300 leading-relaxed">
+                Create your verified student profile to unlock faculty package discounts, track clinical exam kits, and receive campus locker delivery.
+              </p>
+            </div>
+
+            {/* Student Perks Card */}
+            <div className="space-y-3 pt-2">
+              <div className="p-4 rounded-2xl bg-teal-500/10 border border-teal-500/25 space-y-2">
+                <div className="flex items-center gap-2 text-teal-300 font-bold text-xs">
+                  <SparklesIcon className="w-4 h-4 text-teal-400" />
+                  <span>Student Welcome Benefits</span>
+                </div>
+                <ul className="space-y-1.5 text-xs text-slate-300">
+                  <li className="flex items-center gap-2">
+                    <CheckCircleIcon className="w-4 h-4 text-teal-400 shrink-0" />
+                    <span>Instant 25% discount on BDS semester package boxes</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircleIcon className="w-4 h-4 text-teal-400 shrink-0" />
+                    <span>Automatic syllabus checklist validation for your faculty</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircleIcon className="w-4 h-4 text-teal-400 shrink-0" />
+                    <span>2-Year Anti-Rust replacement warranty certificate</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircleIcon className="w-4 h-4 text-teal-400 shrink-0" />
+                    <span>Free express delivery to your faculty hospital locker</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="p-3.5 rounded-2xl bg-slate-900/80 border border-slate-800 flex items-center gap-3 text-xs">
+                <ShieldCheckIcon className="w-6 h-6 text-teal-400 shrink-0" />
+                <div>
+                  <span className="font-bold text-white block">100% Privacy & Security</span>
+                  <span className="text-[11px] text-slate-400">Your student data is strictly encrypted and protected</span>
+                </div>
+              </div>
+            </div>
           </div>
+
+          <div className="relative z-10 pt-6 border-t border-slate-800/80 text-xs text-slate-400">
+            Already have an account?{' '}
+            <Link to="/login" className="font-bold text-teal-400 hover:underline">
+              Sign In Here →
+            </Link>
+          </div>
+        </div>
+
+        {/* Right Pane: Registration Form (7 cols on lg) */}
+        <div className="lg:col-span-7 p-6 sm:p-10 lg:p-12 space-y-6">
           
-          <div className="relative z-10 w-full flex flex-col justify-center items-center text-center p-5 lg:p-6 text-white">
-            <AnimatedSection animation="fadeInUp" delay={0}>
-              <div className="mb-6 max-w-lg">
-                <img
-                  src={getLogoPath()}
-                  alt="DentalKit Logo"
-                  className="w-24 h-24 mx-auto mb-6 drop-shadow-2xl"
-                  loading="eager"
-                />
-                <h1 className="text-3xl lg:text-4xl font-bold mb-2 leading-tight">
-                  {t('brand.name')}
-                </h1>
-                <p className="text-base lg:text-lg text-blue-100 leading-relaxed">
-                  {t('brand.tagline')}
-                </p>
-              </div>
-            </AnimatedSection>
-
-            <AnimatedSection animation="fadeInUp" delay={200}>
-              <div className="grid grid-cols-2 gap-4 xl:gap-6 max-w-lg">
-                <div className="text-center p-4 xl:p-6 bg-white/10 backdrop-blur-sm rounded-xl hover:bg-white/20 transition-all duration-300">
-                  <ShieldCheckIcon className="w-8 h-8 xl:w-10 xl:h-10 mx-auto mb-3 text-yellow-400" />
-                  <div className="text-2xl xl:text-3xl font-bold">100%</div>
-                  <div className="text-sm xl:text-base text-blue-100 font-medium">Secure</div>
-                </div>
-                <div className="text-center p-4 xl:p-6 bg-white/10 backdrop-blur-sm rounded-xl hover:bg-white/20 transition-all duration-300">
-                  <TruckIcon className="w-8 h-8 xl:w-10 xl:h-10 mx-auto mb-3 text-green-400" />
-                  <div className="text-2xl xl:text-3xl font-bold">24/7</div>
-                  <div className="text-sm xl:text-base text-blue-100 font-medium">Support</div>
-                </div>
-                <div className="text-center p-4 xl:p-6 bg-white/10 backdrop-blur-sm rounded-xl hover:bg-white/20 transition-all duration-300">
-                  <StarIcon className="w-8 h-8 xl:w-10 xl:h-10 mx-auto mb-3 text-purple-400" />
-                  <div className="text-2xl xl:text-3xl font-bold">5★</div>
-                  <div className="text-sm xl:text-base text-blue-100 font-medium">Rating</div>
-                </div>
-                <div className="text-center p-4 xl:p-6 bg-white/10 backdrop-blur-sm rounded-xl hover:bg-white/20 transition-all duration-300">
-                  <UserGroupIcon className="w-8 h-8 xl:w-10 xl:h-10 mx-auto mb-3 text-pink-400" />
-                  <div className="text-2xl xl:text-3xl font-bold">10K+</div>
-                  <div className="text-sm xl:text-base text-blue-100 font-medium">Users</div>
-                </div>
-              </div>
-            </AnimatedSection>
+          <div>
+            <span className="text-xs font-bold uppercase tracking-wider text-teal-600 dark:text-teal-400 block mb-1">
+              New Student Onboarding
+            </span>
+            <h3 className="text-2xl font-black text-slate-900 dark:text-white">
+              Create University Account
+            </h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              Fill in your academic details to configure your syllabus tool checklists
+            </p>
           </div>
-        </div>
 
-        {/* Right Section - Registration Form */}
-        <div className="w-full lg:w-1/2 flex items-center justify-center p-4 sm:p-6 lg:p-7">
-          <div className="w-full max-w-md xl:max-w-lg">
-            {/* Mobile Logo */}
-            <AnimatedSection animation="fadeInDown" delay={0} className="lg:hidden text-center mb-5 sm:mb-6">
-              <div className="bg-gradient-to-br from-sky-400 via-sky-500 to-blue-600 rounded-2xl p-5 mb-5 shadow-xl">
-                <img
-                  src={getLogoPath()}
-                  alt="DentalKit Logo"
-                  className="w-16 h-16 mx-auto mb-4 drop-shadow-md"
-                  loading="eager"
-                />
-                <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">
-                  {t('brand.name')}
-                </h1>
-                <p className="text-sm sm:text-base text-blue-100">
-                  {t('brand.tagline')}
-                </p>
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
+            
+            {/* Name Fields */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="space-y-1">
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300">
+                  First Name
+                </label>
+                <div className="relative flex items-center">
+                  <UserIcon className={`absolute ${isRTL ? 'right-3.5' : 'left-3.5'} w-4 h-4 text-slate-400 pointer-events-none`} />
+                  <input
+                    type="text"
+                    {...register('firstName')}
+                    placeholder="Ahmed"
+                    className={`w-full ${isRTL ? 'pr-10 pl-3' : 'pl-10 pr-3'} py-2.5 rounded-2xl text-xs sm:text-sm bg-slate-50 dark:bg-slate-800 border ${
+                      errors.firstName ? 'border-rose-500' : 'border-slate-200 dark:border-slate-700'
+                    } focus:outline-none focus:ring-2 focus:ring-teal-500/50`}
+                  />
+                </div>
+                {errors.firstName && <span className="text-[11px] text-rose-500">{errors.firstName.message}</span>}
               </div>
-              
-              {/* Mobile Stats */}
-              <div className="grid grid-cols-2 gap-2.5 mb-5">
-                <div className="text-center p-3 bg-white border border-gray-200 shadow-sm rounded-xl dark:bg-white/10 dark:border-white/20">
-                  <ShieldCheckIcon className="w-6 h-6 mx-auto mb-2 text-yellow-400" />
-                  <div className="text-lg font-bold text-gray-900 dark:text-white">100%</div>
-                  <div className="text-xs text-gray-600 dark:text-gray-300">Secure</div>
+
+              <div className="space-y-1">
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300">
+                  Last Name
+                </label>
+                <div className="relative flex items-center">
+                  <UserIcon className={`absolute ${isRTL ? 'right-3.5' : 'left-3.5'} w-4 h-4 text-slate-400 pointer-events-none`} />
+                  <input
+                    type="text"
+                    {...register('lastName')}
+                    placeholder="Mamdouh"
+                    className={`w-full ${isRTL ? 'pr-10 pl-3' : 'pl-10 pr-3'} py-2.5 rounded-2xl text-xs sm:text-sm bg-slate-50 dark:bg-slate-800 border ${
+                      errors.lastName ? 'border-rose-500' : 'border-slate-200 dark:border-slate-700'
+                    } focus:outline-none focus:ring-2 focus:ring-teal-500/50`}
+                  />
                 </div>
-                <div className="text-center p-3 bg-white border border-gray-200 shadow-sm rounded-xl dark:bg-white/10 dark:border-white/20">
-                  <TruckIcon className="w-6 h-6 mx-auto mb-2 text-green-400" />
-                  <div className="text-lg font-bold text-gray-900 dark:text-white">24/7</div>
-                  <div className="text-xs text-gray-600 dark:text-gray-300">Support</div>
-                </div>
-                <div className="text-center p-3 bg-white border border-gray-200 shadow-sm rounded-xl dark:bg-white/10 dark:border-white/20">
-                  <StarIcon className="w-6 h-6 mx-auto mb-2 text-purple-400" />
-                  <div className="text-lg font-bold text-gray-900 dark:text-white">5★</div>
-                  <div className="text-xs text-gray-600 dark:text-gray-300">Rating</div>
-                </div>
-                <div className="text-center p-3 bg-white border border-gray-200 shadow-sm rounded-xl dark:bg-white/10 dark:border-white/20">
-                  <UserGroupIcon className="w-6 h-6 mx-auto mb-2 text-pink-400" />
-                  <div className="text-lg font-bold text-gray-900 dark:text-white">10K+</div>
-                  <div className="text-xs text-gray-600 dark:text-gray-300">Users</div>
-                </div>
+                {errors.lastName && <span className="text-[11px] text-rose-500">{errors.lastName.message}</span>}
               </div>
-            </AnimatedSection>
+            </div>
 
-            {/* Registration Form Container */}
-            <AnimatedSection animation="fadeInUp" delay={200}>
-              <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-xl rounded-3xl shadow-2xl p-5 lg:p-6 border border-white/20 dark:border-gray-700/50 overflow-hidden">
-                {/* Header */}
-                <div className="text-center mb-6 sm:mb-8">
-                  <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-sky-400 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
-                    <UserPlusIcon className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
-                  </div>
-                  <h2 className="text-xl lg:text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                    {t('register.title')}
-                  </h2>
-                  <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300">
-                    {t('register.tagline')}
-                  </p>
+            {/* Email & Phone */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="space-y-1">
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300">
+                  University / Personal Email
+                </label>
+                <div className="relative flex items-center">
+                  <EnvelopeIcon className={`absolute ${isRTL ? 'right-3.5' : 'left-3.5'} w-4 h-4 text-slate-400 pointer-events-none`} />
+                  <input
+                    type="email"
+                    {...register('email')}
+                    placeholder="student@dentistry.cu.edu.eg"
+                    className={`w-full ${isRTL ? 'pr-10 pl-3' : 'pl-10 pr-3'} py-2.5 rounded-2xl text-xs sm:text-sm bg-slate-50 dark:bg-slate-800 border ${
+                      errors.email ? 'border-rose-500' : 'border-slate-200 dark:border-slate-700'
+                    } focus:outline-none focus:ring-2 focus:ring-teal-500/50`}
+                  />
                 </div>
+                {errors.email && <span className="text-[11px] text-rose-500">{errors.email.message}</span>}
+              </div>
 
-                {/* Account Lockout Warning */}
-                {isAccountLocked && (
-                  <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl">
-                    <div className="flex items-center">
-                      <ExclamationTriangleIcon className="w-5 h-5 text-red-600 dark:text-red-400 mr-3" />
-                      <div>
-                        <p className="text-sm font-medium text-red-800 dark:text-red-200">
-                          {t('common.accountTemporarilyLocked')}
-                        </p>
-                        {lockoutTime && (
-                          <p className="text-xs text-red-600 dark:text-red-400 mt-1">
-                            {t('common.tryAgainIn', { time: `${formatLockoutTime(lockoutTime)} minutes` })}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                )}
+              <div className="space-y-1">
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300">
+                  Phone Number
+                </label>
+                <div className="relative flex items-center">
+                  <PhoneIcon className={`absolute ${isRTL ? 'right-3.5' : 'left-3.5'} w-4 h-4 text-slate-400 pointer-events-none`} />
+                  <input
+                    type="tel"
+                    {...register('phone')}
+                    placeholder="+20 100 000 0000"
+                    className={`w-full ${isRTL ? 'pr-10 pl-3' : 'pl-10 pr-3'} py-2.5 rounded-2xl text-xs sm:text-sm bg-slate-50 dark:bg-slate-800 border ${
+                      errors.phone ? 'border-rose-500' : 'border-slate-200 dark:border-slate-700'
+                    } focus:outline-none focus:ring-2 focus:ring-teal-500/50`}
+                  />
+                </div>
+                {errors.phone && <span className="text-[11px] text-rose-500">{errors.phone.message}</span>}
+              </div>
+            </div>
 
-                {/* Registration Form */}
-                <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 sm:space-y-6" noValidate>
-                  {/* Email Field */}
-                  <div>
-                    <Input
-                      label={t('register.email')}
-                      type="email"
-                      placeholder={t('register.emailPlaceholder')}
-                      {...register('email')}
-                      error={errors.email?.message}
-                      leftIcon={<EnvelopeIcon className="w-5 h-5 text-blue-600 dark:text-blue-400" />}
-                      fullWidth
-                      disabled={isAccountLocked || isSubmitting}
-                      autoComplete="email"
-                      className="bg-white/50 dark:bg-gray-700/50 backdrop-blur-sm"
-                    />
-                  </div>
-
-                  {/* Personal Information Section */}
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 border-b border-gray-200 dark:border-gray-700 pb-2">
-                      {t('register.personalInformation')}
-                    </h3>
-                    
-                    {/* Name Fields */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <Input
-                        label={t('register.firstName')}
-                        placeholder={t('register.firstNamePlaceholder')}
-                        {...register('firstName')}
-                        error={errors.firstName?.message}
-                        leftIcon={<UserIcon className="w-5 h-5 text-blue-600 dark:text-blue-400" />}
-                        fullWidth
-                        disabled={isAccountLocked || isSubmitting}
-                        className="bg-white/50 dark:bg-gray-700/50 backdrop-blur-sm"
-                        autoComplete="given-name"
-                      />
-                      <Input
-                        label={t('register.lastName')}
-                        placeholder={t('register.lastNamePlaceholder')}
-                        {...register('lastName')}
-                        error={errors.lastName?.message}
-                        leftIcon={<UserIcon className="w-5 h-5 text-blue-600 dark:text-blue-400" />}
-                        fullWidth
-                        disabled={isAccountLocked || isSubmitting}
-                        className="bg-white/50 dark:bg-gray-700/50 backdrop-blur-sm"
-                        autoComplete="family-name"
-                      />
-                    </div>
-
-                    {/* Phone Field */}
-                    <Input
-                      label={t('register.phone')}
-                      placeholder={t('register.phonePlaceholder')}
-                      {...register('phone')}
-                      error={errors.phone?.message}
-                      leftIcon={<PhoneIcon className="w-5 h-5 text-blue-600 dark:text-blue-400" />}
-                      fullWidth
-                      disabled={isAccountLocked || isSubmitting}
-                      className="bg-white/50 dark:bg-gray-700/50 backdrop-blur-sm"
-                      autoComplete="tel"
-                    />
-
-                    {/* Company and University Fields */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <Input
-                        label={t('register.company')}
-                        placeholder={t('register.companyPlaceholder')}
-                        {...register('company')}
-                        error={errors.company?.message}
-                        leftIcon={<BuildingOfficeIcon className="w-5 h-5 text-blue-600 dark:text-blue-400" />}
-                        fullWidth
-                        disabled={isAccountLocked || isSubmitting}
-                        className="bg-white/50 dark:bg-gray-700/50 backdrop-blur-sm"
-                        autoComplete="organization"
-                      />
-                      <Input
-                        label={t('register.university')}
-                        placeholder={t('register.universityPlaceholder')}
-                        {...register('university')}
-                        error={errors.university?.message}
-                        leftIcon={<AcademicCapIcon className="w-5 h-5 text-blue-600 dark:text-blue-400" />}
-                        fullWidth
-                        disabled={isAccountLocked || isSubmitting}
-                        className="bg-white/50 dark:bg-gray-700/50 backdrop-blur-sm"
-                        autoComplete="organization"
-                      />
-                    </div>
-
-                    {/* Location Fields */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                          {t('register.country')}
-                        </label>
-                        <Select
-                          value={watchedValues.country}
-                          onChange={(val) => {
-                            // update RHF value and reset governorate when country changes
-                            const event = { target: { name: 'country', value: val } };
-                            register('country').onChange(event);
-                            register('governorate').onChange({ target: { name: 'governorate', value: '' } });
-                          }}
-                          options={countries.map(c => ({ value: c.code, label: c.name }))}
-                          disabled={isAccountLocked || isSubmitting}
-                          placeholder={t('register.country')}
-                          aria-describedby={errors.country ? 'country-error' : undefined}
-                        />
-                        {errors.country && (
-                          <p id="country-error" className="mt-1 text-sm text-red-600 dark:text-red-400">
-                            {errors.country.message}
-                          </p>
-                        )}
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                          {t('register.governorate')}
-                        </label>
-                        <Select
-                          value={watchedValues.governorate}
-                          onChange={(val) => register('governorate').onChange({ target: { name: 'governorate', value: val } })}
-                          options={(governorates[watchedValues.country] || []).map(g => ({ value: g, label: t(`governorates.${watchedValues.country}.${g}`, g) }))}
-                          disabled={isAccountLocked || isSubmitting}
-                          placeholder={t('register.selectGovernorate')}
-                          aria-describedby={errors.governorate ? 'governorate-error' : undefined}
-                        />
-                        {errors.governorate && (
-                          <p id="governorate-error" className="mt-1 text-sm text-red-600 dark:text-red-400">
-                            {errors.governorate.message}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Password Field */}
-                  <div>
-                    <Input
-                      label={t('register.password')}
-                      type={showPassword ? 'text' : 'password'}
-                      placeholder={t('register.passwordPlaceholder')}
-                      {...register('password')}
-                      error={errors.password?.message}
-                      fullWidth
-                      disabled={isAccountLocked || isSubmitting}
-                      autoComplete="new-password"
-                      leftIcon={<LockClosedIcon className="w-5 h-5 text-blue-600 dark:text-blue-400" />}
-                      rightIcon={
-                        <button
-                          type="button"
-                          onClick={() => setShowPassword(!showPassword)}
-                          className="focus:outline-none focus:ring-2 focus:ring-blue-500 rounded p-1 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors"
-                          aria-label={showPassword ? 'Hide password' : 'Show password'}
-                        >
-                          {showPassword ? (
-                            <EyeSlashIcon className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                          ) : (
-                            <EyeIcon className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                          )}
-                        </button>
-                      }
-                      className="bg-white/50 dark:bg-gray-700/50 backdrop-blur-sm"
-                    />
-
-                    {/* Password Strength Indicator */}
-                    {watchedValues.password && (
-                      <PasswordStrengthIndicator 
-                        strength={passwordStrength}
-                        className="mt-2"
-                      />
-                    )}
-                  </div>
-
-                  {/* Confirm Password Field */}
-                  <div>
-                    <Input
-                      label={t('register.confirmPassword')}
-                      type={showConfirmPassword ? 'text' : 'password'}
-                      placeholder={t('register.confirmPasswordPlaceholder')}
-                      {...register('confirmPassword')}
-                      error={errors.confirmPassword?.message}
-                      fullWidth
-                      disabled={isAccountLocked || isSubmitting}
-                      autoComplete="new-password"
-                      leftIcon={<LockClosedIcon className="w-5 h-5 text-blue-600 dark:text-blue-400" />}
-                      rightIcon={
-                        <button
-                          type="button"
-                          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                          className="focus:outline-none focus:ring-2 focus:ring-blue-500 rounded p-1 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors"
-                          aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
-                        >
-                          {showConfirmPassword ? (
-                            <EyeSlashIcon className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                          ) : (
-                            <EyeIcon className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                          )}
-                        </button>
-                      }
-                      className="bg-white/50 dark:bg-gray-700/50 backdrop-blur-sm"
-                    />
-                  </div>
-
-                  {/* Consent Checkbox */}
-                    <div className="space-y-3">
-                    <div className="flex items-start">
-                      <input
-                        id="consent"
-                        type="checkbox"
-                        {...register('consentGiven')}
-                        disabled={isAccountLocked || isSubmitting}
-                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600 hover:border-blue-500 transition-colors mt-1"
-                      />
-                      <label 
-                        htmlFor="consent" 
-                        className="ml-2 text-sm text-gray-700 dark:text-gray-300 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-                      >
-                        {t('register.consentLabel')}
-                      </label>
-                    </div>
-                    {errors.consentGiven && (
-                      <p className="text-sm text-red-600 dark:text-red-400 ml-6">
-                        {errors.consentGiven.message}
-                      </p>
-                    )}
-                    <p className="text-xs text-gray-500 dark:text-gray-400 ml-6">
-                      {t('register.consentText')}
-                    </p>
-                  </div>
-
-                    {/* Error region for screen readers */}
-                    <div role="alert" aria-live="assertive">
-                      {errors.root && (
-                        <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl">
-                          <p className="text-sm text-red-700 dark:text-red-300">{errors.root.message}</p>
-                        </div>
-                      )}
-                    </div>
-
-                  {/* Security Check Indicator */}
-                  {securityCheck && !isAccountLocked && (
-                    <div className="flex items-center justify-center p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl">
-                      <CheckCircleIcon className="w-5 h-5 text-green-600 dark:text-green-400 mr-2" />
-                      <span className="text-sm text-green-700 dark:text-green-300 font-medium">
-                        {t('common.securityCheckPassed')}
-                      </span>
-                    </div>
-                  )}
-
-                  {/* Register Button */}
-                  <Button
-                    type="submit"
-                    size="lg"
-                    fullWidth
-                    loading={isSubmitting}
-                    disabled={!isValid || isAccountLocked || isSubmitting || !canProceed}
-                    className="bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 text-white font-semibold py-3 sm:py-4 rounded-xl transition-all duration-200 transform hover:scale-105 disabled:transform-none disabled:opacity-50 shadow-lg hover:shadow-xl text-sm sm:text-base"
+            {/* University Faculty & Academic Stage Selector */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="space-y-1">
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300">
+                  Dental Faculty
+                </label>
+                <div className="relative flex items-center">
+                  <BuildingLibraryIcon className={`absolute ${isRTL ? 'right-3.5' : 'left-3.5'} w-4 h-4 text-slate-400 pointer-events-none`} />
+                  <select
+                    {...register('university')}
+                    className={`w-full ${isRTL ? 'pr-10 pl-3' : 'pl-10 pr-3'} py-2.5 rounded-2xl text-xs sm:text-sm bg-slate-50 dark:bg-slate-800 border ${
+                      errors.university ? 'border-rose-500' : 'border-slate-200 dark:border-slate-700'
+                    } focus:outline-none focus:ring-2 focus:ring-teal-500/50 cursor-pointer`}
                   >
-                    {isSubmitting ? (
-                      <div className="flex items-center justify-center">
-                        <LoadingSpinner size="sm" className="mr-2" />
-                        <span>{t('register.creating')}</span>
-                      </div>
-                    ) : (
-                      <span>{t('register.createAccount')}</span>
-                    )}
-                  </Button>
-                </form>
-
-                {/* Login Link */}
-                <div className="mt-4 sm:mt-6 text-center">
-                  <p className="text-sm text-gray-600 dark:text-gray-300">
-                    {t('register.alreadyHaveAccount')}{' '}
-                    <Link
-                      to="/login"
-                      className="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300 transition-colors hover:underline"
-                    >
-                      {t('register.login')}
-                    </Link>
-                  </p>
-                </div>
-
-                {/* Security Notice */}
-                <div className="mt-3 sm:mt-4 text-center">
-                  <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
-                    {t('register.securityNotice')}{' '}
-                    <Link to="/terms" className="underline hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
-                      {t('common.termsOfService')}
-                    </Link>{' '}
-                    {t('common.and')}{' '}
-                    <Link to="/privacy" className="underline hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
-                      {t('common.privacyPolicy')}
-                    </Link>
-                  </p>
+                    {universityOptions.map((uni, idx) => (
+                      <option key={idx} value={uni}>{uni}</option>
+                    ))}
+                  </select>
                 </div>
               </div>
-            </AnimatedSection>
-          </div>
+
+              <div className="space-y-1">
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300">
+                  Academic Stage / Year
+                </label>
+                <div className="relative flex items-center">
+                  <AcademicCapIcon className={`absolute ${isRTL ? 'right-3.5' : 'left-3.5'} w-4 h-4 text-slate-400 pointer-events-none`} />
+                  <select
+                    {...register('academicYear')}
+                    className={`w-full ${isRTL ? 'pr-10 pl-3' : 'pl-10 pr-3'} py-2.5 rounded-2xl text-xs sm:text-sm bg-slate-50 dark:bg-slate-800 border ${
+                      errors.academicYear ? 'border-rose-500' : 'border-slate-200 dark:border-slate-700'
+                    } focus:outline-none focus:ring-2 focus:ring-teal-500/50 cursor-pointer`}
+                  >
+                    {academicYears.map((yr, idx) => (
+                      <option key={idx} value={yr}>{yr}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            {/* Governorate */}
+            <div className="space-y-1">
+              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300">
+                Governorate (Delivery Region)
+              </label>
+              <div className="relative flex items-center">
+                <MapPinIcon className={`absolute ${isRTL ? 'right-3.5' : 'left-3.5'} w-4 h-4 text-slate-400 pointer-events-none`} />
+                <select
+                  {...register('governorate')}
+                  className={`w-full ${isRTL ? 'pr-10 pl-3' : 'pl-10 pr-3'} py-2.5 rounded-2xl text-xs sm:text-sm bg-slate-50 dark:bg-slate-800 border ${
+                    errors.governorate ? 'border-rose-500' : 'border-slate-200 dark:border-slate-700'
+                  } focus:outline-none focus:ring-2 focus:ring-teal-500/50 cursor-pointer`}
+                >
+                  {GOVERNORATES.map((gov, idx) => (
+                    <option key={idx} value={gov}>{gov}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            {/* Password Fields */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="space-y-1">
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300">
+                  Password
+                </label>
+                <div className="relative flex items-center">
+                  <LockClosedIcon className={`absolute ${isRTL ? 'right-3.5' : 'left-3.5'} w-4 h-4 text-slate-400 pointer-events-none`} />
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    {...register('password')}
+                    placeholder="••••••••••••"
+                    className={`w-full ${isRTL ? 'pr-10 pl-10' : 'pl-10 pr-10'} py-2.5 rounded-2xl text-xs sm:text-sm bg-slate-50 dark:bg-slate-800 border ${
+                      errors.password ? 'border-rose-500' : 'border-slate-200 dark:border-slate-700'
+                    } focus:outline-none focus:ring-2 focus:ring-teal-500/50`}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className={`absolute ${isRTL ? 'left-3' : 'right-3'} text-slate-400 p-1`}
+                    tabIndex={-1}
+                  >
+                    {showPassword ? <EyeSlashIcon className="w-4 h-4" /> : <EyeIcon className="w-4 h-4" />}
+                  </button>
+                </div>
+                {errors.password && <span className="text-[11px] text-rose-500">{errors.password.message}</span>}
+              </div>
+
+              <div className="space-y-1">
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300">
+                  Confirm Password
+                </label>
+                <div className="relative flex items-center">
+                  <LockClosedIcon className={`absolute ${isRTL ? 'right-3.5' : 'left-3.5'} w-4 h-4 text-slate-400 pointer-events-none`} />
+                  <input
+                    type={showConfirmPassword ? 'text' : 'password'}
+                    {...register('confirmPassword')}
+                    placeholder="••••••••••••"
+                    className={`w-full ${isRTL ? 'pr-10 pl-10' : 'pl-10 pr-10'} py-2.5 rounded-2xl text-xs sm:text-sm bg-slate-50 dark:bg-slate-800 border ${
+                      errors.confirmPassword ? 'border-rose-500' : 'border-slate-200 dark:border-slate-700'
+                    } focus:outline-none focus:ring-2 focus:ring-teal-500/50`}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className={`absolute ${isRTL ? 'left-3' : 'right-3'} text-slate-400 p-1`}
+                    tabIndex={-1}
+                  >
+                    {showConfirmPassword ? <EyeSlashIcon className="w-4 h-4" /> : <EyeIcon className="w-4 h-4" />}
+                  </button>
+                </div>
+                {errors.confirmPassword && <span className="text-[11px] text-rose-500">{errors.confirmPassword.message}</span>}
+              </div>
+            </div>
+
+            {/* Password Strength Indicator */}
+            {passwordValue && (
+              <PasswordStrengthIndicator strength={passwordStrength} />
+            )}
+
+            {/* Consent Checkbox */}
+            <div className="pt-1">
+              <label className="flex items-start gap-2.5 text-xs text-slate-600 dark:text-slate-400 cursor-pointer">
+                <input
+                  type="checkbox"
+                  {...register('consentGiven')}
+                  className="rounded text-teal-600 focus:ring-teal-500 mt-0.5"
+                />
+                <span>
+                  I agree to the <Link to="/terms" className="text-teal-600 dark:text-teal-400 font-semibold underline">Terms of Service</Link> and <Link to="/privacy" className="text-teal-600 dark:text-teal-400 font-semibold underline">Privacy Policy</Link>, and verify my student status for educational pricing.
+                </span>
+              </label>
+              {errors.consentGiven && (
+                <span className="text-[11px] text-rose-500 block pt-1">{errors.consentGiven.message}</span>
+              )}
+            </div>
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={!isValid || isSubmitting || securityLocked}
+              className="w-full py-3.5 px-6 rounded-2xl bg-teal-600 hover:bg-teal-500 text-white font-black text-sm shadow-xl shadow-teal-600/30 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isSubmitting ? (
+                <>
+                  <LoadingSpinner size="sm" />
+                  <span>Creating University Account...</span>
+                </>
+              ) : (
+                <>
+                  <span>Create Account & Unlock Discounts</span>
+                  <ArrowRightIcon className={`w-4 h-4 ${isRTL ? 'rotate-180' : ''}`} />
+                </>
+              )}
+            </button>
+          </form>
+
         </div>
-          </div>
-        </div>
+
       </div>
     </div>
   );
 };
 
-export default RegisterPage; 
+export default RegisterPage;

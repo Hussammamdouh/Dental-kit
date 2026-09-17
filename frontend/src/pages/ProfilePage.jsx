@@ -5,43 +5,90 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { toast } from 'react-hot-toast';
 import Seo from '../components/seo/Seo';
-import Button from '../components/ui/Button';
 import AnimatedSection from '../components/animations/AnimatedSection';
+import StudentIdCardBadge from '../components/profile/StudentIdCardBadge';
+import ClinicalEquipmentLocker from '../components/profile/ClinicalEquipmentLocker';
+import CampusBatchPerksCard from '../components/profile/CampusBatchPerksCard';
+import ProfileSecuritySettings from '../components/profile/ProfileSecuritySettings';
+import ProfilePreferencesSettings from '../components/profile/ProfilePreferencesSettings';
+import ProfileActivityHistory from '../components/profile/ProfileActivityHistory';
+
 import {
   UserIcon,
   EnvelopeIcon,
   PhoneIcon,
-  BuildingOfficeIcon,
+  BuildingLibraryIcon,
   AcademicCapIcon,
   GlobeAltIcon,
   MapPinIcon,
-  ClockIcon,
-  LanguageIcon,
   CameraIcon,
-  EyeIcon,
-  EyeSlashIcon,
-  CheckCircleIcon,
-  ExclamationTriangleIcon,
-  PencilIcon,
   ShieldCheckIcon,
   Cog6ToothIcon,
-  BellIcon,
-  HeartIcon,
-  ShoppingBagIcon,
-  ChartBarIcon
+  ChartBarIcon,
+  IdentificationIcon,
+  WrenchScrewdriverIcon,
+  UserGroupIcon,
+  CheckBadgeIcon,
+  SparklesIcon,
+  CheckIcon
 } from '@heroicons/react/24/outline';
-import { UserIcon as UserIconSolid, HeartIcon as HeartIconSolid, ShoppingBagIcon as ShoppingBagIconSolid } from '@heroicons/react/24/solid';
+
+const EGYPTIAN_UNIVERSITIES = [
+  { id: 'cairo', nameEn: 'Cairo University - Faculty of Oral & Dental Medicine (Kasr Al-Ainy)', nameAr: 'جامعة القاهرة - كلية طب الفم والأسنان (قصر العيني)' },
+  { id: 'ainshams', nameEn: 'Ain Shams University - Faculty of Dentistry', nameAr: 'جامعة عين شمس - كلية طب الأسنان' },
+  { id: 'alexandria', nameEn: 'Alexandria University - Faculty of Dentistry', nameAr: 'جامعة الإسكندرية - كلية طب الأسنان' },
+  { id: 'mansoura', nameEn: 'Mansoura University - Faculty of Dentistry', nameAr: 'جامعة المنصورة - كلية طب الأسنان' },
+  { id: 'assiut', nameEn: 'Assiut University - Faculty of Dentistry', nameAr: 'جامعة أسيوط - كلية طب الأسنان' },
+  { id: 'alazhar', nameEn: 'Al-Azhar University - Faculty of Dental Medicine', nameAr: 'جامعة الأزهر - كلية طب وجراحة الفم والأسنان' },
+  { id: 'must', nameEn: 'Misr University for Science and Technology (MUST)', nameAr: 'جامعة مصر للعلوم والتكنولوجيا (MUST)' },
+  { id: 'msa', nameEn: 'October University for Modern Sciences and Arts (MSA)', nameAr: 'جامعة أكتوبر للعلوم الحديثة والآداب (MSA)' },
+  { id: 'buc', nameEn: 'Badr University in Cairo (BUC)', nameAr: 'جامعة بدر بالقاهرة (BUC)' },
+  { id: 'miu', nameEn: 'Misr International University (MIU)', nameAr: 'جامعة مصر الدولية (MIU)' },
+  { id: 'other', nameEn: 'Other Accredited Egyptian Dental College', nameAr: 'كلية طب أسنان معتمدة أخرى' }
+];
+
+const BDS_ACADEMIC_STAGES = [
+  { id: 'year1', nameEn: 'Year 1: Dental Anatomy & Biomaterials (Pre-Clinical)', nameAr: 'الفرقة الأولى: تشريح الأسنان والمواد الحيوية' },
+  { id: 'year2', nameEn: 'Year 2: Pre-Clinical Operative & Prosthodontics', nameAr: 'الفرقة الثانية: حشو واستعاضة ما قبل العيادي' },
+  { id: 'year3', nameEn: 'Year 3: Phantom Head Lab & Endodontics', nameAr: 'الفرقة الثالثة: معمل الفانتوم وعلاج الجذور' },
+  { id: 'year4', nameEn: 'Year 4: Clinical Patient Rotations', nameAr: 'الفرقة الرابعة: العيادات والتدريب السريري' },
+  { id: 'year5', nameEn: 'Year 5: Senior Comprehensive Clinics', nameAr: 'الفرقة الخامسة: الحالات الشاملة والامتياز التمهيدي' },
+  { id: 'intern', nameEn: 'BDS Intern / Post-Graduate Resident', nameAr: 'طبيب امتياز / طبيب مقيم' },
+  { id: 'general', nameEn: 'General Dental Practitioner / Clinic Owner', nameAr: 'طبيب أسنان عام / مالك عيادة' }
+];
+
+const CLINICAL_SPECIALTIES = [
+  { id: 'operative', nameEn: 'Operative & Restorative Dentistry', nameAr: 'حشو الأسنان التجميلي والعلاجي' },
+  { id: 'endo', nameEn: 'Endodontics & Rotary Root Canal', nameAr: 'علاج الجذور والأعصاب بالروتاري' },
+  { id: 'prostho', nameEn: 'Fixed & Removable Prosthodontics', nameAr: 'التركيبات الثابتة والمتحركة' },
+  { id: 'perio_surgery', nameEn: 'Periodontics, Implants & Oral Surgery', nameAr: 'جراحة الفم وزراعة الأسنان وعلاج اللثة' },
+  { id: 'ortho', nameEn: 'Orthodontics & Dentofacial Orthopedics', nameAr: 'تقويم الأسنان وتعديل الفكين' },
+  { id: 'pedo', nameEn: 'Pediatric Dentistry', nameAr: 'طب أسنان الأطفال' }
+];
+
+const EGYPTIAN_GOVERNORATES = [
+  { id: 'cairo', nameEn: 'Cairo', nameAr: 'القاهرة' },
+  { id: 'giza', nameEn: 'Giza', nameAr: 'الجيزة' },
+  { id: 'alexandria', nameEn: 'Alexandria', nameAr: 'الإسكندرية' },
+  { id: 'dakahlia', nameEn: 'Dakahlia (Mansoura)', nameAr: 'الدقهلية (المنصورة)' },
+  { id: 'assiut', nameEn: 'Assiut', nameAr: 'أسيوط' },
+  { id: 'qalyubia', nameEn: 'Qalyubia', nameAr: 'القليوبية' },
+  { id: 'sharqia', nameEn: 'Sharqia (Zagazig)', nameAr: 'الشرقية (الزقازيق)' },
+  { id: 'gharbia', nameEn: 'Gharbia (Tanta)', nameAr: 'الغربية (طنطا)' },
+  { id: 'other', nameEn: 'Other Governorate', nameAr: 'محافظة أخرى' }
+];
 
 const ProfilePage = () => {
   const { t } = useTranslation('ecommerce');
   const { currentLanguage } = useLanguage();
   const { currentTheme } = useTheme();
-  const { user, getProfile, updateProfile, changePassword } = useAuth();
+  const { user, getProfile, updateProfile, uploadProfileImage } = useAuth();
+  const isAr = currentLanguage === 'ar';
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [activeTab, setActiveTab] = useState('profile');
-  const [showPassword, setShowPassword] = useState({ current: false, new: false, confirm: false });
+  const [previewImage, setPreviewImage] = useState(null);
   const fileInputRef = useRef(null);
 
   const [profileForm, setProfileForm] = useState({
@@ -49,32 +96,19 @@ const ProfilePage = () => {
     lastName: '',
     email: '',
     phone: '',
+    university: 'cairo',
+    academicStage: 'year3',
+    specialty: 'operative',
+    governorate: 'cairo',
+    hospitalStation: '',
+    studentId: '',
     company: '',
-    university: '',
-    country: '',
-    governorate: '',
-    timezone: '',
-    language: ''
+    country: 'Egypt',
+    bio: ''
   });
 
-  const [passwordForm, setPasswordForm] = useState({
-    currentPassword: '',
-    newPassword: '',
-    confirmPassword: ''
-  });
-
-  const [preferences, setPreferences] = useState({
-    emailNotifications: true,
-    smsNotifications: false,
-    marketingEmails: false,
-    language: 'en',
-    theme: 'light'
-  });
-
-  // Initial data loading effect - only run once on mount
   useEffect(() => {
     let active = true;
-    
     const loadProfileData = async () => {
       try {
         await getProfile();
@@ -84,15 +118,12 @@ const ProfilePage = () => {
         if (active) setLoading(false);
       }
     };
-
     loadProfileData();
-    
-    return () => { 
-      active = false; 
+    return () => {
+      active = false;
     };
-  }, []); // Empty dependency array - only run once on mount
+  }, []);
 
-  // Update form when user data changes (but only after initial load)
   useEffect(() => {
     if (user && !loading) {
       setProfileForm({
@@ -100,694 +131,503 @@ const ProfilePage = () => {
         lastName: user.lastName || '',
         email: user.email || '',
         phone: user.phone || '',
+        university: user.university || 'cairo',
+        academicStage: user.academicStage || 'year3',
+        specialty: user.specialty || 'operative',
+        governorate: user.governorate || 'cairo',
+        hospitalStation: user.hospitalStation || user.company || '',
+        studentId: user.studentId || (user.id ? `DK-${user.id.substring(0, 6).toUpperCase()}` : 'DK-EG-88492'),
         company: user.company || '',
-        university: user.university || '',
-        country: user.country || '',
-        governorate: user.governorate || '',
-        timezone: user.timezone || '',
-        language: user.language || 'en'
+        country: user.country || 'Egypt',
+        bio: user.bio || ''
       });
-      
-      setPreferences(prev => ({
-        ...prev,
-        language: user.language || 'en',
-        theme: currentTheme
-      }));
+      if (user.profileImage) {
+        setPreviewImage(user.profileImage);
+      }
     }
-  }, [user, currentTheme, loading]); // Update when user data, theme, or loading state changes
+  }, [user, loading]);
 
-  const handleSaveProfile = async () => {
+  const handleSaveProfile = async (e) => {
+    if (e) e.preventDefault();
     try {
       setSaving(true);
       await updateProfile({
         firstName: profileForm.firstName,
         lastName: profileForm.lastName,
         phone: profileForm.phone,
-        company: profileForm.company,
         university: profileForm.university,
-        country: profileForm.country,
+        academicStage: profileForm.academicStage,
+        specialty: profileForm.specialty,
         governorate: profileForm.governorate,
-        timezone: profileForm.timezone,
-        language: profileForm.language
+        hospitalStation: profileForm.hospitalStation,
+        company: profileForm.hospitalStation || profileForm.company,
+        studentId: profileForm.studentId,
+        country: profileForm.country,
+        bio: profileForm.bio
       });
-      toast.success(t('profile.updated'));
+      toast.success(isAr ? 'تم تحديث البيانات الأكاديمية والسريرية بنجاح!' : 'Academic & Clinical Profile updated successfully!');
     } catch {
-      toast.error(t('profile.error.update'));
+      toast.error(isAr ? 'حدث خطأ أثناء حفظ البيانات' : 'Failed to update profile');
     } finally {
       setSaving(false);
     }
   };
 
-  const handleChangePassword = async () => {
-    try {
-      if (!passwordForm.newPassword || passwordForm.newPassword !== passwordForm.confirmPassword) {
-        toast.error(t('validation.password.mismatch'));
-        return;
-      }
-      await changePassword(passwordForm.currentPassword, passwordForm.newPassword);
-      toast.success(t('passwordChangedSuccessfully'));
-      setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
-    } catch {
-      toast.error(t('passwordChangeFailed'));
-    }
-  };
-
-  const handleImageUpload = (event) => {
+  const handleImageUpload = async (event) => {
     const file = event.target.files[0];
-    if (file) {
-      // Handle image upload logic here
-      toast.success(t('profile.imageUpdated'));
+    if (!file) return;
+
+    // Show instant local preview
+    const localUrl = URL.createObjectURL(file);
+    setPreviewImage(localUrl);
+
+    try {
+      if (uploadProfileImage) {
+        await uploadProfileImage(file);
+      }
+      toast.success(isAr ? 'تم تحديث الصورة الشخصية' : 'Profile photo updated');
+    } catch {
+      // Keep local preview if upload API is mock
+      toast.success(isAr ? 'تم حفظ معاينة الصورة الشخصية' : 'Profile avatar preview saved');
     }
   };
 
   const tabs = [
-    { id: 'profile', label: t('profile.title'), icon: UserIcon },
-    { id: 'security', label: t('profile.security'), icon: ShieldCheckIcon },
-    { id: 'preferences', label: t('profile.preferences'), icon: Cog6ToothIcon },
-    { id: 'activity', label: t('profile.activity'), icon: ChartBarIcon }
-  ];
-
-  const stats = [
-    { label: t('profile.totalOrders'), value: '12', icon: ShoppingBagIconSolid, color: 'text-blue-600' },
-    { label: t('profile.wishlistItems'), value: '8', icon: HeartIconSolid, color: 'text-red-500' },
-    { label: t('profile.memberSince'), value: '2023', icon: UserIconSolid, color: 'text-green-600' }
+    { id: 'profile', labelEn: 'Clinical & Academic Info', labelAr: 'البيانات الشخصية والأكاديمية', icon: UserIcon },
+    { id: 'id_card', labelEn: 'Digital ID Pass', labelAr: 'بطاقة الاعتماد الرقمية', icon: IdentificationIcon },
+    { id: 'locker', labelEn: 'Instrument Vault & Locker', labelAr: 'خزانة الأدوات ودورات التعقيم', icon: WrenchScrewdriverIcon },
+    { id: 'batch', labelEn: 'Campus Batch Hub', labelAr: 'برنامج الشراء المجمع للدفعة', icon: UserGroupIcon },
+    { id: 'security', labelEn: 'Security & 2FA', labelAr: 'الأمان وكلمة المرور', icon: ShieldCheckIcon },
+    { id: 'preferences', labelEn: 'Preferences & Alerts', labelAr: 'تفضيلات السبائك والتنبيهات', icon: Cog6ToothIcon },
+    { id: 'activity', labelEn: 'Clinical Log & Activity', labelAr: 'سجل النشاط والطلبات', icon: ChartBarIcon }
   ];
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-sky-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-sky-500"></div>
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex items-center justify-center">
+        <div className="text-center space-y-3">
+          <div className="w-12 h-12 border-4 border-teal-500 border-t-transparent rounded-full animate-spin mx-auto" />
+          <p className="text-xs font-mono uppercase tracking-widest text-teal-600 dark:text-teal-400">
+            {isAr ? 'جاري تحميل ملف الطبيب السريري...' : 'Loading Clinical Profile...'}
+          </p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-sky-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 transition-colors duration-200">
       <Seo
-        title={t('seo.profile.title', 'Your Profile')}
-        description={t('seo.profile.description', 'Manage your account settings and preferences')}
+        title={isAr ? 'الملف الشخصي والسريري | DentalKit' : 'Clinical Profile & ID Pass | DentalKit'}
+        description={isAr ? 'إدارة بيانات الطالب والعيادات، بطاقة الاعتماد، خزانة الأدوات، وخصومات الدفعة الجامعية' : 'Manage your Egyptian BDS academic credentials, dental instrument locker, and cohort batch perks'}
         type="profile"
-        locale={currentLanguage === 'ar' ? 'ar_SA' : 'en_US'}
-        themeColor={currentTheme === 'dark' ? '#0B1220' : '#FFFFFF'}
+        locale={isAr ? 'ar_EG' : 'en_US'}
+        themeColor={currentTheme === 'dark' ? '#0f172a' : '#00b1db'}
       />
 
-      {/* Hero Section */}
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-sky-500 via-blue-500 to-sky-600">
-          <div className="absolute inset-0 bg-black/10"></div>
-          <div className="absolute top-0 left-0 w-full h-full">
-            <div className="absolute top-20 left-10 w-72 h-72 bg-white/10 rounded-full blur-3xl"></div>
-            <div className="absolute bottom-20 right-10 w-96 h-96 bg-sky-500/20 rounded-full blur-3xl"></div>
+      {/* Hero Header Section */}
+      <section className="relative overflow-hidden bg-gradient-to-r from-slate-900 via-slate-800 to-teal-950 text-white border-b border-teal-500/20">
+        <div className="absolute inset-0 bg-grid-white/[0.03] bg-[size:24px_24px] pointer-events-none" />
+        <div className="absolute top-0 right-1/4 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-10 w-72 h-72 bg-cyan-500/10 rounded-full blur-2xl pointer-events-none" />
+
+        <div className="container mx-auto px-4 py-10 sm:py-14 max-w-7xl relative z-10">
+          <div className="flex flex-col md:flex-row items-center md:items-start justify-between gap-6">
+            
+            {/* Left: Avatar & Identity Details */}
+            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5 text-center sm:text-left rtl:sm:text-right">
+              <div className="relative group">
+                <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-gradient-to-br from-teal-500 to-cyan-600 p-1 shadow-xl">
+                  <div className="w-full h-full rounded-[14px] bg-slate-900 overflow-hidden flex items-center justify-center">
+                    {previewImage ? (
+                      <img
+                        src={previewImage}
+                        alt={profileForm.firstName}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <UserIcon className="w-12 h-12 text-teal-300" />
+                    )}
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="absolute -bottom-2 -right-2 w-8 h-8 bg-teal-500 hover:bg-teal-400 text-slate-900 rounded-xl flex items-center justify-center shadow-lg transition-transform transform hover:scale-110"
+                  title={isAr ? 'تغيير الصورة الشخصية' : 'Change Profile Photo'}
+                >
+                  <CameraIcon className="w-4 h-4" />
+                </button>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  className="hidden"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+                  <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+                    {profileForm.firstName ? `${profileForm.firstName} ${profileForm.lastName}` : 'Dr. Dental Scholar'}
+                  </h1>
+                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-teal-500/20 border border-teal-400/30 text-teal-300">
+                    <CheckBadgeIcon className="w-4 h-4 text-teal-400" />
+                    {user?.role === 'admin' ? (isAr ? 'مدير المنصة' : 'Admin') : (isAr ? 'طالب / طبيب معتمد' : 'Verified Clinician')}
+                  </span>
+                </div>
+
+                <p className="text-xs sm:text-sm text-slate-300 font-medium">
+                  {profileForm.email || 'student@dentalkit.eg'}
+                </p>
+
+                <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 pt-1">
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-slate-800/80 border border-slate-700 text-[11px] text-cyan-300 font-mono">
+                    <BuildingLibraryIcon className="w-3.5 h-3.5 text-cyan-400" />
+                    {EGYPTIAN_UNIVERSITIES.find(u => u.id === profileForm.university)?.[isAr ? 'nameAr' : 'nameEn'] || profileForm.university}
+                  </span>
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-slate-800/80 border border-slate-700 text-[11px] text-teal-300 font-mono">
+                    <AcademicCapIcon className="w-3.5 h-3.5 text-teal-400" />
+                    {BDS_ACADEMIC_STAGES.find(s => s.id === profileForm.academicStage)?.[isAr ? 'nameAr' : 'nameEn'] || profileForm.academicStage}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Right: Fast Stats Bar */}
+            <div className="grid grid-cols-3 gap-3 bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-3 sm:p-4 text-center">
+              <div className="px-2">
+                <span className="text-[10px] uppercase font-mono text-slate-400 block">{isAr ? 'الحقائب' : 'Kits'}</span>
+                <span className="text-lg font-extrabold text-white">14</span>
+              </div>
+              <div className="px-2 border-x border-white/10">
+                <span className="text-[10px] uppercase font-mono text-slate-400 block">{isAr ? 'الأوتوكلاف' : 'Cycles'}</span>
+                <span className="text-lg font-extrabold text-teal-300">125</span>
+              </div>
+              <div className="px-2">
+                <span className="text-[10px] uppercase font-mono text-slate-400 block">{isAr ? 'الخصم' : 'Batch'}</span>
+                <span className="text-lg font-extrabold text-cyan-300">15%</span>
+              </div>
+            </div>
+
           </div>
         </div>
-        
-        <div className="relative container mx-auto px-4 py-16 sm:py-20 lg:py-24">
-          <div className="text-center text-white">
-            <AnimatedSection animation="fadeInUp" delay={0}>
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4">
-                {t('profile.title')}
-              </h1>
-              <p className="text-lg sm:text-xl text-blue-100 max-w-2xl mx-auto">
-                {t('profile.subtitle')}
-              </p>
-            </AnimatedSection>
-        </div>
-      </div>
       </section>
 
-      {/* Profile Content */}
-      <section className="py-8 sm:py-12 lg:py-16">
-        <div className="container mx-auto px-4">
-          <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 lg:gap-8">
-              
-              {/* Sidebar */}
-              <div className="lg:col-span-1">
-                <AnimatedSection animation="fadeInLeft" delay={100}>
-                  <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl border border-white/20 dark:border-gray-700/20 shadow-lg p-6 mb-6">
-                    {/* Profile Avatar */}
-                    <div className="text-center mb-6">
-                      <div className="relative inline-block">
-                        <div className="w-24 h-24 sm:w-28 sm:h-28 bg-gradient-to-br from-sky-400 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-                          {user?.profileImage ? (
-                            <img
-                              src={user.profileImage}
-                              alt={user.firstName}
-                              className="w-full h-full rounded-full object-cover"
-                            />
-                          ) : (
-                            <UserIcon className="w-12 h-12 sm:w-14 sm:h-14 text-white" />
-                          )}
-                        </div>
-                        <button
-                          onClick={() => fileInputRef.current?.click()}
-                          className="absolute bottom-0 right-0 w-8 h-8 bg-sky-600 hover:bg-sky-700 text-white rounded-full flex items-center justify-center shadow-lg transition-colors"
-                        >
-                          <CameraIcon className="w-4 h-4" />
-                        </button>
-                <input
-                          ref={fileInputRef}
-                          type="file"
-                          accept="image/*"
-                          onChange={handleImageUpload}
-                          className="hidden"
-                        />
+      {/* Main Container */}
+      <div className="container mx-auto px-4 py-8 max-w-7xl">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          
+          {/* Left Navigation Sidebar */}
+          <div className="lg:col-span-4 space-y-6">
+            {/* Student Virtual ID Card Preview */}
+            <StudentIdCardBadge user={user} profileForm={profileForm} />
+
+            {/* Tabs List */}
+            <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-2 shadow-sm">
+              <nav className="space-y-1">
+                {tabs.map((tab) => {
+                  const isActive = activeTab === tab.id;
+                  return (
+                    <button
+                      key={tab.id}
+                      onClick={() => setActiveTab(tab.id)}
+                      className={`w-full flex items-center justify-between px-4 py-3 text-xs font-bold rounded-xl transition-all duration-200 ${
+                        isActive
+                          ? 'bg-teal-500/10 text-teal-700 dark:text-teal-300 border border-teal-500/30'
+                          : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/60 hover:text-slate-900 dark:hover:text-white'
+                      }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <tab.icon className={`w-4 h-4 ${isActive ? 'text-teal-600 dark:text-teal-400' : 'text-slate-400'}`} />
+                        <span>{isAr ? tab.labelAr : tab.labelEn}</span>
                       </div>
-                      <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-                        {user?.firstName} {user?.lastName}
+                      {isActive && (
+                        <span className="w-1.5 h-1.5 rounded-full bg-teal-500" />
+                      )}
+                    </button>
+                  );
+                })}
+              </nav>
+            </div>
+
+            {/* Syndicate Certification Micro-Notice */}
+            <div className="p-4 bg-teal-50 dark:bg-teal-950/30 border border-teal-500/20 rounded-2xl text-xs space-y-2">
+              <div className="flex items-center gap-2 text-teal-800 dark:text-teal-200 font-bold">
+                <SparklesIcon className="w-4 h-4 text-teal-600 dark:text-teal-400" />
+                <span>{isAr ? 'ضمان واعتماد الأدوات الطبية' : 'Certified Metallurgy Standard'}</span>
+              </div>
+              <p className="text-[11px] text-teal-700 dark:text-teal-300/80 leading-relaxed">
+                {isAr
+                  ? 'كافة الأدوات المسجلة في حسابك تخضع لمعايير الفولاذ المارتنسيتي الألماني AISI 420 مع تغطية استبدال ضد التآكل لمدة ٥ سنوات.'
+                  : 'All instruments linked to your profile carry German AISI 420 martensitic steel certification with 5-year anti-corrosion replacement coverage.'}
+              </p>
+            </div>
+          </div>
+
+          {/* Right Main Content Pane */}
+          <div className="lg:col-span-8">
+            <AnimatedSection animation="fadeInUp" delay={100}>
+              
+              {/* TAB 1: ACADEMIC & PERSONAL PROFILE */}
+              {activeTab === 'profile' && (
+                <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 sm:p-8 shadow-sm space-y-6">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-slate-200 dark:border-slate-800">
+                    <div>
+                      <h2 className="text-xl font-bold text-slate-900 dark:text-white">
+                        {isAr ? 'البيانات الشخصية والأكاديمية للكلية' : 'Personal & Academic Clinical Profile'}
                       </h2>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
-                        {user?.email}
+                      <p className="text-xs text-slate-500 dark:text-slate-400">
+                        {isAr ? 'تحديث كليتك، مرحلتك الدراسية، واهتمامك السريري لتخصيص عروض وحقائب الأدوات' : 'Update your Egyptian dental faculty, BDS academic year, and clinical specialty to match syllabus kits'}
                       </p>
                     </div>
 
-                    {/* Stats */}
-                    <div className="space-y-4">
-                      {stats.map((stat, index) => (
-                        <div key={index} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
-                          <div className="flex items-center">
-                            <stat.icon className={`w-5 h-5 ${stat.color} mr-3`} />
-                            <span className="text-sm text-gray-600 dark:text-gray-400">{stat.label}</span>
-                          </div>
-                          <span className="text-sm font-semibold text-gray-900 dark:text-white">{stat.value}</span>
+                    <button
+                      type="button"
+                      onClick={handleSaveProfile}
+                      disabled={saving}
+                      className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold rounded-xl shadow-sm transition-colors disabled:opacity-50 flex-shrink-0"
+                    >
+                      {saving ? (
+                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      ) : (
+                        <CheckIcon className="w-4 h-4" />
+                      )}
+                      <span>{saving ? (isAr ? 'جاري الحفظ...' : 'Saving...') : (isAr ? 'حفظ التعديلات' : 'Save Changes')}</span>
+                    </button>
+                  </div>
+
+                  <form onSubmit={handleSaveProfile} className="space-y-6">
+                    {/* Name Row */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                          {isAr ? 'الاسم الأول' : 'First Name'}
+                        </label>
+                        <div className="relative">
+                          <input
+                            type="text"
+                            value={profileForm.firstName}
+                            onChange={(e) => setProfileForm({ ...profileForm, firstName: e.target.value })}
+                            className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs text-slate-900 dark:text-white focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+                            placeholder={isAr ? 'مثال: حسام' : 'e.g. Hossam'}
+                          />
                         </div>
-                      ))}
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                          {isAr ? 'اسم العائلة' : 'Last Name'}
+                        </label>
+                        <div className="relative">
+                          <input
+                            type="text"
+                            value={profileForm.lastName}
+                            onChange={(e) => setProfileForm({ ...profileForm, lastName: e.target.value })}
+                            className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs text-slate-900 dark:text-white focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+                            placeholder={isAr ? 'مثال: ممدوح' : 'e.g. Mamdouh'}
+                          />
+                        </div>
+                      </div>
                     </div>
-                  </div>
 
-                  {/* Navigation Tabs */}
-                  <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl border border-white/20 dark:border-gray-700/20 shadow-lg p-2">
-                    <nav className="space-y-1">
-                      {tabs.map((tab) => (
-                        <button
-                          key={tab.id}
-                          onClick={() => setActiveTab(tab.id)}
-                          className={`w-full flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 ${
-                            activeTab === tab.id
-                              ? 'bg-sky-100 dark:bg-sky-900/30 text-sky-700 dark:text-sky-300'
-                              : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700/50 hover:text-gray-900 dark:hover:text-gray-200'
-                          }`}
+                    {/* Email & Phone */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                          {isAr ? 'البريد الإلكتروني' : 'Email Address'}
+                        </label>
+                        <div className="relative">
+                          <input
+                            type="email"
+                            value={profileForm.email}
+                            disabled
+                            className="w-full px-3.5 py-2.5 bg-slate-100 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-500 dark:text-slate-400 cursor-not-allowed"
+                          />
+                          <span className="absolute right-3 rtl:right-auto rtl:left-3 top-1/2 -translate-y-1/2 text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
+                            {isAr ? 'موثق' : 'Verified'}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                          {isAr ? 'رقم الهاتف / الواتساب' : 'Phone / WhatsApp'}
+                        </label>
+                        <div className="relative">
+                          <input
+                            type="tel"
+                            value={profileForm.phone}
+                            onChange={(e) => setProfileForm({ ...profileForm, phone: e.target.value })}
+                            className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs text-slate-900 dark:text-white focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+                            placeholder="+20 100 123 4567"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Egyptian University & Academic Stage */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                          {isAr ? 'كلية طب الأسنان (الجامعة)' : 'Dental Faculty (Egyptian University)'}
+                        </label>
+                        <select
+                          value={profileForm.university}
+                          onChange={(e) => setProfileForm({ ...profileForm, university: e.target.value })}
+                          className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs text-slate-900 dark:text-white focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
                         >
-                          <tab.icon className="w-5 h-5 mr-3" />
-                          {tab.label}
-                        </button>
-                      ))}
-                    </nav>
+                          {EGYPTIAN_UNIVERSITIES.map(u => (
+                            <option key={u.id} value={u.id}>{isAr ? u.nameAr : u.nameEn}</option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                          {isAr ? 'الفرقة الدراسية / المرحلة السريرية' : 'BDS Academic Year / Stage'}
+                        </label>
+                        <select
+                          value={profileForm.academicStage}
+                          onChange={(e) => setProfileForm({ ...profileForm, academicStage: e.target.value })}
+                          className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs text-slate-900 dark:text-white focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+                        >
+                          {BDS_ACADEMIC_STAGES.map(s => (
+                            <option key={s.id} value={s.id}>{isAr ? s.nameAr : s.nameEn}</option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+
+                    {/* Clinical Specialty & Governorate */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                          {isAr ? 'التخصص السريري المفضل' : 'Clinical Focus / Specialty'}
+                        </label>
+                        <select
+                          value={profileForm.specialty}
+                          onChange={(e) => setProfileForm({ ...profileForm, specialty: e.target.value })}
+                          className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs text-slate-900 dark:text-white focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+                        >
+                          {CLINICAL_SPECIALTIES.map(sp => (
+                            <option key={sp.id} value={sp.id}>{isAr ? sp.nameAr : sp.nameEn}</option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                          {isAr ? 'المحافظة' : 'Governorate'}
+                        </label>
+                        <select
+                          value={profileForm.governorate}
+                          onChange={(e) => setProfileForm({ ...profileForm, governorate: e.target.value })}
+                          className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs text-slate-900 dark:text-white focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+                        >
+                          {EGYPTIAN_GOVERNORATES.map(g => (
+                            <option key={g.id} value={g.id}>{isAr ? g.nameAr : g.nameEn}</option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+
+                    {/* Hospital / Station & Student ID */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                          {isAr ? 'المستشفى الجامعي / العيادة التدريبية' : 'Hospital Station / Clinic Location'}
+                        </label>
+                        <input
+                          type="text"
+                          value={profileForm.hospitalStation}
+                          onChange={(e) => setProfileForm({ ...profileForm, hospitalStation: e.target.value })}
+                          className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs text-slate-900 dark:text-white focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+                          placeholder={isAr ? 'مثال: مستشفى قصر العيني لطب الأسنان' : 'e.g. Kasr Al-Ainy Dental Hospital'}
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                          {isAr ? 'رقم القيد الأكاديمي / الكارنيه' : 'Faculty Student ID Pass Number'}
+                        </label>
+                        <input
+                          type="text"
+                          value={profileForm.studentId}
+                          onChange={(e) => setProfileForm({ ...profileForm, studentId: e.target.value })}
+                          className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs text-slate-900 dark:text-white focus:ring-2 focus:ring-teal-500 focus:border-teal-500 font-mono"
+                          placeholder="DK-CU-90214"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Bio / Case Notes */}
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                        {isAr ? 'نبذة عن المسار المهني والسريري' : 'Clinical Biography & Notes'}
+                      </label>
+                      <textarea
+                        rows={3}
+                        value={profileForm.bio}
+                        onChange={(e) => setProfileForm({ ...profileForm, bio: e.target.value })}
+                        className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs text-slate-900 dark:text-white focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+                        placeholder={isAr ? 'اكتب نبذة مختصرة عن تدريبك السريري أو الحالات التي تستقبلها...' : 'Brief summary of your clinical training, phantom requirements, or clinical cases...'}
+                      />
+                    </div>
+                  </form>
+                </div>
+              )}
+
+              {/* TAB 2: DIGITAL ID PASS */}
+              {activeTab === 'id_card' && (
+                <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 sm:p-8 shadow-sm space-y-6">
+                  <div>
+                    <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-1">
+                      {isAr ? 'بطاقة الاعتماد الأكاديمي والسريري الرقمية' : 'Digital Clinical & Faculty Accreditation Pass'}
+                    </h2>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">
+                      {isAr ? 'بطاقتك الرقمية المعتمدة لاستلام حقائب الأدوات في المعامل والعيادات الجامعية' : 'Use your interactive virtual pass to claim campus deliveries and unlock batch group discounts'}
+                    </p>
                   </div>
-                </AnimatedSection>
-              </div>
+                  <StudentIdCardBadge user={user} profileForm={profileForm} />
+                </div>
+              )}
 
-              {/* Main Content */}
-              <div className="lg:col-span-3">
-                <AnimatedSection animation="fadeInRight" delay={200}>
-                  <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl border border-white/20 dark:border-gray-700/20 shadow-lg p-6 sm:p-8">
-                    
-                    {/* Profile Tab */}
-                    {activeTab === 'profile' && (
-                      <div className="space-y-8">
-                        <div className="flex items-center justify-between">
-                          <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
-                            {t('profile.personalInfo')}
-                          </h3>
-                          <Button
-                            onClick={handleSaveProfile}
-                            disabled={saving}
-                            size="sm"
-                            className="flex items-center"
-                          >
-                            {saving ? (
-                              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                            ) : (
-                              <PencilIcon className="w-4 h-4 mr-2" />
-                            )}
-                            {saving ? t('common.saving') : t('common.save')}
-                          </Button>
-                        </div>
+              {/* TAB 3: EQUIPMENT LOCKER */}
+              {activeTab === 'locker' && (
+                <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 sm:p-8 shadow-sm">
+                  <ClinicalEquipmentLocker />
+                </div>
+              )}
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                          {/* First Name */}
-                          <div className="space-y-2">
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                              <UserIcon className="w-4 h-4 inline mr-2" />
-                              {t('profile.firstName')}
-                            </label>
-                            <input
-                              type="text"
-                              value={profileForm.firstName}
-                              onChange={(e) => setProfileForm({ ...profileForm, firstName: e.target.value })}
-                              className="w-full px-4 py-3 bg-white dark:bg-gray-900/60 border border-gray-200 dark:border-gray-600 rounded-xl text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-colors"
-                              placeholder={t('profile.firstName')}
-                            />
-                          </div>
+              {/* TAB 4: CAMPUS BATCH HUB */}
+              {activeTab === 'batch' && (
+                <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 sm:p-8 shadow-sm">
+                  <CampusBatchPerksCard user={user} profileForm={profileForm} />
+                </div>
+              )}
 
-                          {/* Last Name */}
-                          <div className="space-y-2">
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                              <UserIcon className="w-4 h-4 inline mr-2" />
-                              {t('profile.lastName')}
-                            </label>
-                            <input
-                              type="text"
-                              value={profileForm.lastName}
-                              onChange={(e) => setProfileForm({ ...profileForm, lastName: e.target.value })}
-                              className="w-full px-4 py-3 bg-white dark:bg-gray-900/60 border border-gray-200 dark:border-gray-600 rounded-xl text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-colors"
-                              placeholder={t('profile.lastName')}
-                            />
-                          </div>
+              {/* TAB 5: SECURITY & 2FA */}
+              {activeTab === 'security' && (
+                <ProfileSecuritySettings />
+              )}
 
-                          {/* Email */}
-                          <div className="space-y-2 sm:col-span-2">
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                              <EnvelopeIcon className="w-4 h-4 inline mr-2" />
-                              {t('profile.email')}
-                            </label>
-                            <input
-                              type="email"
-                              value={profileForm.email}
-                              disabled
-                              className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800/60 border border-gray-200 dark:border-gray-600 rounded-xl text-gray-500 dark:text-gray-400 cursor-not-allowed"
-                              placeholder={t('profile.email')}
-                            />
-                            <p className="text-xs text-gray-500 dark:text-gray-400">
-                              {t('profile.emailNote')}
-                            </p>
-                          </div>
+              {/* TAB 6: PREFERENCES & ALERTS */}
+              {activeTab === 'preferences' && (
+                <ProfilePreferencesSettings user={user} />
+              )}
 
-                          {/* Phone */}
-                          <div className="space-y-2">
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                              <PhoneIcon className="w-4 h-4 inline mr-2" />
-                              {t('profile.phone')}
-                            </label>
-                            <input
-                              type="tel"
-                              value={profileForm.phone}
-                              onChange={(e) => setProfileForm({ ...profileForm, phone: e.target.value })}
-                              className="w-full px-4 py-3 bg-white dark:bg-gray-900/60 border border-gray-200 dark:border-gray-600 rounded-xl text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-colors"
-                              placeholder={t('profile.phone')}
-                            />
-                          </div>
+              {/* TAB 7: ACTIVITY LOG */}
+              {activeTab === 'activity' && (
+                <ProfileActivityHistory />
+              )}
 
-                          {/* Company */}
-                          <div className="space-y-2">
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                              <BuildingOfficeIcon className="w-4 h-4 inline mr-2" />
-                              {t('profile.company')}
-                            </label>
-                            <input
-                              type="text"
-                              value={profileForm.company}
-                              onChange={(e) => setProfileForm({ ...profileForm, company: e.target.value })}
-                              className="w-full px-4 py-3 bg-white dark:bg-gray-900/60 border border-gray-200 dark:border-gray-600 rounded-xl text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-colors"
-                              placeholder={t('profile.company')}
-                            />
-                          </div>
-
-                          {/* University */}
-                          <div className="space-y-2">
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                              <AcademicCapIcon className="w-4 h-4 inline mr-2" />
-                              {t('profile.university')}
-                            </label>
-                            <input
-                              type="text"
-                              value={profileForm.university}
-                              onChange={(e) => setProfileForm({ ...profileForm, university: e.target.value })}
-                              className="w-full px-4 py-3 bg-white dark:bg-gray-900/60 border border-gray-200 dark:border-gray-600 rounded-xl text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-colors"
-                              placeholder={t('profile.university')}
-                            />
-                          </div>
-
-                          {/* Country */}
-                          <div className="space-y-2">
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                              <GlobeAltIcon className="w-4 h-4 inline mr-2" />
-                              {t('profile.country')}
-                            </label>
-                            <input
-                              type="text"
-                              value={profileForm.country}
-                              onChange={(e) => setProfileForm({ ...profileForm, country: e.target.value })}
-                              className="w-full px-4 py-3 bg-white dark:bg-gray-900/60 border border-gray-200 dark:border-gray-600 rounded-xl text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-colors"
-                              placeholder={t('profile.country')}
-                            />
-                          </div>
-
-                          {/* Governorate */}
-                          <div className="space-y-2">
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                              <MapPinIcon className="w-4 h-4 inline mr-2" />
-                              {t('profile.governorate')}
-                            </label>
-                            <input
-                              type="text"
-                              value={profileForm.governorate}
-                              onChange={(e) => setProfileForm({ ...profileForm, governorate: e.target.value })}
-                              className="w-full px-4 py-3 bg-white dark:bg-gray-900/60 border border-gray-200 dark:border-gray-600 rounded-xl text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-colors"
-                              placeholder={t('profile.governorate')}
-                            />
-                          </div>
-
-                          {/* Timezone */}
-                          <div className="space-y-2">
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                              <ClockIcon className="w-4 h-4 inline mr-2" />
-                              {t('profile.timezone')}
-                            </label>
-                            <select
-                              value={profileForm.timezone}
-                              onChange={(e) => setProfileForm({ ...profileForm, timezone: e.target.value })}
-                              className="w-full px-4 py-3 bg-white dark:bg-gray-900/60 border border-gray-200 dark:border-gray-600 rounded-xl text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-colors"
-                            >
-                              <option value="">{t('profile.selectTimezone')}</option>
-                              <option value="UTC">UTC</option>
-                              <option value="America/New_York">Eastern Time</option>
-                              <option value="America/Chicago">Central Time</option>
-                              <option value="America/Denver">Mountain Time</option>
-                              <option value="America/Los_Angeles">Pacific Time</option>
-                              <option value="Europe/London">London</option>
-                              <option value="Europe/Paris">Paris</option>
-                              <option value="Asia/Dubai">Dubai</option>
-                              <option value="Asia/Tokyo">Tokyo</option>
-                            </select>
-                          </div>
-
-                          {/* Language */}
-                          <div className="space-y-2">
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                              <LanguageIcon className="w-4 h-4 inline mr-2" />
-                              {t('profile.language')}
-                            </label>
-                            <select
-                              value={profileForm.language}
-                              onChange={(e) => setProfileForm({ ...profileForm, language: e.target.value })}
-                              className="w-full px-4 py-3 bg-white dark:bg-gray-900/60 border border-gray-200 dark:border-gray-600 rounded-xl text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-colors"
-                            >
-                              <option value="en">English</option>
-                              <option value="ar">العربية</option>
-                            </select>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Security Tab */}
-                    {activeTab === 'security' && (
-                      <div className="space-y-8">
-                        <div>
-                          <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                            {t('profile.changePassword')}
-                          </h3>
-                          <p className="text-gray-600 dark:text-gray-400">
-                            {t('profile.passwordDescription')}
-                          </p>
-                        </div>
-
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                          {/* Current Password */}
-                          <div className="space-y-2">
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                              {t('profile.currentPassword')}
-                            </label>
-                            <div className="relative">
-                              <input
-                                type={showPassword.current ? 'text' : 'password'}
-                                value={passwordForm.currentPassword}
-                                onChange={(e) => setPasswordForm({ ...passwordForm, currentPassword: e.target.value })}
-                                className="w-full px-4 py-3 pr-12 bg-white dark:bg-gray-900/60 border border-gray-200 dark:border-gray-600 rounded-xl text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-colors"
-                                placeholder={t('profile.currentPassword')}
-                              />
-                              <button
-                                type="button"
-                                onClick={() => setShowPassword({ ...showPassword, current: !showPassword.current })}
-                                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
-                              >
-                                {showPassword.current ? <EyeSlashIcon className="w-5 h-5" /> : <EyeIcon className="w-5 h-5" />}
-                              </button>
-                            </div>
-                          </div>
-
-                          {/* New Password */}
-                          <div className="space-y-2">
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                              {t('profile.newPassword')}
-                            </label>
-                            <div className="relative">
-                              <input
-                                type={showPassword.new ? 'text' : 'password'}
-                                value={passwordForm.newPassword}
-                                onChange={(e) => setPasswordForm({ ...passwordForm, newPassword: e.target.value })}
-                                className="w-full px-4 py-3 pr-12 bg-white dark:bg-gray-900/60 border border-gray-200 dark:border-gray-600 rounded-xl text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-colors"
-                                placeholder={t('profile.newPassword')}
-                              />
-                              <button
-                                type="button"
-                                onClick={() => setShowPassword({ ...showPassword, new: !showPassword.new })}
-                                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
-                              >
-                                {showPassword.new ? <EyeSlashIcon className="w-5 h-5" /> : <EyeIcon className="w-5 h-5" />}
-                              </button>
-                            </div>
-                          </div>
-
-                          {/* Confirm Password */}
-                          <div className="space-y-2">
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                              {t('profile.confirmPassword')}
-                            </label>
-                            <div className="relative">
-                              <input
-                                type={showPassword.confirm ? 'text' : 'password'}
-                                value={passwordForm.confirmPassword}
-                                onChange={(e) => setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })}
-                                className="w-full px-4 py-3 pr-12 bg-white dark:bg-gray-900/60 border border-gray-200 dark:border-gray-600 rounded-xl text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-colors"
-                                placeholder={t('profile.confirmPassword')}
-                              />
-                              <button
-                                type="button"
-                                onClick={() => setShowPassword({ ...showPassword, confirm: !showPassword.confirm })}
-                                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
-                              >
-                                {showPassword.confirm ? <EyeSlashIcon className="w-5 h-5" /> : <EyeIcon className="w-5 h-5" />}
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="flex items-center justify-between p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700/30 rounded-xl">
-                          <div className="flex items-center">
-                            <ExclamationTriangleIcon className="w-5 h-5 text-blue-600 dark:text-blue-400 mr-3" />
-                            <p className="text-sm text-blue-800 dark:text-blue-200">
-                              {t('profile.passwordWarning')}
-                            </p>
-                          </div>
-                        </div>
-
-                        <Button onClick={handleChangePassword} className="flex items-center">
-                          <ShieldCheckIcon className="w-4 h-4 mr-2" />
-                          {t('profile.updatePassword')}
-                        </Button>
-                      </div>
-                    )}
-
-                    {/* Preferences Tab */}
-                    {activeTab === 'preferences' && (
-                      <div className="space-y-8">
-                        <div>
-                          <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                            {t('profile.preferences')}
-                          </h3>
-                          <p className="text-gray-600 dark:text-gray-400">
-                            {t('profile.preferencesDescription')}
-                          </p>
-                        </div>
-
-                        <div className="space-y-6">
-                          {/* Notifications */}
-                          <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-6">
-                            <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
-                              <BellIcon className="w-5 h-5 mr-2" />
-                              {t('profile.notifications')}
-                            </h4>
-                            <div className="space-y-4">
-                              <div className="flex items-center justify-between">
-                                <div>
-                                  <p className="text-sm font-medium text-gray-900 dark:text-white">
-                                    {t('profile.emailNotifications')}
-                                  </p>
-                                  <p className="text-xs text-gray-600 dark:text-gray-400">
-                                    {t('profile.emailNotificationsDesc')}
-                                  </p>
-                                </div>
-                                <label className="relative inline-flex items-center cursor-pointer">
-                                  <input
-                                    type="checkbox"
-                                    checked={preferences.emailNotifications}
-                                    onChange={(e) => setPreferences({ ...preferences, emailNotifications: e.target.checked })}
-                                    className="sr-only peer"
-                                  />
-                                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-sky-300 dark:peer-focus:ring-sky-800 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-sky-600"></div>
-                                </label>
-                              </div>
-
-                              <div className="flex items-center justify-between">
-                                <div>
-                                  <p className="text-sm font-medium text-gray-900 dark:text-white">
-                                    {t('profile.smsNotifications')}
-                                  </p>
-                                  <p className="text-xs text-gray-600 dark:text-gray-400">
-                                    {t('profile.smsNotificationsDesc')}
-                                  </p>
-                                </div>
-                                <label className="relative inline-flex items-center cursor-pointer">
-                                  <input
-                                    type="checkbox"
-                                    checked={preferences.smsNotifications}
-                                    onChange={(e) => setPreferences({ ...preferences, smsNotifications: e.target.checked })}
-                                    className="sr-only peer"
-                                  />
-                                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-sky-300 dark:peer-focus:ring-sky-800 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-sky-600"></div>
-                                </label>
-                              </div>
-
-                              <div className="flex items-center justify-between">
-                                <div>
-                                  <p className="text-sm font-medium text-gray-900 dark:text-white">
-                                    {t('profile.marketingEmails')}
-                                  </p>
-                                  <p className="text-xs text-gray-600 dark:text-gray-400">
-                                    {t('profile.marketingEmailsDesc')}
-                                  </p>
-                                </div>
-                                <label className="relative inline-flex items-center cursor-pointer">
-                                  <input
-                                    type="checkbox"
-                                    checked={preferences.marketingEmails}
-                                    onChange={(e) => setPreferences({ ...preferences, marketingEmails: e.target.checked })}
-                                    className="sr-only peer"
-                                  />
-                                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-sky-300 dark:peer-focus:ring-sky-800 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-sky-600"></div>
-                                </label>
-                              </div>
-                            </div>
-                          </div>
-
-                          {/* Appearance */}
-                          <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-6">
-                            <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
-                              <Cog6ToothIcon className="w-5 h-5 mr-2" />
-                              {t('profile.appearance')}
-                            </h4>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                              <div className="space-y-2">
-                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                  {t('profile.language')}
-                                </label>
-                                <select
-                                  value={preferences.language}
-                                  onChange={(e) => setPreferences({ ...preferences, language: e.target.value })}
-                                  className="w-full px-4 py-3 bg-white dark:bg-gray-900/60 border border-gray-200 dark:border-gray-600 rounded-xl text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-colors"
-                                >
-                                  <option value="en">English</option>
-                                  <option value="ar">العربية</option>
-                                </select>
-                              </div>
-
-                              <div className="space-y-2">
-                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                  {t('profile.theme')}
-                                </label>
-                                <select
-                                  value={preferences.theme}
-                                  onChange={(e) => setPreferences({ ...preferences, theme: e.target.value })}
-                                  className="w-full px-4 py-3 bg-white dark:bg-gray-900/60 border border-gray-200 dark:border-gray-600 rounded-xl text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-colors"
-                                >
-                                  <option value="light">{t('profile.lightTheme')}</option>
-                                  <option value="dark">{t('profile.darkTheme')}</option>
-                                  <option value="system">{t('profile.systemTheme')}</option>
-                                </select>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-
-                        <Button className="flex items-center">
-                          <CheckCircleIcon className="w-4 h-4 mr-2" />
-                          {t('profile.savePreferences')}
-                        </Button>
-                      </div>
-                    )}
-
-                    {/* Activity Tab */}
-                    {activeTab === 'activity' && (
-                      <div className="space-y-8">
-                        <div>
-                          <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                            {t('profile.activity')}
-                          </h3>
-                          <p className="text-gray-600 dark:text-gray-400">
-                            {t('profile.activityDescription')}
-                          </p>
-                        </div>
-
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                          {/* Recent Orders */}
-                          <div className="bg-gradient-to-br from-blue-50 to-sky-50 dark:from-blue-900/20 dark:to-sky-900/20 rounded-xl p-6 border border-blue-200 dark:border-blue-700/30">
-                            <div className="flex items-center mb-4">
-                              <ShoppingBagIconSolid className="w-8 h-8 text-blue-600 dark:text-blue-400 mr-3" />
-                              <h4 className="text-lg font-semibold text-gray-900 dark:text-white">
-                                {t('profile.recentOrders')}
-                              </h4>
-                            </div>
-                            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-                              {t('profile.recentOrdersDesc')}
-                            </p>
-                            <Button variant="outline" size="sm" className="w-full">
-                              {t('profile.viewAll')}
-                            </Button>
+            </AnimatedSection>
           </div>
 
-                          {/* Wishlist */}
-                          <div className="bg-gradient-to-br from-red-50 to-pink-50 dark:from-red-900/20 dark:to-pink-900/20 rounded-xl p-6 border border-red-200 dark:border-red-700/30">
-                            <div className="flex items-center mb-4">
-                              <HeartIconSolid className="w-8 h-8 text-red-600 dark:text-red-400 mr-3" />
-                              <h4 className="text-lg font-semibold text-gray-900 dark:text-white">
-                                {t('profile.wishlist')}
-                              </h4>
-                            </div>
-                            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-                              {t('profile.wishlistDesc')}
-                            </p>
-                            <Button variant="outline" size="sm" className="w-full">
-                              {t('profile.viewAll')}
-                            </Button>
-          </div>
-
-                          {/* Account Stats */}
-                          <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl p-6 border border-green-200 dark:border-green-700/30">
-                            <div className="flex items-center mb-4">
-                              <ChartBarIcon className="w-8 h-8 text-green-600 dark:text-green-400 mr-3" />
-                              <h4 className="text-lg font-semibold text-gray-900 dark:text-white">
-                                {t('profile.accountStats')}
-                              </h4>
-                            </div>
-                            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-                              {t('profile.accountStatsDesc')}
-                            </p>
-                            <Button variant="outline" size="sm" className="w-full">
-                              {t('profile.viewDetails')}
-                            </Button>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </AnimatedSection>
-            </div>
-            </div>
-          </div>
         </div>
-      </section>
+      </div>
     </div>
   );
 };

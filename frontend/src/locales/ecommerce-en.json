@@ -26,11 +26,24 @@
     "featured": "Featured",
     "newArrivals": "New Arrivals",
     "sale": "On Sale",
+    "deals": "Deals & Offers",
     "menu": "Menu",
     "packages": "Packages",
     "packagesDescription": "Bundles and discounted products",
     "switchToLight": "Switch to Light Mode",
-    "switchToDark": "Switch to Dark Mode"
+    "switchToDark": "Switch to Dark Mode",
+    "studentPerks": "🎓 Special Dental Student Bundles & Fast Campus Delivery | 100% Quality Guaranteed",
+    "studentKits": "Student Kits",
+    "studentDeals": "Student Deals",
+    "preclinicalKits": "Pre-Clinical Kits",
+    "clinicalKits": "Clinical Instruments",
+    "endoResto": "Endodontics & Restorative",
+    "surgicalPeriodontics": "Surgery & Periodontics",
+    "studentSupport": "Support",
+    "searchPlaceholder": "Search kits, instruments, typodonts, forceps...",
+    "quickSearch": "Quick Search",
+    "allCategories": "All Dental Categories",
+    "viewAll": "View All"
   },
   "packages": {
     "title": "Packages and Discounts",
@@ -123,79 +136,148 @@
   },
   "home": {
     "hero": {
-      "title": "Professional Dental Equipment & Supplies",
-      "subtitle": "Everything you need for your dental practice",
-      "cta": "Shop Now",
-      "learnMore": "Learn More",
-      "badge": "Premium Dental Solutions",
-      "mainTitle": "Transform Your",
-      "mainTitleHighlight": "Dental Practice",
-      "description": "Discover cutting-edge dental equipment and premium supplies that elevate your practice to new heights of excellence.",
-      "exploreProducts": "Explore Products",
-      "watchDemo": "Watch Demo"
-    },
-    "stats": {
-      "happyCustomers": "Happy Customers",
-      "satisfactionRate": "Satisfaction Rate",
-      "fastDelivery": "Fast Delivery",
-      "qualityGuaranteed": "Quality Guaranteed"
-    },
-    "features": {
-      "title": "Why Choose DentalKit?",
-      "subtitle": "We provide everything you need to deliver exceptional dental care with confidence and precision.",
-      "premiumQuality": {
-        "title": "Premium Quality",
-        "description": "All products meet the highest industry standards and certifications."
-      },
-      "fastShipping": {
-        "title": "Fast Shipping",
-        "description": "Quick and reliable delivery to your practice within 2-3 business days."
-      },
-      "support": {
-        "title": "24/7 Support",
-        "description": "Round-the-clock customer support to assist you whenever you need help."
-      },
-      "expertTeam": {
-        "title": "Expert Team",
-        "description": "Our team of dental professionals ensures you get the best recommendations."
+      "badge": "🎓 The #1 Store for Dental Students & Clinical Kits",
+      "title": "Precision Dental Kits for",
+      "mainTitle": "Precision Dental Kits for",
+      "mainTitleHighlight": "Future Dentists",
+      "subtitle": "University-approved phantom kits, German-grade stainless steel instruments, and complete academic bundles for dental medical students.",
+      "cta": "Shop Student Kits",
+      "exploreCatalog": "Browse by Year",
+      "trust": {
+        "students": "15,000+ Students",
+        "universities": "40+ Dental Faculties",
+        "quality": "Medical Grade Steel",
+        "delivery": "Fast Campus Delivery",
+        "clinics": "Students & Clinics",
+        "support": "Clinical Support",
+        "warranty": "Quality Guarantee"
       }
+    },
+    "stages": {
+      "title": "Shop by Academic Stage",
+      "subtitle": "Select your dental college year to find the exact required instrument sets",
+      "year1_2": "Year 1 & 2 • Pre-Clinical",
+      "year1_2Desc": "Tooth carving blocks, typodonts, waxing tools & anatomy sets",
+      "year3": "Year 3 • Operative & Endo",
+      "year3Desc": "Rubber dam kits, K-files, cavity prep carvers & matrix sets",
+      "year4_5": "Year 4 & 5 • Clinical & Surgery",
+      "year4_5Desc": "Extraction forceps, perio scalers, elevators & impression trays",
+      "bundles": "All-in-One Year Bundles",
+      "bundlesDesc": "Complete semester boxes with up to 30% savings & faculty compliance"
     },
     "categories": {
-      "title": "Explore Categories",
-      "subtitle": "Find the perfect products for your dental practice",
-      "explore": "Explore",
-      "defaultDescription": "Premium dental supplies and equipment"
+      "title": "Essential Dental Categories",
+      "subtitle": "Explore tools and supplies engineered for medical training and clinical precision",
+      "explore": "Explore Category",
+      "defaultDescription": "Premium dental student instruments and supplies"
     },
     "featured": {
-      "title": "Featured Products",
-      "subtitle": "Discover our most popular and highly-rated products",
+      "title": "Featured Student Kits & Bestsellers",
+      "subtitle": "Top-rated instruments recommended by professors and senior students",
       "addToCart": "Add to Cart",
-      "viewAll": "View All Products"
+      "viewAll": "View All Products",
+      "professionalChoice": "Student Bestseller",
+      "all": "All Kits",
+      "preclinical": "Pre-Clinical",
+      "restorative": "Endo & Restorative",
+      "surgery": "Surgical Tools"
+    },
+    "bundlePromo": {
+      "badge": "Academic Bundle Special",
+      "title": "Complete BDS Clinical Toolkit Box",
+      "subtitle": "Everything required by Egyptian & International Dental Faculties in one heavy-duty autoclavable carrying case.",
+      "included": "Included in this kit:",
+      "item1": "14-Piece German Spec Restorative Instrument Set",
+      "item2": "Complete Rubber Dam Kit with Ivory Clamps & Punch",
+      "item3": "Diagnostic Examination Set with Front Surface Mirror",
+      "item4": "Heavy-duty Autoclavable Medical Organizer Box",
+      "save": "Save 30% vs buying separately",
+      "orderNow": "Order Student Bundle",
+      "viewPackages": "Explore All Packages"
+    },
+    "whyChoose": {
+      "title": "Why Dental Students Choose DentalKit",
+      "subtitle": "Tailored specifically to match clinical exam checklists and university requirements",
+      "curriculum": "Faculty Syllabus Matched",
+      "curriculumDesc": "Tools aligned with Cairo, Ain Shams, Mansoura, Alexandria & private universities.",
+      "steel": "German Spec Stainless Steel",
+      "steelDesc": "Autoclavable, rust-resistant instruments with precision grip balance.",
+      "delivery": "Direct Campus & Dorm Delivery",
+      "deliveryDesc": "Fast shipping directly to your university hospital or student residence.",
+      "support": "Student Advisory Support",
+      "supportDesc": "Consult with senior dental clinicians on kit requirements anytime."
     },
     "testimonials": {
-      "title": "What Our Customers Say",
-      "subtitle": "Trusted by dental professionals worldwide",
-      "drSarah": {
-        "name": "Dr. Sarah Johnson",
-        "role": "Orthodontist",
-        "content": "DentalKit has transformed my practice. The quality of equipment is outstanding and the customer service is exceptional."
+      "title": "Trusted by Dental Students & Clinicians",
+      "subtitle": "Read verified feedback from dental students across top universities",
+      "student1": {
+        "name": "Ahmed Mostafa",
+        "role": "4th Year BDS, Cairo University",
+        "content": "The clinical surgery set was exactly what my professors required. Super high quality steel and the fastest delivery to Kasr Al-Ainy!"
       },
-      "drMichael": {
-        "name": "Dr. Michael Chen",
-        "role": "General Dentist",
-        "content": "I've been using DentalKit for over 2 years now. Their products are reliable and their support team is always helpful."
+      "student2": {
+        "name": "Nouran El-Sayed",
+        "role": "3rd Year Dental, Ain Shams University",
+        "content": "The Endo rubber dam kit and K-files made my pre-clinical exams so smooth. Highly recommend their student bundles!"
       },
-      "drEmily": {
-        "name": "Dr. Emily Rodriguez",
-        "role": "Periodontist",
-        "content": "The best dental supply company I've worked with. Fast delivery, great prices, and excellent product quality."
+      "student3": {
+        "name": "Omar Khaled",
+        "role": "2nd Year BDS, Mansoura University",
+        "content": "Best typodont and waxing set I've used. Saved over 25% compared to local campus stores."
       }
     },
-    "cta": {
-      "title": "Ready to Transform Your Practice?",
-      "subtitle": "Join thousands of dental professionals who trust DentalKit for their equipment and supplies.",
-      "getStarted": "Get Started Today",
-      "contactSales": "Contact Sales"
+    "checklistBanner": {
+      "title": "Need Help Finding Your Faculty's Required Kit List?",
+      "subtitle": "Send us your department instrument checklist, and our clinical team will pack the exact tools for you.",
+      "cta": "Contact Student Support",
+      "whatsapp": "Chat on WhatsApp"
+    },
+    "matcher": {
+      "badge": "Clinical Department Syllabus Matcher",
+      "title": "Match Your University's Required Kit",
+      "subtitle": "Select your dental faculty and academic year to instantly load verified syllabus requirements and tool checklists.",
+      "selectUniversity": "Select University",
+      "selectYear": "Select Academic Year",
+      "verifiedFaculty": "100% Professor Verified",
+      "bundleMatched": "Matched Clinical Package",
+      "includedTools": "Required Instruments Checklist:",
+      "orderFacultyKit": "Order Verified Faculty Bundle",
+      "saveWithBatch": "Includes 25% Academic Subsidy"
+    },
+    "trayExplorer": {
+      "badge": "Clinical Tray Setup Simulator",
+      "title": "Interactive Department Tray Explorer",
+      "subtitle": "Explore standard clinical tray configurations required for university practical exams and hospital patient clinics.",
+      "tabOperative": "Operative & Restorative",
+      "tabEndo": "Endodontic Access",
+      "tabSurgery": "Exodontia & Surgery",
+      "tabPreclinical": "Pre-Clinical Phantom",
+      "hotspotsTitle": "Tray Configuration & Instrument Breakdown",
+      "orderEntireTray": "Bundle This Complete Tray",
+      "specTitle": "Surgical Grade Metallurgy"
+    },
+    "specs": {
+      "badge": "Medical Grade Metallurgy",
+      "title": "Engineered for Clinical Ergonomics & Lifetime Autoclave Durability",
+      "subtitle": "Dental instruments manufactured with German martensitic stainless steel to withstand 1,000+ sterilization cycles.",
+      "spec1Title": "AISI 420 Martensitic Steel",
+      "spec1Desc": "Heat-treated to Rockwell 54-58 HRC for ultra-durable cutting edges that retain sharp bevels under heavy clinical load.",
+      "spec2Title": "TiN Nano-Composite Coating",
+      "spec2Desc": "Titanium Nitride coated tips prevent composite resin sticking and provide micro-tactile sensitivity for anatomy sculpting.",
+      "spec3Title": "Micro-Serrated Exodontia Beaks",
+      "spec3Desc": "Laser-machined grip ridges provide positive non-slip tooth root engagement, minimizing apical fracture risk.",
+      "spec4Title": "134°C Autoclave Resistance",
+      "spec4Desc": "Certified passivated oxide barrier prevents pitting, oxidation, and corrosion across hospital autoclave autoclaving."
+    },
+    "batchHub": {
+      "badge": "University Group Buy & Batch Discount",
+      "title": "Faculty Batch Group-Buy Hub",
+      "subtitle": "Join your university batch order to unlock tiered bulk discounts and direct campus bulk delivery.",
+      "studentsJoined": "Students Joined",
+      "targetGoal": "Target Goal",
+      "discountActive": "Discount Unlocked",
+      "joinBatch": "Join Batch Order",
+      "daysLeft": "Days Left for Registration"
     },
     "newsletter": {
       "title": "Stay Updated",
@@ -332,6 +414,8 @@
     "emptyMessage": "Looks like you haven't added anything to your cart yet.",
     "continueShopping": "Continue Shopping",
     "added": "Product added to cart",
+    "add": "Add to Cart",
+    "outOfStock": "Out of Stock",
     "quantityUpdated": "Quantity updated",
     "itemRemoved": "Item removed from cart",
     "invalidQuantity": "Please enter a valid quantity",
@@ -1038,5 +1122,56 @@
       "helpText": "Still having connection issues?",
       "contactUs": "Contact our support team"
     }
+  },
+  "footer": {
+    "newsletterTitle": "Stay Ahead in Dental School",
+    "newsletterSubtitle": "Subscribe for student bundle drops, academic discounts, and clinic checklist guides.",
+    "newsletterPlaceholder": "Enter your email address...",
+    "subscribe": "Subscribe Now",
+    "subscribeSuccess": "Thanks for subscribing! Check your email for your student discount code.",
+    "brandDescription": "Providing dental students and clinicians with premium surgical, restorative, and pre-clinical kits. Engineered for precision and university approved.",
+    "badgeUniversity": "University Partner",
+    "badgeCertified": "ISO 13485 Certified",
+    "perks": {
+      "student": "Student Pricing",
+      "studentDesc": "Exclusive student kit savings",
+      "shipping": "Campus Delivery",
+      "shippingDesc": "Fast & safe direct shipping",
+      "quality": "Medical Precision",
+      "qualityDesc": "High-grade stainless steel",
+      "warranty": "Warranty Backed",
+      "warrantyDesc": "Hassle-free replacement"
+    },
+    "columns": {
+      "kits": "Dental Kits",
+      "navigation": "Navigation",
+      "support": "Student Support",
+      "contact": "Contact & Reps"
+    },
+    "links": {
+      "preclinical": "Pre-Clinical Kits",
+      "clinical": "Clinical Instruments",
+      "endoResto": "Endodontics & Restorative",
+      "surgery": "Surgical Sets",
+      "packages": "Student Packages",
+      "allProducts": "All Products",
+      "aboutUs": "About DentalKit",
+      "contactUs": "Contact Support",
+      "deals": "Deals & Offers",
+      "trackOrder": "Track Order",
+      "shippingPolicy": "Shipping Information",
+      "returnsWarranty": "Returns & Warranty",
+      "faq": "Help & FAQ",
+      "privacyPolicy": "Privacy Policy",
+      "termsOfService": "Terms of Service"
+    },
+    "contact": {
+      "address": "Medical District Plaza, Suez, Egypt",
+      "phone": "+20 111 119 4483",
+      "email": "support@dentalkit.com",
+      "hours": "Sun - Thu: 9:00 AM - 6:00 PM"
+    },
+    "copyright": "All rights reserved. DentalKit - Student & Clinic Dental Supply Co.",
+    "securePayments": "100% Secure Checkout"
   }
 }
